@@ -1,0 +1,65 @@
+---
+title: Subtitle Flashcards
+summary: Turns the vocabulary hidden in English film subtitles into study material. Upload an .srt file, and it parses locally, matches against a curated difficult-word list, and ranks what is actually worth learning.
+period: '2025'
+featured: 4
+group: learning
+role: Sole developer
+stack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'Node scripts']
+links:
+  repo: 'https://github.com/Rougeetnoir/SubtitleFlashcards'
+---
+
+## The problem
+
+Watching films in English is a good way to meet vocabulary and a bad way to
+retain it. The words I did not know went past at conversational speed, and
+pausing to look each one up broke the film. Writing them down afterwards meant
+remembering which ones they were.
+
+What I wanted was the subtitle file to tell me: here are the words in this film
+you probably do not know, ranked by how often they appear, with the line they
+appeared in.
+
+## How it works
+
+Upload an `.srt` and everything happens in the browser — the file never leaves
+the device. The app parses the subtitle track, extracts English words, filters
+against a curated difficult-word list, and ranks the top 50 by frequency. Each
+word arrives with a Chinese gloss, phonetics, and the actual line and timestamp
+it came from, so it can be learned in context rather than as a flashcard in a
+vacuum.
+
+The interesting part is not the app — it is the word list behind it, which is
+generated rather than hand-maintained:
+
+- `data/wordSources.json` describes sources and difficulty tiers, either as
+  manual lists or as frequency bands from the SUBTLEXus spoken corpus.
+- A build script merges the New General Service List with the top SUBTLEX words
+  to derive a **common-words blacklist** — the point is to exclude words that are
+  merely frequent, not difficult.
+- Word forms are lemmatised via `ecdict`, then annotated with CC-CEDICT
+  definitions.
+- Running `npm run update-word-list` regenerates the whole thing.
+
+So adding a difficulty tier is a data edit, not a code change.
+
+## Working with AI on this
+
+The first version had no pipeline. The word list was a hardcoded array, and
+every adjustment meant editing application code — exactly the pattern I would
+have flagged in a finance system, where reference data belongs in a table rather
+than in the report.
+
+Recognising that was mine. Building it was collaborative, and the useful move
+was giving the model the *shape* of what I wanted — "sources are declarative,
+one script derives everything, application code imports a generated file" —
+rather than asking it to solve "make the word list better". Vague requests got
+me clever code aimed at the wrong problem. A stated architecture got me the
+thing I wanted.
+
+The lemmatisation is where it earned its keep. I did not know the word for what
+I wanted; I described the symptom, which was that "running" and "ran" were being
+counted as different unknown words. It named the problem and pointed at
+`findLemma`. That is the case where a model is genuinely better than a search
+engine — when you can describe a problem but not name it.

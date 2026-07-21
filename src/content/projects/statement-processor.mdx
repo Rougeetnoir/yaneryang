@@ -1,0 +1,68 @@
+---
+title: Statement Processor
+summary: Ingests CSV exports from eight banks and card issuers, normalises schemas that agree on nothing, categorises every transaction against a rules engine, and produces quarterly spend reports. The problem I solved at GE, rebuilt solo.
+period: 2025 — ongoing
+featured: 1
+group: finance
+role: Sole developer
+stack: ['Python', 'pandas', 'matplotlib', 'pytest']
+---
+
+## The problem
+
+Four issuers, eight accounts, and not one of them exports the same CSV. Chase
+signs debits positive; Amex signs them negative. Bank of America splits the
+description across columns that Discover packs into one. Dates arrive in three
+formats. Every quarter I was doing the same thing by hand in Excel: paste,
+re-sign, re-map, tag, pivot.
+
+This is the small-scale version of a problem I already knew well. At GE, the
+whole reason the Oracle CCL to RACES migration was hard was that source systems
+disagreed about what a transaction record even looked like. The fix there was
+mapping and validation rules. The fix here is the same, just written in Python
+instead of specified for someone else to build.
+
+## How it works
+
+Roughly 1,700 lines across nine modules, with the pipeline split so each stage
+can be tested on its own:
+
+- **Ingest** — filename conventions (`Chase_1421.CSV`, `Amex_gold.csv`) identify
+  the issuer, and each gets an adapter that maps its columns onto one internal
+  schema and normalises the sign convention so a debit is always a debit.
+- **Categorise** — `categorizer.py` matches cleaned, uppercased merchant strings
+  against ordered pattern lists in `basic_bank_info.py`. Twelve categories, from
+  Groceries to Bills & Utilities, with anything unmatched falling to `Other` so
+  gaps stay visible rather than silently mis-filed.
+- **Report** — a CLI (`--start-month`, `--end-month`) drives the run, and
+  `visualizer.py` emits a category-by-month heatmap plus per-period breakdowns.
+- **Rent** — `rent_processor.py` handles shared-housing splits, which turned out
+  to deserve its own module rather than another branch in the main path.
+
+Tests cover the categoriser, config loading, the rent logic, and a real-data
+regression run.
+
+## Working with AI on this
+
+The rules list is where the collaboration was genuinely useful and where it also
+misled me. Asking a model to generate merchant patterns produced a plausible
+list fast — and quietly wrong. It offered `TARGET` as a grocery match, which is
+right for how I shop and wrong for anyone who buys furniture there. It suggested
+matching `AMAZON` as one category, when Amazon is four categories wearing a
+trench coat.
+
+What actually worked was inverting the loop: I ran the categoriser over real
+statements, looked at everything that landed in `Other`, and only then decided
+where each merchant belonged. The model was good at restructuring the code
+around that decision and bad at making the decision. That is roughly the
+division of labour I have settled on since.
+
+The other thing I would tell my earlier self: write the test for the sign
+convention first. I lost an evening to a quarter where every Amex refund was
+counted as spending, and no amount of reading the code found it. One test on one
+known transaction would have.
+
+## Why it is not embedded here
+
+Every other project on this site has a live demo. This one does not, and will
+not — it reads real bank statements. The sample outputs above are synthetic.

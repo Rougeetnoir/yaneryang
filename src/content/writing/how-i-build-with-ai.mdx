@@ -1,0 +1,129 @@
+---
+title: How I build software without an engineering background
+description: The workflow I use with AI — a spec, a conventions file, and a handoff note — and why deciding what the model may not do turned out to matter more than describing what it should.
+pubDate: 2026-07-15
+featured: 1
+tags: ['ai-collaboration', 'process']
+---
+
+I am an accountant. I spent five years on general ledgers at GE, most of it
+making sure that what the system said matched what had actually happened. I have
+shipped several working applications in the last two years, and I did not learn
+to code in the way that sentence usually implies.
+
+The honest version is that AI writes most of the code and I decide what the code
+has to be. That arrangement is easy to describe badly — it sounds either like
+cheating or like magic, and it is neither. So here is what it actually looks
+like, including the parts that went wrong.
+
+## The three files
+
+Every project I have finished has the same three documents. Every project I
+abandoned had none of them.
+
+**`PLAN.md` — what is being built, in phases.** The data model, the screens, the
+core loop, and a section I would now call the most important one: **non-goals**.
+Chalkbook's says no social features, no accounts, no cloud sync in v1, no
+Android polish. Without that section, every conversation drifts toward a bigger
+product, because a model asked "what else could this have?" will always have an
+answer.
+
+The phases matter for a specific reason. A capable model will happily build
+Phase 5 while you are still verifying Phase 2, and the code will look fine. Six
+weeks later you have a large application you have never actually used. So the
+rule in the file is explicit: *work within the current phase only, do not
+implement later phases unless asked.*
+
+**`CLAUDE.md` — the conventions that are not up for negotiation.** The exact
+stack. The design tokens, down to hex values, with a rule that no component may
+hardcode a colour. That all dates are local-time `YYYY-MM-DD` strings and never
+timezoned timestamps — because I got that wrong once and spent an evening on a
+day-boundary bug that only appeared after 4pm. And: no new dependencies without
+asking first.
+
+That last line has saved me more than the rest combined. Left alone, the default
+answer to any problem is a library, and you end up maintaining a dependency tree
+you never chose.
+
+**`CLAUDE_HANDOFF.md` — where things stand.** Rewritten at the end of every
+working session: what got finished, what changed, what the next session should
+pick up. A session ends when context runs out, not when the work is done, and a
+fresh session with no handoff will confidently rebuild something that already
+exists.
+
+Writing it has a second effect I did not anticipate. Stating what is done forces
+you to be precise about *done*, and I have caught myself more than once about to
+write "finished" when what I meant was "it compiles". It has never been verified
+on a device. That is not the same thing, and the file is where the difference
+surfaces.
+
+## What the model is good at, and what it is not
+
+The clearest lesson came from the statement processor — the tool that reads my
+bank exports and categorises transactions.
+
+I asked for merchant matching rules. What came back was fast, plausible, and
+quietly wrong. It filed `TARGET` under groceries, which is true of how I shop and
+false for anyone who buys furniture there. It treated `AMAZON` as one category,
+when Amazon is four categories in a trench coat. Nothing about the output looked
+wrong. It was wrong about *my* data, and only I could know that.
+
+What worked was inverting the loop: run the categoriser over real statements,
+look at everything that fell through to `Other`, and decide case by case. Then
+have the model restructure the code around those decisions.
+
+That is the division I have settled on. **The model is good at structure and bad
+at judgement about my domain.** It is excellent at "reorganise this so the
+reference data is declarative and one script derives the rest". It cannot tell
+me whether a wind project's revenue should be recognised over time or at a point
+in time, and it should not be asked.
+
+The counter-example is worth stating too, because the balance matters. Building
+Subtitle Flashcards, I noticed "running" and "ran" were being counted as two
+different unknown words. I could describe the symptom precisely and had no idea
+what the thing was called. The model named it — lemmatisation — and pointed at
+the function that does it. That is where it beats a search engine outright: when
+you can describe a problem but cannot name it.
+
+## What accounting turned out to be good preparation for
+
+Three things carried over more directly than I expected.
+
+**Reference data belongs in a table, not in the report.** The first version of
+Subtitle Flashcards had its word list hardcoded in application code, so every
+adjustment was a code change. I would have flagged that instantly in a finance
+system. It took me embarrassingly long to see it in my own.
+
+**Reconciliation is a habit, not a task.** Fifty accounts, zero unreconciled
+balances, every month. The reflex it builds is that a number is not right
+because it looks right — it is right because it ties to something. The
+equivalent when building software is a test, and the one I did not write is
+still the one that cost me most: an Amex sign-convention bug that counted every
+refund as spending. One test on one known transaction would have caught it
+immediately.
+
+**Migrations are the same problem I already knew.** The hard part of moving GE's
+ledger from Oracle CCL to RACES was not the move. It was that the two systems
+disagreed about what a transaction record was, and every mapping decision had to
+be made explicitly and validated. Versioning a SQLite schema across four
+revisions in Chalkbook is that problem, scaled down. I had done it before; only
+the tooling was new.
+
+## What this does not make me
+
+I want to be exact about the limits, because I think overclaiming is how this
+whole category of work loses credibility.
+
+I can build a Chrome extension. I could not sit an exam on Chrome's extension
+security model. For a tool that stores my own data locally, that gap is fine.
+For something handling other people's passport numbers, it would not be — and
+knowing which of those two situations you are in is most of the skill.
+
+I am not going to tell you I am a software engineer. What I will say is that the
+distance between noticing a process problem and having a working tool that fixes
+it has collapsed for me, and that the thing which determines whether the tool is
+any good is not how well I write code. It is whether I can specify the problem
+precisely, spot when an answer is confidently wrong, and insist on verifying
+rather than assuming.
+
+Which is, more or less, the job I was already doing.

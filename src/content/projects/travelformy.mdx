@@ -1,0 +1,40 @@
+---
+title: TravelFormy
+summary: A small Chrome extension that fills the repetitive parts of travel and visa forms — the kind of task that is too small to complain about and too frequent to keep doing by hand.
+period: '2025'
+featured: 5
+group: tools
+role: Sole developer
+stack: ['JavaScript', 'Chrome Extension APIs']
+---
+
+## The problem
+
+Travel paperwork asks the same twenty questions in a different order every time.
+Passport number, issue date, expiry, address history, flight details. None of it
+changes. All of it has to be typed again, and a typo in a passport number is not
+a typo you want.
+
+## How it works
+
+A content script recognises known fields on a page and fills them from stored
+values, with a popup for editing what is stored. Nothing leaves the browser.
+
+It is the smallest project here by a wide margin, and it is on this page for one
+reason: it is the clearest example of the instinct the rest of the work runs on.
+Something repetitive shows up more than twice, and the question becomes *why am
+I the one doing this*. That instinct is what made automation at GE worth 75% of
+the processing time on cost accrual, and it is the same instinct — just applied
+to something much smaller.
+
+## Working with AI on this
+
+An afternoon, start to finish. Chrome's extension APIs were entirely new to me,
+and the manifest, permissions model, and content-script lifecycle would have
+been a weekend of reading documentation.
+
+Worth being precise about what that means, though. I can now build a Chrome
+extension; I could not sit an exam on the extension security model. For a
+personal tool that stores data locally, that gap is acceptable. Before I shipped
+anything to other people that handled their passport numbers, it would not be —
+and knowing which of those two situations you are in is most of the skill.

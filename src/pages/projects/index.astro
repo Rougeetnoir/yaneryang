@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects, PROJECT_GROUPS } from '../../lib/content';
+
+const projects = await getProjects();
+
+const grouped = PROJECT_GROUPS.map((group) => ({
+  ...group,
+  items: projects.filter((project) => project.data.group === group.id),
+})).filter((group) => group.items.length > 0);
+---
+
+<BaseLayout
+  title="Projects"
+  description="Finance automation, learning tools, and mobile apps — what I have built since leaving accounting, and how each one was made."
+>
+  <section class="container-page pt-16 pb-12">
+    <h1 class="max-w-2xl text-4xl leading-tight sm:text-5xl">Projects</h1>
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
+      Each one started as a problem I actually had. Every write-up covers what it
+      does, how it is built, and what the collaboration with AI looked like —
+      including where it went wrong.
+    </p>
+  </section>
+
+  {
+    grouped.map((group) => (
+      <section class="container-page border-t border-line py-12">
+        <h2 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">
+          {group.label}
+        </h2>
+
+        <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {group.items.map((project) => (
+            <ProjectCard
+              title={project.data.title}
+              summary={project.data.summary}
+              period={project.data.period}
+              stack={project.data.stack}
+              href={`/projects/${project.id}`}
+            />
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</BaseLayout>

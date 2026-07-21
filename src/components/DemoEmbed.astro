@@ -1,0 +1,32 @@
+---
+interface Props {
+  url: string;
+  /** CSS aspect-ratio value, e.g. "16/10". Reserves space so nothing shifts. */
+  aspect: string;
+  title: string;
+}
+
+const { url, aspect, title } = Astro.props;
+---
+
+<figure class="not-prose my-10">
+  <div
+    class="overflow-hidden rounded-card border border-line bg-surface shadow-card"
+    style={`aspect-ratio: ${aspect}`}
+  >
+    <iframe
+      src={url}
+      title={`${title} — live demo`}
+      loading="lazy"
+      class="h-full w-full border-0"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"
+      referrerpolicy="no-referrer"></iframe>
+  </div>
+
+  <figcaption class="mt-3 text-sm text-muted">
+    Live and interactive — try it here, or
+    <a href={url} target="_blank" rel="noopener noreferrer" class="text-accent-ink underline underline-offset-4">
+      open it full screen
+    </a>.
+  </figcaption>
+</figure>

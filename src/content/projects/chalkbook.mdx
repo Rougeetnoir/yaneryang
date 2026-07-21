@@ -1,0 +1,73 @@
+---
+title: Chalkbook
+summary: A local-first climbing and fitness journal for iOS. No accounts, no server — SQLite on device, HealthKit for the numbers it should not make you type twice.
+period: '2026'
+featured: 2
+group: mobile
+role: Sole developer
+stack: ['Expo', 'React Native', 'TypeScript', 'expo-sqlite', 'zustand']
+---
+
+## The problem
+
+I wanted a training log that felt like a journal rather than a spreadsheet.
+Every climbing app I tried wanted an account before it would show me anything,
+and most of them looked like a gym at night — dark, neon, loud. I wanted the
+opposite: warm, calm, paper-like. Something closer to the *5 Minute Journal*
+than to a fitness tracker.
+
+So: local-first, single user, no accounts, no server, no social features. SQLite
+on the device is the only source of truth.
+
+## How it works
+
+The core loop is one tap. Open the app, and today is already the subject —
+greeting, a week strip with status dots, and a large "Climbed today" card. Tap
+once and the session exists. Everything after that is optional: discipline, gym,
+how it felt on a 1–5 scale, notes, individual climbs with grade, count, and
+style tags.
+
+The parts that took actual design work:
+
+- **Versioned migrations.** Four schema versions so far. Adding workouts
+  alongside climbing meant new tables, seeded preset types, and foreign keys with
+  `RESTRICT` so a workout type in use cannot be deleted out from under its rows.
+- **A layered structure.** `app/` is routing only; `src/db` holds repositories
+  and migrations, `src/domain` is pure functions, `src/theme` owns every visual
+  token, `src/stores` is deliberately thin because SQLite — not zustand — is the
+  truth.
+- **Goal-driven dashboard.** Yearly grade goals with progress, streaks, a grade
+  pyramid, style analysis. Body metrics and cycle phases overlay onto performance
+  data, which surfaces something a spreadsheet never showed me: which phase I
+  actually climb strongest in.
+
+## Working with AI on this
+
+Chalkbook is the project where I stopped treating the model as an autocomplete
+and started treating it as something that needs a spec.
+
+Three files do the work. `PLAN.md` is the product spec and phase roadmap — data
+model, screens, non-goals, and an explicit rule that work stays inside the
+current phase. `CLAUDE.md` holds the conventions the model is not allowed to
+deviate from: the exact stack, the design tokens down to the hex values, the
+rule that dates are local-time `YYYY-MM-DD` strings and never timezoned
+timestamps, and "no new dependencies without asking first". `CLAUDE_HANDOFF.md`
+gets rewritten at the end of every session so the next one can pick up cold.
+
+That last file is the one I did not expect to matter. A session ends when
+context runs out, not when the work is finished, and without a handoff the next
+session confidently rebuilds something that already exists. Writing the summary
+also forces me to state what is actually done — which is how I caught, more than
+once, that "done" meant "compiles" rather than "verified on device".
+
+The pattern underneath all three: **the constraint is the deliverable**. The
+design tokens file exists so no component ever hardcodes a hex value. The phase
+rule exists because a capable model will happily build Phase 5 while you are
+still verifying Phase 2. Deciding what the model is *not* allowed to do turned
+out to be more valuable than describing what it should.
+
+## Where the source is
+
+The repository is private for now — it holds personal health data alongside the
+code. Happy to walk through the architecture or the milestone docs in a
+conversation.

@@ -2,35 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { site } from '../config/site';
+import { getProjects, getPosts, formatDate } from '../lib/content';
 
-// TEMPORARY: replaced by `getCollection('projects')` in Phase 2. Kept inline for
-// now so the home page has real content to judge the candidate themes against.
-const featured = [
-  {
-    title: 'Statement Processor',
-    period: '2025 — ongoing',
-    summary:
-      'Ingests CSV exports from eight banks and card issuers, normalises wildly inconsistent schemas, auto-categorises every transaction against a rules engine, and produces quarterly spend reports. The same problem I solved at GE, rebuilt solo.',
-    stack: ['Python', 'pandas', 'pytest'],
-    href: '/projects/statement-processor',
-  },
-  {
-    title: 'Chalkbook',
-    period: '2026',
-    summary:
-      'A local-first climbing and fitness journal for iOS. No accounts, no server — SQLite on device, HealthKit for the numbers it should not ask you to type twice.',
-    stack: ['Expo', 'React Native', 'SQLite'],
-    href: '/projects/chalkbook',
-  },
-  {
-    title: 'Lyubi Daily',
-    period: '2025',
-    summary:
-      'Time accounting in the tradition of Alexander Lyubishchev, who logged every hour of his working life for 56 years. Built it to find out where my days actually go.',
-    stack: ['React', 'TypeScript', 'Tailwind'],
-    href: '/projects/lyubi-daily',
-  },
-];
+const featured = (await getProjects()).slice(0, 3);
+const latestPosts = (await getPosts()).slice(0, 2);
 ---
 
 <BaseLayout>
@@ -97,7 +72,17 @@ const featured = [
     </div>
 
     <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {featured.map((project) => <ProjectCard {...project} />)}
+      {
+        featured.map((project) => (
+          <ProjectCard
+            title={project.data.title}
+            summary={project.data.summary}
+            period={project.data.period}
+            stack={project.data.stack}
+            href={`/projects/${project.id}`}
+          />
+        ))
+      }
     </div>
   </section>
 
@@ -112,9 +97,29 @@ const featured = [
       </a>
     </div>
 
-    <p class="mt-6 max-w-2xl text-muted">
-      Notes on building software without an engineering background, what
-      accounting teaches you about data modelling, and where AI actually helps.
-    </p>
+    <ul class="mt-8 divide-y divide-line">
+      {
+        latestPosts.map((post) => (
+          <li class="group relative py-6 first:pt-0">
+            <p class="font-mono text-xs text-muted">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate)}
+              </time>
+            </p>
+            <h3 class="mt-2 text-xl">
+              <a
+                href={`/writing/${post.id}`}
+                class="after:absolute after:inset-0 after:content-[''] group-hover:text-accent-ink"
+              >
+                {post.data.title}
+              </a>
+            </h3>
+            <p class="mt-2 max-w-2xl leading-relaxed text-muted">
+              {post.data.description}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 </BaseLayout>

@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/*
+ * A /now page (nownownow.com/about) — what has my attention at the moment,
+ * not a permanent bio. The value is that it is dated and honest.
+ *
+ * TODO for Yaner: the entries below are drawn from what the projects reveal.
+ * Swap in specifics only you know — the book you are actually reading, the grade
+ * you are actually projecting, what you are actually stuck on.
+ */
+
+const updated = 'July 2026';
+
+const sections = [
+  {
+    title: 'Building',
+    body: 'Extending the statement processor beyond categorisation into trend analysis — the point where a bookkeeping script starts becoming an FP&A tool. Also finishing Chalkbook, which has taught me more about local-first data modelling than any tutorial did.',
+  },
+  {
+    title: 'Learning',
+    body: 'Working through how experienced engineers structure a codebase, rather than just getting features to run. Most of my recent progress has come from reading other people’s code and asking why it is arranged the way it is.',
+  },
+  {
+    title: 'Tracking',
+    body: 'Still keeping a Lyubishchev-style time log. Alexander Lyubishchev recorded his hours for 56 years; I am several decades short of that, but the practice has already changed what I say yes to. It is also the reason Lyubi Daily exists.',
+  },
+  {
+    title: 'Climbing',
+    body: 'Bouldering a few times a week. Chalkbook started because I wanted a training log that felt like a journal rather than a spreadsheet — and because the existing apps all wanted an account before showing me anything.',
+  },
+  {
+    title: 'Reading',
+    body: 'Working on English vocabulary the slow way — pulling unfamiliar words out of film subtitles and reviewing them in context. Subtitle Flashcards came out of getting tired of doing that by hand.',
+  },
+];
+---
+
+<BaseLayout
+  title="Now"
+  description="What I am building, learning, reading, and climbing at the moment."
+>
+  <div class="container-page pt-16 pb-8">
+    <header class="max-w-2xl">
+      <h1 class="text-4xl leading-tight sm:text-5xl">Now</h1>
+      <p class="mt-6 text-lg leading-relaxed text-muted">
+        What has my attention at the moment. Not a bio — a snapshot, and it goes
+        stale on purpose.
+      </p>
+      <p class="mt-4 font-mono text-xs text-muted">Last updated {updated}</p>
+    </header>
+
+    <div class="mt-14 max-w-2xl space-y-10">
+      {
+        sections.map((section) => (
+          <section>
+            <h2 class="text-xl">{section.title}</h2>
+            <p class="mt-3 leading-relaxed text-muted">{section.body}</p>
+          </section>
+        ))
+      }
+    </div>
+
+    <p class="mt-16 max-w-2xl border-t border-line pt-8 text-sm text-muted">
+      Inspired by Derek Sivers'{' '}
+      <a
+        href="https://nownownow.com/about"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-accent-ink underline-offset-4 hover:underline"
+      >
+        /now page
+      </a>{' '}
+      idea.
+    </p>
+  </div>
+</BaseLayout>

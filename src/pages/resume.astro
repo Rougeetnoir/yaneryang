@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+import { experience, building, education, skills, resumePdf } from '../config/resume';
+
+const contactLinks = [
+  { label: site.contact.email, href: `mailto:${site.contact.email}` },
+  { label: 'github.com/Rougeetnoir', href: site.contact.github },
+  site.contact.linkedin ? { label: 'LinkedIn', href: site.contact.linkedin } : null,
+].filter((link) => link !== null);
+---
+
+<BaseLayout
+  title="Résumé"
+  description="Five years of general ledger and ERP work at General Electric — Oracle migrations, ASC 606 revenue recognition, and finance automation."
+>
+  <div class="container-page pt-16 pb-8">
+    <header class="max-w-2xl">
+      <h1 class="text-4xl leading-tight sm:text-5xl">Résumé</h1>
+      <p class="mt-6 text-lg leading-relaxed text-muted">
+        Five years owning general ledgers and ERP systems at General Electric,
+        then a deliberate turn toward building the software myself.
+      </p>
+
+      <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        {
+          contactLinks.map((link) => (
+            <li>
+              <a href={link.href} class="text-accent-ink underline-offset-4 hover:underline">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      {
+        resumePdf && (
+          <p class="mt-7">
+            <a
+              href={resumePdf}
+              download
+              class="inline-block rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-ink transition-opacity hover:opacity-85"
+            >
+              Download PDF
+            </a>
+          </p>
+        )
+      }
+    </header>
+
+    <section class="mt-16 border-t border-line pt-10">
+      <h2 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">
+        Experience
+      </h2>
+
+      <div class="mt-8 space-y-12">
+        {
+          experience.map((job) => (
+            <article class="grid gap-x-10 gap-y-3 sm:grid-cols-[13rem_1fr]">
+              <div>
+                <p class="font-mono text-xs text-muted">{job.period}</p>
+                <p class="mt-1 text-sm text-muted">{job.location}</p>
+              </div>
+
+              <div>
+                <h3 class="text-xl leading-snug">{job.title}</h3>
+                <p class="mt-1 text-muted">{job.company}</p>
+
+                <ul class="mt-4 space-y-3">
+                  {job.bullets.map((bullet) => (
+                    <li class="relative pl-5 leading-relaxed text-muted before:absolute before:top-[0.7em] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-accent before:content-['']">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
+
+        <article class="grid gap-x-10 gap-y-3 sm:grid-cols-[13rem_1fr]">
+          <div>
+            <p class="font-mono text-xs text-muted">{building.period}</p>
+          </div>
+          <div>
+            <h3 class="text-xl leading-snug">{building.title}</h3>
+            <p class="mt-4 leading-relaxed text-muted">{building.body}</p>
+            <p class="mt-4 text-sm">
+              <a href="/projects" class="text-accent-ink underline-offset-4 hover:underline">
+                See the projects →
+              </a>
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="mt-16 border-t border-line pt-10">
+      <h2 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">
+        Education
+      </h2>
+
+      <div class="mt-8 space-y-10">
+        {
+          education.map((entry) => (
+            <article class="grid gap-x-10 gap-y-3 sm:grid-cols-[13rem_1fr]">
+              <div>
+                <p class="font-mono text-xs text-muted">{entry.period}</p>
+                <p class="mt-1 text-sm text-muted">{entry.location}</p>
+              </div>
+
+              <div>
+                <h3 class="text-xl leading-snug">{entry.school}</h3>
+                <p class="mt-1 text-muted">
+                  {entry.degree} · {entry.detail}
+                </p>
+
+                <ul class="mt-4 space-y-2">
+                  {entry.notes.map((note) => (
+                    <li class="relative pl-5 text-sm leading-relaxed text-muted before:absolute before:top-[0.6em] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-accent before:content-['']">
+                      {note}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-16 border-t border-line pt-10">
+      <h2 class="font-mono text-xs tracking-[0.15em] text-muted uppercase">Skills</h2>
+
+      <dl class="mt-8 space-y-6">
+        {
+          skills.map((group) => (
+            <div class="grid gap-x-10 gap-y-2 sm:grid-cols-[13rem_1fr]">
+              <dt class="text-sm text-muted">{group.label}</dt>
+              <dd>
+                <ul class="flex flex-wrap gap-1.5">
+                  {group.items.map((item) => (
+                    <li class="rounded-full bg-accent-soft px-2.5 py-1 font-mono text-[0.6875rem] text-ink">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+  </div>
+</BaseLayout>

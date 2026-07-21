@@ -1,0 +1,64 @@
+---
+title: Lyubi Daily
+summary: Time accounting in the tradition of Alexander Lyubishchev, who logged every hour of his working life for 56 years. Built to find out where my days actually go.
+period: '2025'
+featured: 3
+group: tools
+role: Sole developer
+stack: ['React', 'TypeScript', 'Vite', 'Tailwind', 'shadcn/ui']
+links:
+  repo: 'https://github.com/Rougeetnoir/LyubiDaily'
+---
+
+## The problem
+
+Alexander Lyubishchev, a Soviet entomologist, recorded how he spent his time in
+five-minute resolution for 56 years, then used the record to plan the next year
+against what the last one actually cost. Not a productivity system — an
+accounting system, applied to the one account nobody reconciles.
+
+The idea stuck with me for an obvious reason. I spent five years making sure
+every ledger balanced, and had no idea where my own hours went.
+
+Existing time trackers are built for billing clients. They ask what project this
+is for. I wanted the opposite: start a timer, name the activity, and let the
+summary tell me the truth at the end of the day.
+
+## How it works
+
+Deliberately small. Pick an activity, start, stop, optionally add a note. Two
+views on the same data:
+
+- **Summary** groups by activity and shows total time per category, each card
+  tinted with that activity's own colour.
+- **Timeline** lists the day in order, which is the view that actually stings —
+  the gaps are as informative as the entries.
+
+Activities are user-defined: name, emoji, and a colour from ten presets or a
+custom value that gets normalised on input. An "Edit Activities" panel edits all
+of them at once with live colour preview, because editing them one at a time was
+the first thing that annoyed me about my own app.
+
+## Working with AI on this
+
+This was the project where I learned to work in versioned stages rather than one
+long conversation.
+
+The rule I set: when a stage is finished and I have confirmed it works, the
+model gives me a commit message and appends a version note to the README saying
+what changed. That is why the README carries a "v1" section listing exactly what
+shipped. It sounds bureaucratic for a personal project. It is the difference
+between a codebase I can return to after two months and one I have to
+re-understand from scratch.
+
+The second lesson was about scope. My first instinct was to ask for tags,
+filters, weekly rollups, and export — all at once. What came back worked and I
+did not understand any of it. Rebuilding it one stage at a time took longer and
+left me able to change it, which is the entire point of building your own tools.
+
+## What I would change
+
+The data lives in the browser, which means it does not survive clearing site
+data. For a tool whose value compounds over years, that is the wrong trade. If I
+return to it, local-first storage with a real export path comes before any new
+feature — the same conclusion I reached independently while building Chalkbook.
