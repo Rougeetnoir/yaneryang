@@ -1,0 +1,69 @@
+---
+import { Font } from 'astro:assets';
+import { site } from '../config/site';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import ThemePicker from '../components/ThemePicker.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set on the home page so the <title> is just the name, not "Name — Name". */
+  bareTitle?: boolean;
+}
+
+const { title, description = site.description, bareTitle = false } = Astro.props;
+
+const pageTitle = !title ? site.name : bareTitle ? title : `${title} — ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+---
+
+<!doctype html>
+<html lang={site.locale} data-site-theme="warm">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-fraunces" preload />
+    <Font cssVariable="--font-plex-sans" />
+    <Font cssVariable="--font-plex-mono" />
+
+    <script is:inline>
+      // Applied before first paint so a saved theme never flashes the default.
+      const saved = localStorage.getItem('site-theme');
+      if (saved) document.documentElement.dataset.siteTheme = saved;
+    </script>
+  </head>
+
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-card focus:bg-surface focus:px-4 focus:py-2 focus:text-ink focus:shadow-card"
+    >
+      Skip to content
+    </a>
+
+    <Nav />
+
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* Review-only: remove once a theme is chosen (see themes.css). */}
+    <ThemePicker />
+  </body>
+</html>

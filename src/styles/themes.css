@@ -1,0 +1,90 @@
+/*
+ * Theme presets.
+ *
+ * Every theme defines the SAME set of `--t-*` variables. `global.css` maps them
+ * onto Tailwind tokens with `@theme inline`, so switching themes is a matter of
+ * changing one attribute on <html> — no rebuild, no utility-class churn.
+ *
+ * All text/background pairs below were picked to clear WCAG AA (4.5:1) for body
+ * copy. `--t-accent` is decorative only (fills, rules, dots); use
+ * `--t-accent-ink` whenever the accent carries text.
+ *
+ * Once Yaner picks a theme, delete the other two blocks and fold the winner
+ * into `:root`.
+ */
+
+/* ---------------------------------------------------------------------------
+ * A — Warm paper
+ * Carries over the design system Yaner already defined in chalkbook/CLAUDE.md:
+ * cream, warm charcoal, amber, serif display, generous whitespace.
+ * ------------------------------------------------------------------------- */
+:root,
+[data-site-theme='warm'] {
+  --t-canvas: #f7f4ed;
+  --t-surface: #fffdf8;
+  --t-ink: #3a372f;
+  --t-muted: #6e6a5e;
+  --t-line: #e3ddcf;
+  --t-accent: #f2b23e;
+  --t-accent-soft: #fbefd8;
+  --t-accent-ink: #8f5d0a;
+
+  --t-font-display: var(--font-fraunces);
+  --t-font-body: var(--font-inter);
+  --t-font-mono: var(--font-plex-mono);
+
+  --t-display-weight: 500;
+  --t-display-tracking: -0.01em;
+  --t-radius: 1.25rem;
+  --t-shadow: 0 1px 2px rgb(58 55 47 / 0.04), 0 8px 24px rgb(58 55 47 / 0.05);
+}
+
+/* ---------------------------------------------------------------------------
+ * B — Editorial minimal
+ * Near-black on white, one ink-blue accent, oversized tight-tracked headings,
+ * sharp corners, no shadows. Reads like someone who writes for a living.
+ * ------------------------------------------------------------------------- */
+[data-site-theme='editorial'] {
+  --t-canvas: #ffffff;
+  --t-surface: #ffffff;
+  --t-ink: #111111;
+  --t-muted: #5a5a5a;
+  --t-line: #e5e5e5;
+  --t-accent: #1d4ed8;
+  --t-accent-soft: #eef2ff;
+  --t-accent-ink: #1d4ed8;
+
+  --t-font-display: var(--font-inter);
+  --t-font-body: var(--font-inter);
+  --t-font-mono: var(--font-plex-mono);
+
+  --t-display-weight: 700;
+  --t-display-tracking: -0.035em;
+  --t-radius: 0.25rem;
+  --t-shadow: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * C — Quiet technical
+ * Neutral grays, restrained blue, monospace for figures and labels, denser
+ * grid. Leans hardest into the "systems" half of the positioning.
+ * ------------------------------------------------------------------------- */
+[data-site-theme='technical'] {
+  --t-canvas: #fafafa;
+  --t-surface: #ffffff;
+  --t-ink: #18181b;
+  --t-muted: #52525b;
+  --t-line: #e4e4e7;
+  --t-accent: #2563eb;
+  --t-accent-soft: #eff6ff;
+  --t-accent-ink: #1d4ed8;
+
+  --t-font-display: var(--font-plex-sans);
+  --t-font-body: var(--font-plex-sans);
+  --t-font-mono: var(--font-plex-mono);
+
+  --t-display-weight: 600;
+  --t-display-tracking: -0.02em;
+  --t-radius: 0.5rem;
+  --t-shadow: 0 1px 2px rgb(24 24 27 / 0.05), 0 4px 12px rgb(24 24 27 / 0.04);
+}

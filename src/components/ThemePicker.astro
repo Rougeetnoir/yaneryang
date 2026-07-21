@@ -1,0 +1,59 @@
+---
+/**
+ * TEMPORARY — Phase 1 review aid only.
+ *
+ * Lets all three candidate themes be compared on the real page instead of on a
+ * swatch sheet. Delete this component (and its usage in BaseLayout.astro) once
+ * Yaner picks one.
+ */
+const themes = [
+  { id: 'warm', label: 'A · Warm paper' },
+  { id: 'editorial', label: 'B · Editorial' },
+  { id: 'technical', label: 'C · Technical' },
+];
+---
+
+<div
+  class="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-full border border-line bg-surface p-1 shadow-card"
+>
+  <div class="flex items-center gap-1" role="group" aria-label="Preview theme">
+    {
+      themes.map((theme) => (
+        <button
+          type="button"
+          data-theme-option={theme.id}
+          class="rounded-full px-3 py-1.5 text-xs text-muted transition-colors hover:text-ink aria-pressed:bg-accent-soft aria-pressed:text-ink"
+        >
+          {theme.label}
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const buttons =
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-option]');
+
+  const sync = () => {
+    const current = root.dataset.siteTheme ?? 'warm';
+    buttons.forEach((button) => {
+      button.setAttribute(
+        'aria-pressed',
+        String(button.dataset.themeOption === current)
+      );
+    });
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const theme = button.dataset.themeOption!;
+      root.dataset.siteTheme = theme;
+      localStorage.setItem('site-theme', theme);
+      sync();
+    });
+  });
+
+  sync();
+</script>

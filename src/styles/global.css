@@ -1,1 +1,107 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import './themes.css';
+
+@plugin "@tailwindcss/typography";
+
+/*
+ * `inline` matters here: it makes utilities resolve straight to the `--t-*`
+ * variables rather than through a second indirection, which is what lets a
+ * theme swap on <html> repaint the whole page with no rebuild.
+ */
+@theme inline {
+  --color-canvas: var(--t-canvas);
+  --color-surface: var(--t-surface);
+  --color-ink: var(--t-ink);
+  --color-muted: var(--t-muted);
+  --color-line: var(--t-line);
+  --color-accent: var(--t-accent);
+  --color-accent-soft: var(--t-accent-soft);
+  --color-accent-ink: var(--t-accent-ink);
+
+  --font-display: var(--t-font-display);
+  --font-body: var(--t-font-body);
+  --font-mono: var(--t-font-mono);
+
+  --radius-card: var(--t-radius);
+  --shadow-card: var(--t-shadow);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--t-canvas);
+    color: var(--t-ink);
+    font-family: var(--t-font-body);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--t-font-display);
+    font-weight: var(--t-display-weight);
+    letter-spacing: var(--t-display-tracking);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible focus for keyboard users on every theme. */
+  :focus-visible {
+    outline: 2px solid var(--t-accent-ink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 68rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+/* Prose defaults wired to theme tokens, for MDX project and writing pages. */
+@utility prose-site {
+  --tw-prose-body: var(--t-ink);
+  --tw-prose-headings: var(--t-ink);
+  --tw-prose-lead: var(--t-muted);
+  --tw-prose-links: var(--t-accent-ink);
+  --tw-prose-bold: var(--t-ink);
+  --tw-prose-counters: var(--t-muted);
+  --tw-prose-bullets: var(--t-line);
+  --tw-prose-hr: var(--t-line);
+  --tw-prose-quotes: var(--t-ink);
+  --tw-prose-quote-borders: var(--t-accent);
+  --tw-prose-captions: var(--t-muted);
+  --tw-prose-code: var(--t-ink);
+  --tw-prose-th-borders: var(--t-line);
+  --tw-prose-td-borders: var(--t-line);
+}

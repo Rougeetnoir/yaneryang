@@ -1,0 +1,31 @@
+---
+import { site } from '../config/site';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { label: 'Email', href: `mailto:${site.contact.email}` },
+  { label: 'GitHub', href: site.contact.github },
+  site.contact.linkedin ? { label: 'LinkedIn', href: site.contact.linkedin } : null,
+].filter((link) => link !== null);
+---
+
+<footer class="mt-24 border-t border-line">
+  <div
+    class="container-page flex flex-col gap-4 py-10 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>© {year} {site.name}</p>
+
+    <ul class="flex flex-wrap gap-5">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class="transition-colors hover:text-ink">
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>
