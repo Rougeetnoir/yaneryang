@@ -2,7 +2,6 @@
 import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
-import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
@@ -16,11 +15,14 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  integrations: [react(), mdx(), sitemap()],
+  // No React integration: nothing on the site currently needs an island, and
+  // including it emitted a ~190KB client runtime that no page ever referenced.
+  // Re-add with `npx astro add react` the moment a real island is needed.
+  integrations: [mdx(), sitemap()],
 
   // Fonts are self-hosted at build time — no external requests, no layout shift.
-  // NOTE: all four families are loaded only so the three candidate themes can be
-  // compared side by side. Drop the unused ones once a theme is chosen.
+  // Fraunces carries the display headings, Inter the body, Plex Mono the small
+  // metadata labels (dates, stack tags, section eyebrows).
   fonts: [
     {
       provider: fontProviders.google(),
@@ -38,14 +40,6 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['ui-serif', 'Georgia', 'serif']
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'IBM Plex Sans',
-      cssVariable: '--font-plex-sans',
-      weights: [400, 500, 600],
-      subsets: ['latin'],
-      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif']
     },
     {
       provider: fontProviders.google(),

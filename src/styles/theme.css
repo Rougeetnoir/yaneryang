@@ -1,0 +1,34 @@
+/*
+ * Design tokens — "Warm paper".
+ *
+ * Carried over from the design system Yaner had already settled on in
+ * chalkbook/CLAUDE.md: cream ground, warm charcoal ink, amber accent, serif
+ * display, generous whitespace. Deliberately not a dark/neon developer look.
+ *
+ * Contrast: every text/background pair here clears WCAG AA (4.5:1) for body
+ * copy. `--t-accent` is decorative only — fills, rules, bullet dots. Anything
+ * where the accent carries TEXT must use `--t-accent-ink`, because the amber
+ * itself sits at roughly 1.8:1 on cream and is unreadable as type.
+ *
+ * `global.css` maps these onto Tailwind utilities via `@theme inline`.
+ */
+
+:root {
+  --t-canvas: #f7f4ed;
+  --t-surface: #fffdf8;
+  --t-ink: #3a372f;
+  --t-muted: #6e6a5e;
+  --t-line: #e3ddcf;
+  --t-accent: #f2b23e;
+  --t-accent-soft: #fbefd8;
+  --t-accent-ink: #8f5d0a;
+
+  --t-font-display: var(--font-fraunces);
+  --t-font-body: var(--font-inter);
+  --t-font-mono: var(--font-plex-mono);
+
+  --t-display-weight: 500;
+  --t-display-tracking: -0.01em;
+  --t-radius: 1.25rem;
+  --t-shadow: 0 1px 2px rgb(58 55 47 / 0.04), 0 8px 24px rgb(58 55 47 / 0.05);
+}
