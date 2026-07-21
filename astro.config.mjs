@@ -8,6 +8,10 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  // Required for sitemap, canonical URLs, and RSS. Update this the moment the
+  // real Cloudflare Pages subdomain (or a custom domain) is known.
+  site: 'https://yaneryang.pages.dev',
+
   vite: {
     plugins: [tailwindcss()]
   },

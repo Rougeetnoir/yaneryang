@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yaneryang.pages.dev/sitemap-index.xml

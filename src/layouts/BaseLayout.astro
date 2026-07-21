@@ -11,12 +11,44 @@ interface Props {
   description?: string;
   /** Set on the home page so the <title> is just the name, not "Name — Name". */
   bareTitle?: boolean;
+  /** Emit Person structured data. Home page only — one canonical copy is enough. */
+  personSchema?: boolean;
 }
 
-const { title, description = site.description, bareTitle = false } = Astro.props;
+const {
+  title,
+  description = site.description,
+  bareTitle = false,
+  personSchema = false,
+} = Astro.props;
 
 const pageTitle = !title ? site.name : bareTitle ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+
+/* This is what lets a search for "Yaner Yang" surface the site with the right
+   context attached, rather than as an unlabelled page. */
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  jobTitle: site.jobTitle,
+  email: `mailto:${site.contact.email}`,
+  description: site.description,
+  sameAs: [site.contact.github, site.contact.linkedin].filter(Boolean),
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Sun Yat-Sen University' },
+    { '@type': 'CollegeOrUniversity', name: 'National Taiwan University' },
+  ],
+  knowsAbout: [
+    'General ledger accounting',
+    'Oracle Fusion ERP',
+    'ASC 606 revenue recognition',
+    'Financial planning and analysis',
+    'Python',
+    'TypeScript',
+  ],
+};
 ---
 
 <!doctype html>
@@ -34,6 +66,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.name} — Writing`}
+      href="/rss.xml"
+    />
+
+    {
+      personSchema && (
+        <script
+          type="application/ld+json"
+          is:inline
+          set:html={JSON.stringify(person)}
+        />
+      )
+    }
 
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-fraunces" preload />

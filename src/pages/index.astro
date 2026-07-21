@@ -8,7 +8,7 @@ const featured = (await getProjects()).slice(0, 3);
 const latestPosts = (await getPosts()).slice(0, 2);
 ---
 
-<BaseLayout>
+<BaseLayout personSchema>
   <section class="container-page pt-20 pb-16 sm:pt-28">
     <h1 class="max-w-3xl">
       <span class="block font-mono text-xs tracking-[0.2em] text-muted uppercase">
