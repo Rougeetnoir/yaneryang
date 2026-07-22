@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import avatar from '../assets/avatar.png';
 import { site } from '../config/site';
 import { getProjects, getPosts, formatDate } from '../lib/content';
 
@@ -9,36 +11,51 @@ const latestPosts = (await getPosts()).slice(0, 2);
 ---
 
 <BaseLayout personSchema>
-  <section class="container-page pt-20 pb-16 sm:pt-28">
-    <h1 class="max-w-3xl">
-      <span class="block font-mono text-xs tracking-[0.2em] text-muted uppercase">
-        {site.name}
-      </span>
-      <span class="mt-5 block text-4xl leading-[1.1] sm:text-5xl lg:text-[3.5rem]">
-        {site.headline}
-      </span>
-    </h1>
+  <section class="container-page pt-16 pb-16 sm:pt-20">
+    {/* Portrait sits beside the text on wide screens and above it on narrow
+        ones, where a side-by-side would squeeze the headline to two words. */}
+    <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-16">
+      <div>
+        <h1 class="max-w-3xl">
+          <span class="block font-mono text-xs tracking-[0.2em] text-muted uppercase">
+            {site.name}
+          </span>
+          <span class="mt-5 block text-4xl leading-[1.1] sm:text-5xl lg:text-[3.5rem]">
+            {site.headline}
+          </span>
+        </h1>
 
-    <p class="mt-7 max-w-2xl text-lg leading-relaxed text-muted">
-      {site.subheadline}
-    </p>
+        <p class="mt-7 max-w-2xl text-lg leading-relaxed text-muted">
+          {site.subheadline}
+        </p>
 
-    <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-      <a
-        href="/projects"
-        class="rounded-full bg-accent px-5 py-2.5 font-medium text-ink transition-opacity hover:opacity-85"
-      >
-        See the work
-      </a>
-      <a href="/resume" class="text-accent-ink underline-offset-4 hover:underline">
-        Read the résumé
-      </a>
-      <a
-        href={`mailto:${site.contact.email}`}
-        class="text-accent-ink underline-offset-4 hover:underline"
-      >
-        Get in touch
-      </a>
+        <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+          <a
+            href="/projects"
+            class="rounded-full bg-accent px-5 py-2.5 font-medium text-ink transition-opacity hover:opacity-85"
+          >
+            See the work
+          </a>
+          <a href="/resume" class="text-accent-ink underline-offset-4 hover:underline">
+            Read the résumé
+          </a>
+          <a
+            href={`mailto:${site.contact.email}`}
+            class="text-accent-ink underline-offset-4 hover:underline"
+          >
+            Get in touch
+          </a>
+        </div>
+      </div>
+
+      <Image
+        src={avatar}
+        alt="Illustrated portrait of Yaner Yang"
+        widths={[112, 224, 288, 576]}
+        sizes="(min-width: 1024px) 288px, 112px"
+        loading="eager"
+        class="order-first w-28 shrink-0 lg:order-none lg:w-72"
+      />
     </div>
   </section>
 
