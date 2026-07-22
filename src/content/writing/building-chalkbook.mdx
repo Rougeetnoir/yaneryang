@@ -1,0 +1,113 @@
+---
+title: 'Building Chalkbook: a climbing journal I actually use'
+description: I don't really write code. Over six weeks I directed an AI to build the iOS training app I wanted, and learned that taste and judgement were the scarce parts — the typing was cheap.
+pubDate: 2026-07-20
+featured: 2
+tags: ['ai-collaboration', 'building', 'ios']
+---
+
+I climb. I lift. I track my body. For a long time these lived in four different
+places — a Notes file, a workout app I didn't love, Apple Health, my own memory —
+and none of them answered the question I actually cared about:
+
+**When do I climb strongest?**
+
+So over six weeks this summer I built the app I wanted. It's called **Chalkbook**.
+It runs on my phone. I open it after a session and log a climb in one tap. It shows
+my grade pyramid, my streaks, my weight trend, and how my performance moves with the
+things I can measure about my training.
+
+Here's the thing: **I don't write code.** Not really. I can read a little, I can find
+my way around a terminal now, but I couldn't have typed out the 85 files this app is
+made of. What I *could* do was decide exactly what I wanted, make the judgment calls a
+machine can't, and test every piece on my own phone until it was right. I directed the
+build; an AI assistant wrote the code. This post is about what that actually looks
+like, because I think it's a genuinely new way to turn a personal interest into a real
+tool — and nobody really tells you what the experience is like from the inside.
+
+## What I brought that the code couldn't
+
+It turns out the hard parts weren't the code.
+
+**A point of view on how it should feel.** I didn't want a dark, neon, "crush your
+goals" fitness app. I wanted something calm and warm — closer to a paper journal than
+a dashboard. Cream background, a serif for the headings, one warm amber accent, lots
+of whitespace. I wrote that down as a design system *before* any screens existed, and
+every screen had to obey it. That aesthetic is mine. The code just enforced it.
+
+**Domain knowledge.** The clearest example came from importing my own history out of
+Apple Health. Some metrics came in looking tidy and meant something different up
+close. A body measurement logged on a single isolated day, for instance, usually isn't
+a real one-day event — it's "I logged it once and then stopped bothering." The
+literal-minded thing is to record exactly what the data says. But *I* know what my own
+gaps mean, so I asked for those to be smoothed rather than trusted at face value. No
+amount of cleverness gets you that; you have to actually be the person whose data it
+is.
+
+The same thing happened with defaults. Off-the-shelf assumptions are built around an
+average person, and my numbers aren't the average — I could see it right there in my
+own history. So a lot of the work was noticing where a sensible-looking default was
+quietly wrong *for me*, and asking for the real measured value to override it. That
+whole class of decisions exists because I looked at my own data and knew better than
+the default did.
+
+**Acceptance testing.** Every feature had to work on my actual phone with my actual
+data before I called it done. Often the "written" day and the "verified on device" day
+were a week or two apart. The proof that a feature was right was rarely a green
+checkmark — it was a number that added up. When a stretch of days broke down into
+categories on the dashboard and the categories summed to exactly the number of days in
+the stretch, not one more or fewer, that's when I believed it.
+
+## The messy middle (the part that's usually hidden)
+
+Six weeks, but only **13 days** where I actually sat down and worked. The rest were
+gaps — a week here, a week there. Real life, not a hackathon. I think that's worth
+saying out loud, because the "I built an app in a weekend" stories quietly convince
+people that if it takes them longer, they're doing it wrong. It takes longer. That's
+fine.
+
+And things broke. The day I moved the app off the "scan-a-QR-code" development mode
+onto real native tooling was a gauntlet: the Mac only had a partial toolchain, the
+package manager wouldn't install because the system's Ruby was too old, the build
+choked because my terminal wasn't set to UTF-8, the phone refused to trust the app
+until I dug three menus deep in Settings. None of that is in a tutorial. All of it is
+just... what happens. I got through it by asking dumb questions and not pretending I
+understood things I didn't. ("Are we putting this on the App Store? Do I need a
+developer account?" — no, and no, it turned out.)
+
+There was also a bug I actually like. I'd written the "sync automatically when you open
+the app" feature to skip syncing for anyone who'd never synced before — so it wouldn't
+ambush a brand-new user with a permissions pop-up. Reasonable. Except it decided *I*
+had never synced, even though I obviously had, because the little timestamp it checked
+was newer than my data. The fix taught me something that generalizes way beyond this
+app: **don't infer another system's state from your own bookkeeping — ask the system
+directly.** I now check with iOS itself whether a permission prompt would appear,
+instead of guessing from my own records. That's a real engineering lesson, and I got
+it from building the wrong thing first.
+
+## Where it is now
+
+Phase 4 is done. The app reads my body metrics from Apple Health — over a thousand days
+of history flowed in automatically — and refreshes itself every time I open it. My
+health data never leaves my phone; that was a hard rule from day one, and I decided
+this write-up would show the *process*, never the actual numbers.
+
+As of today it also runs **completely on its own**. I unplugged from the laptop, closed
+everything, reopened Chalkbook, and logged a climb — no computer in sight. It's mine,
+it's on my phone, and this week I can take it to the gym.
+
+## What I'd tell someone thinking about doing this
+
+You don't need to become a programmer to make the exact tool you wish existed. You need
+to know precisely what you want, be honest about what you don't understand, and be
+willing to test the boring parts yourself. The taste, the judgment, the
+knowing-what's-wrong-for-you — that was always the scarce part. The typing turned out
+to be the cheap part.
+
+Next up: exporting my data to a spreadsheet, an app icon and a proper launch screen,
+and eventually getting it onto TestFlight so I stop having to plug in every week. But
+honestly? It already does the one thing I built it for. I open it, and it tells me when
+I'm strong.
+
+*Built over June–July 2026. Expo / React Native / TypeScript / SQLite, local-first,
+single user, no accounts, no servers.*
