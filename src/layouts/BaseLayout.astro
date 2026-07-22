@@ -24,6 +24,10 @@ const {
 const pageTitle = !title ? site.name : bareTitle ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
 
+/* Social card. Generated at build time by src/pages/og.png.ts. Must be an
+   absolute URL — every scraper rejects a relative one. */
+const ogImage = new URL('/og.png', Astro.site ?? site.url);
+
 /* This is what lets a search for "Yaner Yang" surface the site with the right
    context attached, rather than as an unlabelled page. */
 const person = {
@@ -61,10 +65,23 @@ const person = {
     <meta name="description" content={description} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content={`${site.name} — ${site.headline}`}
+    />
+
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link
       rel="alternate"
