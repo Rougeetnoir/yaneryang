@@ -1,9 +1,21 @@
 /**
- * Résumé content, transcribed from Yaner_Yang_Resume_250903.docx.
+ * Résumé content, transcribed from
+ * Yaner_Yang_Resume_US_gap_updated_20260721.docx (confirmed 2026-07-21).
  *
  * Quantified figures are load-bearing — 75%, $200M+, 50+ accounts, zero
  * unreconciled balances, 3/204. Do not soften them when editing copy.
+ *
+ * Employment dates here must stay in step with the PDF *and* with LinkedIn
+ * (linkedin.com/in/yangyaner). The site links all three together via the
+ * `sameAs` field in the Person schema, so a mismatch is visible in one click.
  */
+
+/** Mirrors the SUMMARY block at the top of the PDF. */
+export const summary = [
+  'Accountant with 8+ years of general ledger and financial reporting experience (US GAAP), including month-end close, reconciliations, and ERP migrations.',
+  'Advanced Excel (PivotTables, XLOOKUP, Power Query) with working knowledge of Python and SQL; quick learner and detail-oriented.',
+  'Authorized to work in the U.S.; available to start immediately.',
+] as const;
 
 /**
  * Path to the downloadable PDF in `public/`, or null to hide the download
@@ -20,7 +32,7 @@ export const experience = [
     company: 'General Electric',
     location: 'Shanghai, China',
     title: 'General Ledger Advanced Accountant',
-    period: 'August 2018 — May 2021',
+    period: 'August 2018 — August 2024',
     bullets: [
       'Led an end-to-end general ledger migration from Oracle CCL to Oracle RACES, working across finance, IT, and project teams on data mapping, validation, and cleansing. Ran UAT to keep workflows aligned as business needs shifted mid-project.',
       'Integrated renewables wind projects and service contracts into the Oracle project module, making operating expenses, cost drivers, and project-level performance individually visible. Automation here cut cost accrual and revenue recognition processing time by 75%.',
@@ -47,13 +59,21 @@ export const experience = [
 ] as const;
 
 /**
- * Deliberately framed as independent work, not employment. It exists so the
- * years after 2021 read as what they are — continuous, self-directed practice.
+ * The current period, framed as the résumé frames it — a career break, not
+ * employment. Rendered ABOVE the GE roles on the résumé page, since it is the
+ * most recent entry. The projects give it evidence a résumé bullet cannot.
  */
-export const building = {
-  title: 'Independent projects',
-  period: '2025 — present',
-  body: 'Self-directed software work at the seam between finance and engineering: a multi-bank statement processor in Python, a local-first iOS journal in React Native, and several smaller learning tools. Each ships with a written spec and a phased plan — see the projects page for how they were actually built.',
+export const currentPeriod = {
+  company: 'Relocation & Professional Development',
+  location: 'United States',
+  title: 'Career Break / Work Authorization & Professional Development',
+  period: 'September 2024 — Present',
+  bullets: [
+    'Relocated from China to the U.S. and completed the work authorization process; available to start immediately.',
+    'Upskilled in data and reporting tools — Python and SQL for data cleaning, analysis, and reporting automation — while staying current with accounting knowledge.',
+    'Maintained Excel-based bookkeeping for household spending, including categorised entries, monthly summaries, and variance tracking.',
+    'Built and shipped several working applications, each with a written spec and a phased plan: a multi-bank statement processor in Python, a local-first iOS journal in React Native, and smaller learning tools.',
+  ],
 } as const;
 
 export const education = [
@@ -100,7 +120,13 @@ export const skills = [
   },
   {
     label: 'Data & automation',
-    items: ['Python', 'SQL', 'pandas', 'Excel (advanced)', 'Reporting automation'],
+    items: [
+      'Excel — PivotTables, XLOOKUP, Power Query',
+      'Python',
+      'SQL',
+      'pandas',
+      'Reporting automation',
+    ],
   },
   {
     label: 'Building',

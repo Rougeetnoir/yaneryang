@@ -16,11 +16,11 @@ export const site = {
   /** Hero. Keep the headline under ~60 characters so it holds one line on desktop. */
   headline: 'Finance systems, built by someone who lived in them.',
   subheadline:
-    'Five years of general ledger and ERP work at GE — Oracle migrations, ASC 606 revenue recognition, $200M+ renewables projects. Now I build the automation I used to file tickets for.',
+    'Eight years of general ledger and ERP work at GE — Oracle migrations, ASC 606 revenue recognition, $200M+ renewables projects. Now I build the automation I used to file tickets for.',
 
   /** One-sentence description for meta tags and social cards. */
   description:
-    'Accountant turned builder. Five years of GL and ERP work at GE, now building finance automation, learning tools, and mobile apps in Python and TypeScript.',
+    'Accountant turned builder. Eight years of GL and ERP work at GE, now building finance automation, learning tools, and mobile apps in Python and TypeScript.',
 
   /**
    * The three-beat argument the whole site is making. Rendered on the home page.
@@ -29,7 +29,7 @@ export const site = {
   pillars: [
     {
       title: 'I know where the numbers come from',
-      body: 'Five years owning general ledgers across Australia, Mongolia, Thailand and Vietnam. Led an Oracle CCL to RACES migration end to end — data mapping, validation, cleansing, UAT. Closed 50+ reconciliation accounts with zero unreconciled balances straight through a system transition.',
+      body: 'Eight years owning general ledgers across Australia, Mongolia, Thailand and Vietnam. Led an Oracle CCL to RACES migration end to end — data mapping, validation, cleansing, UAT. Closed 50+ reconciliation accounts with zero unreconciled balances straight through a system transition.',
     },
     {
       title: 'I build the tools instead of requesting them',
@@ -44,8 +44,7 @@ export const site = {
   contact: {
     email: 'yangyaner1@gmail.com',
     github: 'https://github.com/Rougeetnoir',
-    // TODO: confirm the LinkedIn URL with Yaner before launch.
-    linkedin: '',
+    linkedin: 'https://www.linkedin.com/in/yangyaner/',
   },
 
   nav: [

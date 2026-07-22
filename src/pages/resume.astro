@@ -1,7 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../config/site';
-import { experience, building, education, skills, resumePdf } from '../config/resume';
+import {
+  summary,
+  experience,
+  currentPeriod,
+  education,
+  skills,
+  resumePdf,
+} from '../config/resume';
+
+/* Most recent first — the career break sits above the GE roles. */
+const timeline = [currentPeriod, ...experience];
 
 const contactLinks = [
   { label: site.contact.email, href: `mailto:${site.contact.email}` },
@@ -12,15 +22,25 @@ const contactLinks = [
 
 <BaseLayout
   title="Résumé"
-  description="Five years of general ledger and ERP work at General Electric — Oracle migrations, ASC 606 revenue recognition, and finance automation."
+  description="Eight years of general ledger and ERP work at General Electric — Oracle migrations, ASC 606 revenue recognition, and finance automation."
 >
   <div class="container-page pt-16 pb-8">
     <header class="max-w-2xl">
       <h1 class="text-4xl leading-tight sm:text-5xl">Résumé</h1>
       <p class="mt-6 text-lg leading-relaxed text-muted">
-        Five years owning general ledgers and ERP systems at General Electric,
+        Eight years owning general ledgers and ERP systems at General Electric,
         then a deliberate turn toward building the software myself.
       </p>
+
+      <ul class="mt-6 space-y-2">
+        {
+          summary.map((line) => (
+            <li class="relative pl-5 leading-relaxed text-muted before:absolute before:top-[0.7em] before:left-0 before:h-1 before:w-1 before:rounded-full before:bg-accent before:content-['']">
+              {line}
+            </li>
+          ))
+        }
+      </ul>
 
       <ul class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
         {
@@ -56,7 +76,7 @@ const contactLinks = [
 
       <div class="mt-8 space-y-12">
         {
-          experience.map((job) => (
+          timeline.map((job) => (
             <article class="grid gap-x-10 gap-y-3 sm:grid-cols-[13rem_1fr]">
               <div>
                 <p class="font-mono text-xs text-muted">{job.period}</p>
@@ -74,25 +94,21 @@ const contactLinks = [
                     </li>
                   ))}
                 </ul>
+
+                {job === currentPeriod && (
+                  <p class="mt-4 text-sm">
+                    <a
+                      href="/projects"
+                      class="text-accent-ink underline-offset-4 hover:underline"
+                    >
+                      See the projects →
+                    </a>
+                  </p>
+                )}
               </div>
             </article>
           ))
         }
-
-        <article class="grid gap-x-10 gap-y-3 sm:grid-cols-[13rem_1fr]">
-          <div>
-            <p class="font-mono text-xs text-muted">{building.period}</p>
-          </div>
-          <div>
-            <h3 class="text-xl leading-snug">{building.title}</h3>
-            <p class="mt-4 leading-relaxed text-muted">{building.body}</p>
-            <p class="mt-4 text-sm">
-              <a href="/projects" class="text-accent-ink underline-offset-4 hover:underline">
-                See the projects →
-              </a>
-            </p>
-          </div>
-        </article>
       </div>
     </section>
 
