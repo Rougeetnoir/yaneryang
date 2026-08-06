@@ -1,0 +1,188 @@
+---
+title: The bugs only a real phone will tell you about
+description: Five bugs from a month of building Chalkbook, every one invisible in the code and obvious within minutes of running it on my own phone. A sequel on what "test on the device" actually means.
+pubDate: 2026-08-05
+featured: 3
+tags: ['ai-collaboration', 'building', 'debugging', 'ios']
+---
+
+Chalkbook started as a climbing journal. This month it became a record of a whole
+day: four photos — breakfast, lunch, dinner, workout — a line about how the day felt,
+and a button that turns all of it into one story-sized image I can keep. It also
+started pulling my workouts out of Apple Health, all 1,578 of them.
+
+Same arrangement as before: I decide what it should do and test everything on my own
+phone; an AI assistant writes the code. The last post was about that split. This one
+is about the technical part, because almost every interesting thing that happened had
+the same shape:
+
+**It looked finished on the screen, and was wrong on the device.**
+
+Here are the five that taught me something.
+
+## 1. The bug that would have eaten every photo
+
+Photos had to live somewhere. The obvious move is to save each one and write down
+where it is — the full path — so you can find it later.
+
+That would have destroyed every photo I own, roughly once a week.
+
+Here's why. My app isn't on the App Store; I sign it myself for free, and Apple's free
+signing expires every seven days. So every week I plug my phone into my laptop and
+reinstall it. And on iOS, an app's storage folder is named with a random ID that is
+**regenerated on every install**. The photo I saved on Monday sits at a path that
+simply does not exist by the following Monday.
+
+So the database stores the *file name* only — `a1b2c3.jpg` — and the app works out the
+folder fresh every time it reads one.
+
+I didn't have to take that on faith, either. Mid-testing, I reinstalled the app on the
+simulator and watched the folder ID change from `E6FF8D6A…` to `4691FD54…`. The photos
+kept rendering. If we'd stored paths, that's the moment they would all have turned into
+grey boxes — and I'd have found out a week later, on my actual phone, with real meals
+in them.
+
+The general lesson, which I keep meeting in different costumes: **don't store something
+that another system reserves the right to change.**
+
+## 2. The note that disappeared
+
+The "how was today?" box saves when you tap away from it. Standard.
+
+While testing I typed a sentence and immediately hit the back arrow, the way you
+actually would. The text was right there on screen. The database was empty.
+
+Tapping away is what triggers the save — and leaving the screen while still typing
+isn't tapping away. So the most natural way to journal, *write a line and get on with
+your day*, was the one path that threw the writing in the bin.
+
+It now saves on the way out too. What sticks with me is that this wasn't a hard bug; it
+was an **invisible** one. The screen showed my sentence the whole time. Nothing was
+red. The only way to catch it was to behave like a person instead of a tester.
+
+## 3. Three traps hiding behind one button
+
+The export button takes the four photos, lays them out with the date and the day's
+numbers, and hands you a 1080×1920 image. Conceptually: draw it, screenshot it, share
+it.
+
+It broke three times, each for a different reason, and I want to write them down
+because none of them were guessable.
+
+**First**, the screenshot tool handed back a location like `/var/mobile/.../shot.jpg`,
+while the file tool only accepts locations spelled `file:///var/mobile/.../shot.jpg`.
+Same file, different dialect. Error message: "moveAsync failed."
+
+**Second** — and this one is genuinely subtle — after fixing the spelling it *still*
+failed, with `.../tmp/ReactNative/… is not writable`. Moving a file doesn't just write
+it somewhere new, it also deletes it from where it was. So a "move" needs permission on
+the **source** folder, and the app doesn't have that in the system's scratch space.
+Copying needs no such permission. One verb over, and it worked.
+
+**Third**, the image came out at 3240×5760 — nine times the pixels I asked for, 1.7MB
+instead of 355KB. I'd asked for "1080 wide", but that number is measured in layout
+units, which the phone then multiplies by its own screen density. Mine is a 3× screen.
+1080 × 3 = 3240. Dividing my target by the screen's density lands on exactly 1080×1920
+on any phone.
+
+And a fourth, quieter one I only caught by reading the file name: it saved as
+`chalkbook-2026-08-01.jpg` for a day that was the 2nd. The date `2026-08-02` was being
+parsed as *midnight UTC*, which is still the 1st anywhere west of London. The day was
+already correct as plain text; converting it to a date at all was the mistake.
+
+Four bugs, one button, zero of them visible in the code review.
+
+## 4. When my own data told me I was wrong
+
+The Apple Health import is where I expected the least drama and got the most.
+
+Health has about 83 kinds of workout. Chalkbook has six categories. So there's a
+mapping, and anything unrecognised falls into "Other". I looked at the first draft of
+that mapping, thought it covered everything I do, and shipped it to my phone.
+
+Then I counted. **372 of 1,578 workouts — 24% — landed in "Other".**
+
+A quarter of my training history, reduced to a shrug. And here's what made it worse:
+Health-imported rows are read-only in my app, deliberately, because they get rebuilt
+from scratch on every sync. So it wasn't just vague — it was vague *and* I couldn't fix
+it by hand.
+
+Two changes. The mapping went from 18 recognised types to 37, picking up all the ones
+an Apple Watch quietly logs on its own — cross training, mixed cardio, cooldown,
+preparation-and-recovery, barre, tai chi. And every imported workout now carries
+Apple's own name for the activity in its note, generated straight from the SDK's own
+list rather than typed out by hand.
+
+The re-import:
+
+| Category | Before | After |
+|---|---|---|
+| Walking | 452 | 452 |
+| Cardio | 163 | **424** |
+| Fitness Class | 183 | **261** |
+| Lifting | 240 | 240 |
+| Yoga | 168 | 168 |
+| Stretching | 0 | **12** |
+| **Other** | **372** | **21** |
+
+**24% down to 1.3%.** And the 21 that remain are no longer a mystery — I can read them
+one by one: fishing 6, tennis 4, paddle sports 3, badminton 2, surfing, snowboarding,
+skating.
+
+Those *should* stay in "Other". Filing badminton under "Cardio" would be tidier and
+less true. Saying "Other" and writing "Badminton" underneath is the honest answer. The
+thing I like about this episode is that the data settled the argument — I couldn't have
+reasoned my way to it from a chair.
+
+## 5. The judgment calls no library makes
+
+Three decisions in the Health import had nothing to do with programming.
+
+**Climbing is never imported.** My watch records climbing sessions. Chalkbook records
+climbing sessions. Pull both in and every session counts twice — in my streaks, my
+dashboard, the number printed on the exported image. Nothing in the code could know
+that; you have to know what the app is *for*.
+
+**"Manual wins" needed defining.** If Health and I both logged something, mine should
+win. But what counts as a clash? Same day isn't enough — a manual yoga entry and a
+Health run on one day are two real things that happened. Same day *and* same type is a
+clash: that's one session written down twice. Getting this wrong in either direction
+silently deletes or silently duplicates real training.
+
+**Don't guess when you can't be corrected.** Because those rows are read-only, a wrong
+label is a wrong label forever. That's the whole reason "Other" exists instead of a
+best-effort nearest match.
+
+## Two things that looked broken and weren't
+
+Worth recording, because both cost me a small panic.
+
+One morning the Chalkbook icon on my phone said **"this app is no longer available."**
+Not an expired certificate — iOS had *offloaded* it, deleting the app but keeping the
+data, then gone looking for it on an App Store it was never on. The fix was a reinstall.
+The important part: the data was completely intact, and the one thing that would have
+destroyed it was deleting the icon in frustration first. (Settings → App Store →
+Offload Unused Apps is now off.)
+
+And while testing the last fix, I reinstalled, reopened the app, and nothing changed.
+The automatic sync is throttled to once every 30 minutes — deliberately, so flicking in
+and out of the app doesn't re-read a decade of history each time — and I was inside that
+window. There's a manual sync button that ignores it. Not a bug; a feature I'd
+forgotten I asked for.
+
+## What I take from this phase
+
+The Phase 4 post ended with *taste is the scarce part, typing is cheap*. Phase 6
+sharpened that for me.
+
+**The scarce part is contact with reality.** Every real problem here — the photo paths,
+the vanishing note, the oversized export, the 24% — was invisible in the code and
+obvious within minutes of running it on my phone with my own data. Not one of them was
+found by reading.
+
+And the fixes that mattered most weren't clever. They were: store less, save earlier,
+copy instead of move, and admit you don't know what a workout was instead of guessing.
+
+*Chalkbook, phase 6, August 2026. Expo / React Native / TypeScript / SQLite.
+Local-first, single user, no accounts, no servers, nothing uploaded — the export writes
+an image to my phone and stops there.*
