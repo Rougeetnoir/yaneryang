@@ -1,0 +1,182 @@
+---
+title: 'Building a bookshelf: borrowing the idea, not the code'
+description: I found a beautiful interactive bookshelf on GitHub and rebuilt it for my own site. Almost every place the two diverge is a place where the original's assumptions did not survive my data — twenty curated books became seventy-eight, and hand-tuned styling became something extracted from the covers themselves.
+pubDate: 2026-08-20
+featured: 4
+tags: ['building', 'css', 'design']
+---
+
+I have kept a reading database in Notion since 2022. Two hundred and thirty-seven
+rows, of which seventy-nine are actually finished. It has covers, ratings, dates,
+and — for twenty-five of those books — a sentence or two I wrote when I put the
+book down.
+
+None of it was anywhere anyone could see.
+
+Then I found [Brooke's Reading Room](https://github.com/Brookell/brooke-bookshelf),
+an interactive shelf someone had built for their own books. Books stand as spines;
+you move the mouse across them and one turns to face you; you click and the whole
+screen becomes that book's colour. It is a lovely thing. I wanted one.
+
+Same arrangement as everything else I build: I decide what it should do and I check
+every result myself; an AI assistant writes the code. This post is about the
+technical part, and specifically about the gap between *I want one of those* and
+*I have one of those* — because the interesting work was almost entirely in the
+places where the original's assumptions did not survive contact with my data.
+
+## The first decision was not to copy it
+
+The repository has no licence file. In practice that means all rights reserved:
+you can read it, you cannot lift it. So nothing of theirs is in mine — not a
+selector, not a line of JavaScript.
+
+That turned out to be the right constraint anyway, for a reason that has nothing
+to do with law. Their shelf holds twenty books, hand-picked, each one styled by
+hand. Mine holds seventy-eight, and will hold more every year. A design that is
+delightful at twenty and a maintenance tax at eighty is not the same design. Had I
+been able to copy the code, I would have inherited the twenty-book assumption
+without ever noticing it was there.
+
+## The fifteen columns I refused to type
+
+The original keeps its books in a tab-separated file with fifteen columns. Three
+are the book — title, author, cover image. The other twelve are styling: spine
+colour, spine text colour, cover colour, cover text colour, cover width, shelf
+height, spine width, cover ratio, gap to the next book, detail-page background,
+and two paragraphs of description.
+
+Twelve numbers and colours, chosen by eye, per book. At twenty books that is an
+afternoon of pleasant fiddling. At seventy-eight it is a reason never to add a
+seventy-ninth.
+
+So all twelve are derived instead.
+
+**The spine colour comes from the left edge of the cover, not the whole cover.**
+This is the detail I am most pleased with, and it took someone pointing at a
+physical book to see it. A printed spine is not a colour someone chose separately —
+it is the cover artwork wrapping around the edge. So sample the leftmost eight
+percent of the image, and the spine looks like it belongs to the book. Sample the
+whole cover and you get the average of the author's photograph.
+
+**The proportions come from a hash of the book's own name.** Real shelves are
+uneven; a shelf where every book is the same height and thickness reads as a bar
+chart. But the variation cannot be random, or the shelf reshuffles itself on every
+deploy. Hashing the slug gives a number between zero and one that is different for
+every book and identical forever, which is exactly what "arbitrary but stable"
+means.
+
+The result is that adding a book costs one file and one cover image. Everything
+else is computed. And because the computed colours are written back into that
+file rather than calculated at page load, I can still overrule any of them by
+editing one line — which I have not yet needed to do, but will.
+
+## A cover's colour is designed for a bookshop, not for a wall
+
+When you click a book, the entire screen takes that book's colour. My first
+version used the cover's dominant colour directly, which is how I learned that
+those are two completely different jobs.
+
+A cover is designed to be picked out across a shop, from three metres away,
+competing with four hundred other covers. That is why paperbacks are that orange.
+Fill an entire monitor with it and it is unreadable, and it shouts.
+
+So the hue survives and everything else is thrown away: saturation is capped at
+about a third, and the lightness is dropped to near-black. Every book still gets
+its own room, unmistakably tinted by its own cover — a Ferrante is warm brown, an
+Agatha Christie is deep blue — but none of them are shouting, and the same pale
+text works on all seventy-eight without checking.
+
+## Three ways CSS lied to me about a closed book
+
+The whole illusion is one rotation. A book's cover is hinged along its left edge;
+closed, it is turned nearly side-on so you see only its thickness; open, it swings
+flat to face you. Three things went wrong, and all three were the same kind of
+wrong: the code said the right thing and the screen showed something else.
+
+**Nearly side-on is not side-on.** I first turned the covers to seventy-eight
+degrees, reasoning that at that angle you see almost nothing of them. What you
+actually see is a wedge — a cover viewed at a sharp angle still projects a visible
+triangle beside its own spine, and seventy-eight of those made the shelf look like
+a row of half-open books nobody had tidied. The fix was to go one degree *past*
+square, to ninety-one. There the cover is facing away, and a browser will simply
+not draw the back of a rotated surface. Not almost invisible. Invisible.
+
+**Clipping quietly switched the 3D off.** Having fixed the angle, the wedges came
+back. The cover image sat inside a container with its overflow hidden — a reflex,
+to keep the picture inside its rounded corners. But telling a browser to clip an
+element also tells it to flatten that element out of the 3D scene it was part of,
+and once flattened, "don't draw the back of this" stops meaning anything. The
+container was not needed at all: the cover's frame is generated from that exact
+image's own proportions, so there was never anything to clip.
+
+**One vanishing point does not fit a shelf you can scroll.** Seventy-eight books
+is about four and a half thousand pixels of shelf. I had set up the scene the
+obvious way, with a single viewing position at the centre — but the centre of a
+4,500-pixel shelf is two thousand pixels off the side of the screen for most of
+the books, so most of the books were being viewed from an absurd angle and sheared
+into parallelograms. Giving each book its own viewpoint fixed it, and is arguably
+more honest: you are looking straight at whichever book you are looking at.
+
+**The pattern in all three:** each was a case of the browser doing precisely what I
+asked, where what I asked was subtly not what I meant. There was nothing to debug
+in the usual sense. No error, no red, no failing check — just a picture that was
+wrong, and no way to find out except to look at it.
+
+## Every book needed an address
+
+The original shelf is one page. The books have no URLs; they exist only as
+JavaScript state. That is fine for twenty books you are showing to friends, and
+wrong for a shelf I would like to be able to link someone to.
+
+So every spine is a real link to a real page. This costs nothing and buys
+everything: a book can be shared, it can be found by search, and if the JavaScript
+fails to load the shelf is still seventy-eight clickable books instead of a row of
+dead rectangles. The script's only job is making room — sliding neighbours apart
+so an opening cover has somewhere to go. Take it away and you lose the choreography,
+not the shelf.
+
+The addresses themselves needed a decision, because my titles are almost all
+Chinese and a Chinese URL turns into thirty characters of percent-signs the moment
+anyone pastes it. Pinyin was the answer: `/books/hua-yue-sha-shou`. Readable to
+someone who can read the title anyway, and safe everywhere else.
+
+Hover, meanwhile, does not exist on a phone. Rather than degrade the interaction
+into tap-to-open-then-tap-again, the shelf simply lies the books flat on touch
+screens: a scrollable row of covers with their titles underneath, which is a thing
+phones are good at.
+
+## The part that was editorial, not technical
+
+My Notion rows have two text fields. One is the publisher's description, which I
+imported without reading. The other is what I wrote after finishing the book.
+
+The obvious move is to show both, and the obvious move is wrong, because a reader
+cannot tell which sentence is whose. So my note is the page — full size, first
+thing after the title. The publisher's copy is folded away behind a line you have
+to click, in smaller, dimmer type. It is the one block of text on the whole site
+that nobody wrote for it.
+
+That leaves an honest gap I have decided not to paper over. Twenty-five of the
+seventy-eight books have something I wrote. The other fifty-three currently show a
+cover, a rating, a date, and silence.
+
+I could have filled them. An AI would happily generate a plausible paragraph about
+any of them in a second, and every one would be a small lie about a book I read
+three years ago. The empty ones are a to-do list in public, which is the correct
+amount of pressure.
+
+## What I took from it
+
+The thing I keep noticing about this kind of work is how much of it is deciding
+what a person should never have to type. The original shelf is prettier than mine
+in some ways and asks its owner for twelve decisions per book. Mine asks for none,
+because those twelve decisions were all recoverable from something that already
+existed — the cover image itself.
+
+That is a very familiar shape. Eight years of general ledger work was mostly the
+same question in a different costume: this field is being keyed in by hand every
+month, and it is already implied by something upstream, so why is a person typing
+it? The answer was usually that nobody had looked closely at where it came from.
+
+Turns out a spine is just the left edge of the cover. Somebody had to look at a
+book to notice.
