@@ -1,0 +1,143 @@
+---
+import { site } from '../config/site';
+import HeadMeta from '../components/HeadMeta.astro';
+import '../styles/global.css';
+
+/**
+ * Full-bleed layout for the bookshelf.
+ *
+ * Deliberately has no Nav and no Footer. The shelf is entered from the nav on
+ * every other page and then takes over the viewport — site chrome around a
+ * bookshelf makes it read as a widget embedded in a page rather than a room you
+ * walked into. The only way back out is the link in the corner.
+ *
+ * `background` is passed by the detail pages so the whole viewport, including
+ * the area behind a rubber-band scroll, takes the book's own colour.
+ */
+
+interface Props {
+  title: string;
+  description?: string;
+  background?: string;
+  ink?: string;
+  /** Where the corner link goes, and what it says. */
+  back?: { href: string; label: string };
+}
+
+const {
+  title,
+  description,
+  background = 'var(--t-canvas)',
+  ink = 'var(--t-ink)',
+  back = { href: '/', label: 'Yaner Yang' },
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.locale} style={`--shelf-bg: ${background}; --shelf-ink: ${ink};`}>
+  <head>
+    <HeadMeta {title} {description} />
+  </head>
+
+  <body>
+    <a href="#main" class="skip">Skip to content</a>
+
+    <a class="way-out" href={back.href} rel={back.href === '/' ? 'home' : undefined}>
+      <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none">
+        <path
+          d="M10 2 4 8l6 6"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      <span>{back.label}</span>
+    </a>
+
+    <main id="main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /*
+   * Cross-document view transitions, no JavaScript. Both the shelf and the
+   * detail pages use this layout, so both opt in, and a cover tagged with the
+   * same `view-transition-name` on each side morphs from one to the other.
+   * Browsers without support simply navigate — nothing is conditional on it.
+   */
+  @view-transition {
+    navigation: auto;
+  }
+
+  html {
+    background-color: var(--shelf-bg);
+    color: var(--shelf-ink);
+    /* Not `overflow: hidden` — the shelf pins its own height, but a detail page
+       stacks and has to scroll on a narrow screen. */
+    overscroll-behavior: none;
+    /* Colour changes come from the detail page taking on the book's own colour;
+       animating it keeps that from being a hard cut on load. */
+    transition: background-color 420ms ease;
+  }
+
+  body {
+    background-color: transparent;
+    color: inherit;
+    min-height: 100svh;
+    margin: 0;
+  }
+
+  .skip {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .skip:focus {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--t-surface);
+    color: var(--t-ink);
+  }
+
+  .way-out {
+    position: fixed;
+    top: clamp(1rem, 3vh, 1.75rem);
+    left: clamp(1rem, 3vw, 2rem);
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--t-font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: currentColor;
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 200ms ease;
+  }
+
+  .way-out:hover,
+  .way-out:focus-visible {
+    opacity: 1;
+  }
+
+  /* The corner link is the same element on both pages; letting it cross-fade
+     rather than jump keeps the transition from flickering. */
+  .way-out {
+    view-transition-name: way-out;
+  }
+</style>

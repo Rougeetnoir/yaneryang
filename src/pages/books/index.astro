@@ -1,0 +1,691 @@
+---
+import { Image } from 'astro:assets';
+import ShelfLayout from '../../layouts/ShelfLayout.astro';
+import { getBooks } from '../../lib/content';
+import { readableInk, jitter, langOf } from '../../lib/color';
+
+const books = await getBooks();
+
+/**
+ * Shelf geometry.
+ *
+ * Every number a book needs to stand on the shelf is derived here, at build
+ * time, from its slug and its cover's aspect ratio. The reference this borrows
+ * its interaction from asks the author to hand-tune six numeric columns per
+ * book; that is a maintenance tax on a shelf that should only ever cost "drop
+ * in a cover, write a note". `jitter` is a hash, not a random number, so a given
+ * book keeps the same proportions across every build.
+ */
+const shelf = books.map((book, index) => {
+  const spine = book.data.spine ?? '#dedad2';
+
+  return {
+    book,
+    index,
+    spine,
+    spineInk: readableInk(spine),
+    /** Fraction of the shelf's height. Uneven tops are the point. */
+    height: 0.84 + jitter(book.id, 'height') * 0.16,
+    /** Thickness of the closed book, in px. */
+    spineWidth: Math.round(30 + jitter(book.id, 'spine') * 22),
+    /** Gap to the next book. A perfectly even shelf looks like a bar chart. */
+    gap: Math.round(4 + jitter(book.id, 'gap') * 16),
+    aspect: book.data.cover.width / book.data.cover.height,
+  };
+});
+
+const total = String(books.length).padStart(2, '0');
+
+/* The shelf opens scrolled to its centre, so those are the covers worth having
+   already decoded — not the first eight, which are the furthest off-screen. */
+const middle = Math.floor(books.length / 2);
+---
+
+<ShelfLayout
+  title="Bookshelf"
+  description="Books that stayed with me — a shelf, not a reading log."
+>
+  <section class="room" data-shelf>
+    <header class="masthead">
+      <p class="counter" data-counter data-total={total}>{total} volumes</p>
+      <h1>Bookshelf</h1>
+      <p class="standfirst">
+        Books that stayed with me. Not a ranking and not a reading log — the ones
+        I still argue with.
+      </p>
+    </header>
+
+    {
+      books.length === 0 ? (
+        <p class="empty">The shelf is still being unpacked.</p>
+      ) : (
+        <div class="stage">
+          <div class="viewport" data-viewport>
+            <div class="track" data-track>
+              {shelf.map(({ book, index, spine, spineInk, height, spineWidth, gap, aspect }) => (
+                <a
+                  class="book"
+                  href={`/books/${book.id}`}
+                  data-book
+                  data-label={`${book.data.title} — ${book.data.author}`}
+                  style={`--spine: ${spine}; --spine-ink: ${spineInk}; --h: ${height}; --spine-w: ${spineWidth}px; --gap: ${gap}px; --aspect: ${aspect};`}
+                >
+                  <span class="leaf" aria-hidden="true">
+                    <span class="cover">
+                      <Image
+                        src={book.data.cover}
+                        alt=""
+                        widths={[300, 600]}
+                        sizes="300px"
+                        loading={Math.abs(index - middle) < 6 ? 'eager' : 'lazy'}
+                      />
+                    </span>
+                  </span>
+
+                  <span class="spine" aria-hidden="true">
+                    <span class="spine-title" lang={langOf(book.data.title)}>{book.data.title}</span>
+                  </span>
+
+                  <span class="caption">
+                    <strong lang={langOf(book.data.title)}>{book.data.title}</strong>
+                    <small lang={langOf(book.data.author)}>{book.data.author}</small>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div class="rule" aria-hidden="true" />
+
+          <p class="now-showing" aria-live="polite" data-active-title />
+        </div>
+      )
+    }
+
+    <details class="index">
+      <summary>
+        <span class="index-open">All books</span>
+        <span class="index-close">Close</span>
+      </summary>
+
+      <div class="index-body">
+        <ol>
+          {
+            shelf.map(({ book, index, spine }) => (
+              <li>
+                <a href={`/books/${book.id}`}>
+                  <span class="index-number">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="index-swatch" style={`background: ${spine}`} aria-hidden="true" />
+                  <span class="index-copy">
+                    <strong lang={langOf(book.data.title)}>{book.data.title}</strong>
+                    <small lang={langOf(book.data.author)}>{book.data.author}</small>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </details>
+  </section>
+</ShelfLayout>
+
+<style>
+  .room {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  /* ---- masthead ---------------------------------------------------------- */
+
+  .masthead {
+    padding: clamp(3.5rem, 9vh, 5.5rem) clamp(1.25rem, 5vw, 3rem) 0;
+    text-align: center;
+  }
+
+  .counter {
+    margin: 0 0 0.85rem;
+    font-family: var(--t-font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    color: var(--t-muted);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    line-height: 1.05;
+  }
+
+  .standfirst {
+    max-width: 34rem;
+    margin: 1rem auto 0;
+    color: var(--t-muted);
+    line-height: 1.6;
+    font-size: 0.9375rem;
+    text-wrap: balance;
+  }
+
+  .empty {
+    align-self: center;
+    text-align: center;
+    color: var(--t-muted);
+  }
+
+  /* ---- the shelf --------------------------------------------------------- */
+
+  .stage {
+    --shelf-h: clamp(220px, 40vh, 400px);
+
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    align-content: end;
+    min-height: 0;
+    padding-bottom: clamp(2.5rem, 7vh, 4rem);
+  }
+
+  .viewport {
+    align-self: end;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    /* Room above for a book to grow into as it opens. */
+    padding-top: 1.5rem;
+  }
+
+  .viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track {
+    display: flex;
+    align-items: flex-end;
+    /* Half a viewport of padding on each side lets the first and last book be
+       scrolled to the middle rather than pinned against the edge. */
+    padding-inline: max(1.5rem, 38vw);
+    min-height: var(--shelf-h);
+  }
+
+  .book {
+    position: relative;
+    flex: none;
+    width: var(--spine-w);
+    height: calc(var(--shelf-h) * var(--h));
+    margin-right: var(--gap);
+    transform: translateX(var(--shift, 0px));
+    transform-style: preserve-3d;
+    transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    text-decoration: none;
+    color: inherit;
+    outline-offset: 6px;
+  }
+
+  /*
+   * The cover, hinged on its left edge.
+   *
+   * Closed, it is turned a degree PAST edge-on: its front face now points away
+   * from the reader, so `backface-visibility` removes it entirely and the shelf
+   * is nothing but spines. Stopping short of 90deg instead leaves a wedge of
+   * cover sticking out beside every spine, which is what a real half-shut book
+   * looks like and not at all what a shelf looks like.
+   */
+  .leaf {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: calc(var(--shelf-h) * var(--h) * var(--aspect));
+    transform-origin: left center;
+    /*
+     * Perspective per book rather than one shared vanishing point on the track.
+     * The track is 4500px wide; a single perspective origin would put most of
+     * the shelf far off to one side of it and shear those books into
+     * parallelograms. Each book gets its own head-on view instead.
+     */
+    transform: perspective(1500px) rotateY(-91deg);
+    transition: transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  /*
+   * No `overflow: hidden` here, deliberately. Clipping flattens the element out
+   * of its parent's 3D context, and `backface-visibility` stops applying — which
+   * leaves every closed cover rendering as a visible wedge beside its own spine.
+   * The clip is not needed anyway: the leaf's width is derived from this exact
+   * image's aspect ratio, so the image already fills it precisely.
+   */
+  .cover {
+    position: absolute;
+    inset: 0;
+    background: var(--spine);
+    box-shadow:
+      0 1px 2px rgb(28 26 22 / 0.18),
+      0 12px 30px rgb(28 26 22 / 0.16);
+    backface-visibility: hidden;
+  }
+
+  .cover :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1px 3px 3px 1px;
+    backface-visibility: hidden;
+  }
+
+  /* Painted spine. Sits over the edge-on cover while the book is closed. */
+  .spine {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    display: flex;
+    width: var(--spine-w);
+    align-items: center;
+    justify-content: center;
+    padding-block: 0.75rem;
+    border-radius: 1px;
+    background: var(--spine);
+    color: var(--spine-ink);
+    box-shadow:
+      inset -1px 0 0 rgb(0 0 0 / 0.12),
+      inset 1px 0 0 rgb(255 255 255 / 0.1),
+      0 1px 2px rgb(28 26 22 / 0.22),
+      0 10px 26px rgb(28 26 22 / 0.14);
+    transition:
+      opacity 260ms ease,
+      transform 520ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .spine-title {
+    writing-mode: vertical-rl;
+    max-height: 100%;
+    overflow: hidden;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0.92;
+  }
+
+  /* ---- open state -------------------------------------------------------- */
+
+  .book.is-open,
+  .book:hover,
+  .book:focus-visible {
+    z-index: 3;
+  }
+
+  .book.is-open .leaf,
+  .book:hover .leaf,
+  .book:focus-visible .leaf {
+    transform: perspective(1500px) rotateY(0deg);
+  }
+
+  .book.is-open .cover :global(img),
+  .book:hover .cover :global(img) {
+    view-transition-name: open-cover;
+  }
+
+  .book.is-open .spine,
+  .book:hover .spine,
+  .book:focus-visible .spine {
+    opacity: 0;
+    /* Pushed back so it cannot z-fight with the now-flat cover. */
+    transform: translateZ(-2px);
+  }
+
+  .rule {
+    height: 1px;
+    margin: 0 clamp(1.25rem, 5vw, 3rem);
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--t-line) 12%,
+      var(--t-line) 88%,
+      transparent
+    );
+  }
+
+  .now-showing {
+    min-height: 1.25rem;
+    margin: 1.25rem 0 0;
+    text-align: center;
+    font-family: var(--t-font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--t-muted);
+  }
+
+  /* ---- all-books index --------------------------------------------------- */
+
+  /* A <details> rather than a scripted dialog: it opens, closes, and is
+     announced correctly with no JavaScript at all. */
+  .index {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2rem);
+    top: clamp(1rem, 3vh, 1.75rem);
+    z-index: 30;
+  }
+
+  .index summary {
+    list-style: none;
+    cursor: pointer;
+    text-align: right;
+    font-family: var(--t-font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--t-muted);
+    transition: color 200ms ease;
+  }
+
+  .index summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .index summary:hover,
+  .index[open] summary {
+    color: var(--t-ink);
+  }
+
+  .index:not([open]) .index-close,
+  .index[open] .index-open {
+    display: none;
+  }
+
+  .index-body {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow-y: auto;
+    padding: clamp(4.5rem, 12vh, 7rem) clamp(1.25rem, 5vw, 3rem) 4rem;
+    background: color-mix(in srgb, var(--t-canvas) 94%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .index-body ol {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  .index-body li + li {
+    border-top: 1px solid var(--t-line);
+  }
+
+  .index-body a {
+    display: grid;
+    grid-template-columns: 2.5rem 0.375rem 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 0.25rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .index-body a:hover .index-copy strong {
+    color: var(--t-accent-ink);
+  }
+
+  .index-number {
+    font-family: var(--t-font-mono);
+    font-size: 0.75rem;
+    color: var(--t-muted);
+  }
+
+  .index-swatch {
+    height: 1.75rem;
+    border-radius: 999px;
+  }
+
+  .index-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .index-copy strong {
+    font-family: var(--t-font-display);
+    font-weight: 500;
+    font-size: 1.0625rem;
+    transition: color 160ms ease;
+  }
+
+  .index-copy small {
+    font-size: 0.8125rem;
+    color: var(--t-muted);
+  }
+
+  /* Hidden but readable: on a pointer device the spine carries the title
+     visually, and this is what a screen reader announces for the link. */
+  .caption {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ---- touch ------------------------------------------------------------- */
+
+  /*
+   * Hover is the whole interaction, and a touch screen does not have it. Rather
+   * than degrade into tap-to-open-then-tap-again, the shelf lays the books flat:
+   * a scrollable row of covers with their titles under them, which is what a
+   * phone is actually good at.
+   */
+  @media (hover: none) {
+    .room {
+      height: auto;
+      min-height: 100svh;
+      /* Two auto rows AND align-content, not `auto 1fr`: on a tall phone an
+         `auto` grid row still absorbs the leftover space, which stranded the
+         covers most of a screen below the text. */
+      grid-template-rows: auto auto;
+      align-content: start;
+      overflow: visible;
+    }
+
+    .masthead {
+      padding-top: clamp(4.5rem, 10vh, 6rem);
+    }
+
+    .stage {
+      --shelf-h: clamp(200px, 30vh, 300px);
+
+      align-content: start;
+      padding-top: clamp(2rem, 6vh, 3rem);
+    }
+
+    .viewport {
+      align-self: start;
+    }
+
+    .track {
+      align-items: start;
+      gap: 0.75rem;
+      padding-inline: clamp(1.25rem, 8vw, 3rem);
+    }
+
+    /* A book is now cover-plus-caption, so it can no longer be exactly the
+       shelf's height — the caption has to sit below the art, not over it. */
+    .book {
+      width: calc(var(--shelf-h) * var(--h) * var(--aspect));
+      height: auto;
+      transform: none;
+    }
+
+    /* Relative rather than absolute, since `.book` no longer has a height to be
+       absolute inside — and explicitly block, because a relatively positioned
+       span is still an inline box and ignores width and height. */
+    .leaf {
+      display: block;
+      position: relative;
+      width: 100%;
+      height: calc(var(--shelf-h) * var(--h));
+      /* Flat. Without this, a tap firing :hover would swing the cover. */
+      transform: none;
+    }
+
+    .spine,
+    .now-showing {
+      display: none;
+    }
+
+    .caption {
+      position: static;
+      display: flex;
+      width: auto;
+      height: auto;
+      flex-direction: column;
+      gap: 0.15rem;
+      overflow: visible;
+      clip-path: none;
+      padding-top: 0.75rem;
+      white-space: normal;
+    }
+
+    .caption strong {
+      font-family: var(--t-font-display);
+      font-weight: 500;
+      font-size: 0.875rem;
+      line-height: 1.3;
+    }
+
+    .caption small {
+      font-size: 0.75rem;
+      color: var(--t-muted);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .book,
+    .leaf,
+    .spine {
+      transition: none;
+    }
+  }
+
+</style>
+
+<script>
+  /*
+   * Shelf behaviour. Vanilla and page-local on purpose: the site ships no
+   * framework runtime (see astro.config.mjs) and a shelf does not justify
+   * reversing that.
+   *
+   * The script's only real job is making room. An opening book needs the width
+   * of its cover and only occupies the width of its spine, so the books on
+   * either side move apart by the difference. The rotation and the fade are CSS
+   * reacting to a single class.
+   */
+  const room = document.querySelector<HTMLElement>('[data-shelf]');
+  const viewport = document.querySelector<HTMLElement>('[data-viewport]');
+  const track = document.querySelector<HTMLElement>('[data-track]');
+  const activeTitle = document.querySelector<HTMLElement>('[data-active-title]');
+  const counter = document.querySelector<HTMLElement>('[data-counter]');
+
+  if (room && viewport && track) {
+    const books = Array.from(track.querySelectorAll<HTMLAnchorElement>('[data-book]'));
+    const canHover = window.matchMedia('(hover: hover)').matches;
+    let openIndex: number | null = null;
+
+    /* An open cover near either end can end up half outside the viewport. Nudge
+       the scroll rather than clamping the shift, so every book still opens
+       symmetrically around its own spine. */
+    const keepInView = (leaf: HTMLElement) => {
+      const settle = () => {
+        const cover = leaf.getBoundingClientRect();
+        const bounds = viewport.getBoundingClientRect();
+        const margin = 20;
+
+        let delta = 0;
+        if (cover.left < bounds.left + margin) delta = cover.left - bounds.left - margin;
+        else if (cover.right > bounds.right - margin) delta = cover.right - bounds.right + margin;
+
+        if (Math.abs(delta) > 1) viewport.scrollBy({ left: delta, behavior: 'smooth' });
+      };
+
+      /* Once while the rotation is still running, so the cover never flashes
+         off-screen, and once after it lands, to correct for where it ended up. */
+      window.setTimeout(settle, 80);
+      window.setTimeout(settle, 560);
+    };
+
+    const open = (index: number) => {
+      if (!canHover || index === openIndex) return;
+
+      const book = books[index];
+      const leaf = book.querySelector<HTMLElement>('.leaf');
+      if (!leaf) return;
+
+      if (openIndex !== null) books[openIndex].classList.remove('is-open');
+      openIndex = index;
+      book.classList.add('is-open');
+
+      /* Split the cover's overflow evenly to both sides, so it grows around its
+         own spine instead of shoving the whole shelf one way. */
+      const half = Math.round(Math.max(0, leaf.offsetWidth - book.offsetWidth) / 2);
+      books.forEach((other, otherIndex) => {
+        other.style.setProperty('--shift', `${otherIndex > index ? half : -half}px`);
+      });
+
+      if (activeTitle) activeTitle.textContent = book.dataset.label ?? '';
+      if (counter) {
+        counter.textContent = `${String(index + 1).padStart(2, '0')} / ${counter.dataset.total}`;
+      }
+
+      keepInView(leaf);
+    };
+
+    const close = () => {
+      if (openIndex === null) return;
+      books[openIndex].classList.remove('is-open');
+      openIndex = null;
+      for (const book of books) book.style.removeProperty('--shift');
+      if (activeTitle) activeTitle.textContent = '';
+      if (counter) counter.textContent = `${counter.dataset.total} volumes`;
+    };
+
+    books.forEach((book, index) => {
+      book.addEventListener('pointerenter', (event) => {
+        if (event.pointerType !== 'touch') open(index);
+      });
+      book.addEventListener('focus', () => open(index));
+    });
+
+    track.addEventListener('pointerleave', close);
+    track.addEventListener('focusout', (event) => {
+      if (!track.contains(event.relatedTarget as Node | null)) close();
+    });
+
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        close();
+        return;
+      }
+
+      const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+      if (step === 0) return;
+
+      event.preventDefault();
+
+      /* Step from whatever actually has focus, not from whatever is open. After
+         Escape those disagree, and moving relative to the open book would jump
+         the reader somewhere they never were. */
+      const from = books.indexOf(document.activeElement as HTMLAnchorElement);
+      const next = Math.min(books.length - 1, Math.max(0, (from < 0 ? 0 : from) + step));
+      books[next].focus();
+    });
+
+    /* Start in the middle, so the shelf reads as continuing past both edges
+       rather than as a list that begins at the left margin. */
+    requestAnimationFrame(() => {
+      viewport.scrollLeft = (viewport.scrollWidth - viewport.clientWidth) / 2;
+    });
+  }
+</script>

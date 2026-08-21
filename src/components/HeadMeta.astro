@@ -1,0 +1,105 @@
+---
+import { Font } from 'astro:assets';
+import { site } from '../config/site';
+
+/**
+ * Everything that goes in <head>, shared by every layout.
+ *
+ * Extracted out of BaseLayout when the bookshelf added a second layout: the
+ * shelf needs the same canonical URL, social card, and font preloads, but none
+ * of the page chrome. Duplicating fifty lines of meta tags to get that would
+ * guarantee they drift apart.
+ */
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set on the home page so the <title> is just the name, not "Name — Name". */
+  bareTitle?: boolean;
+  /** Emit Person structured data. Home page only — one canonical copy is enough. */
+  personSchema?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  bareTitle = false,
+  personSchema = false,
+} = Astro.props;
+
+const pageTitle = !title ? site.name : bareTitle ? title : `${title} — ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+
+/* Social card. Generated at build time by src/pages/og.png.ts. Must be an
+   absolute URL — every scraper rejects a relative one. */
+const ogImage = new URL('/og.png', Astro.site ?? site.url);
+
+/* This is what lets a search for "Yaner Yang" surface the site with the right
+   context attached, rather than as an unlabelled page. */
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  jobTitle: site.jobTitle,
+  email: `mailto:${site.contact.email}`,
+  description: site.description,
+  sameAs: [site.contact.github, site.contact.linkedin].filter(Boolean),
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Sun Yat-Sen University' },
+    { '@type': 'CollegeOrUniversity', name: 'National Taiwan University' },
+  ],
+  knowsAbout: [
+    'General ledger accounting',
+    'Oracle Fusion ERP',
+    'ASC 606 revenue recognition',
+    'Financial planning and analysis',
+    'Python',
+    'TypeScript',
+  ],
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="canonical" href={canonical} />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content={`${site.name} — ${site.headline}`} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${site.name} — Writing`}
+  href="/rss.xml"
+/>
+
+{
+  personSchema && (
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(person)}
+    />
+  )
+}
+
+<Font cssVariable="--font-inter" preload />
+<Font cssVariable="--font-fraunces" preload />
+<Font cssVariable="--font-plex-mono" />

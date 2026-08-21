@@ -20,6 +20,11 @@ export async function getPosts(): Promise<CollectionEntry<'writing'>[]> {
   return posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 }
 
+export async function getBooks(): Promise<CollectionEntry<'books'>[]> {
+  const books = await getCollection('books', isVisible);
+  return books.sort(byFeatured);
+}
+
 export const PROJECT_GROUPS = [
   { id: 'finance', label: 'Finance & Automation' },
   { id: 'learning', label: 'Learning Tools' },

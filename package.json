@@ -25,6 +25,7 @@
     "@fontsource/fraunces": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@resvg/resvg-js": "^2.6.2",
+    "pinyin-pro": "^3.29.3",
     "satori": "^0.28.2",
     "typescript": "^6.0.3"
   }

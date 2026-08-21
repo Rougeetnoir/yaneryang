@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Raw Notion export — the import script's input, not site content.
+.notion-export/

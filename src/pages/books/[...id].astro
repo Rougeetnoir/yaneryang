@@ -1,0 +1,400 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { GetStaticPaths } from 'astro';
+import ShelfLayout from '../../layouts/ShelfLayout.astro';
+import { getBooks } from '../../lib/content';
+import { readableInk, hairline, langOf } from '../../lib/color';
+
+export const getStaticPaths = (async () => {
+  const books = await getBooks();
+
+  return books.map((book, index) => ({
+    params: { id: book.id },
+    props: {
+      book,
+      position: index + 1,
+      total: books.length,
+      /* The shelf is ordered, so a book has a left and a right neighbour.
+         Walking it one book at a time should be possible without going back. */
+      previous: books[index - 1] ?? null,
+      next: books[index + 1] ?? null,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { book, position, total, previous, next } = Astro.props;
+const { Content } = await render(book);
+const { title, author, cover, read, rating, tags, link, blurb } = book.data;
+
+const background = book.data.detailColor ?? '#221f1a';
+const ink = readableInk(background);
+
+const counter = `${String(position).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+---
+
+<ShelfLayout
+  title={title}
+  description={blurb ?? `${title} — ${author}`}
+  background={background}
+  ink={ink}
+  back={{ href: '/books', label: 'Shelf' }}
+>
+  <article class="page" style={`--rule: ${hairline(background)};`}>
+    <div class="plate">
+      <Image
+        src={cover}
+        alt={`Cover of ${title}`}
+        widths={[360, 720]}
+        sizes="(max-width: 860px) 45vw, 340px"
+      />
+    </div>
+
+    <div class="copy">
+      <p class="counter">{counter}</p>
+
+      <h1 lang={langOf(title)}>{title}</h1>
+      <p class="author" lang={langOf(author)}>{author}</p>
+
+      <dl class="facts">
+        {
+          rating && (
+            <div>
+              <dt>Rated</dt>
+              <dd aria-label={`${rating} out of 5`}>{'★'.repeat(rating)}<span class="dim">{'★'.repeat(5 - rating)}</span></dd>
+            </div>
+          )
+        }
+        {
+          read && (
+            <div>
+              <dt>Read</dt>
+              <dd>{read}</dd>
+            </div>
+          )
+        }
+      </dl>
+
+      <div class="note" lang={langOf(book.body ?? '')}>
+        {/* Yaner's own words. Empty for most books, and left empty rather than
+            padded out with the publisher's copy standing in for a reader. */}
+        <Content />
+      </div>
+
+      {
+        blurb && (
+          <details class="blurb">
+            <summary>Publisher's description</summary>
+            <p lang={langOf(blurb)}>{blurb}</p>
+          </details>
+        )
+      }
+
+      {
+        tags.length > 0 && (
+          <ul class="tags">
+            {tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
+        link && (
+          <p class="offsite">
+            <a href={link} rel="noopener noreferrer">Douban entry ↗</a>
+          </p>
+        )
+      }
+    </div>
+
+    <nav class="neighbours" aria-label="Nearby books">
+      {
+        previous ? (
+          <a href={`/books/${previous.id}`} rel="prev">
+            <span class="direction">← Previous</span>
+            <span class="neighbour-title" lang={langOf(previous.data.title)}>{previous.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={`/books/${next.id}`} rel="next" class="to-next">
+            <span class="direction">Next →</span>
+            <span class="neighbour-title" lang={langOf(next.data.title)}>{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</ShelfLayout>
+
+<style>
+  /*
+   * One book, one room. The page takes the book's own colour edge to edge, so
+   * moving along the shelf feels like walking past differently lit doorways
+   * rather than paging through a template.
+   */
+  .page {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+    min-height: 100svh;
+    max-width: 68rem;
+    margin-inline: auto;
+    padding: clamp(5rem, 12vh, 7rem) clamp(1.25rem, 5vw, 3rem) clamp(6rem, 14vh, 8rem);
+  }
+
+  .plate {
+    justify-self: end;
+    width: min(340px, 100%);
+  }
+
+  .plate :global(img) {
+    /* Pairs with the open cover on the shelf: same name on both pages, so the
+       browser morphs one into the other across the navigation. */
+    view-transition-name: open-cover;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 2px 5px 5px 2px;
+    box-shadow:
+      0 2px 4px rgb(0 0 0 / 0.3),
+      0 30px 70px rgb(0 0 0 / 0.42);
+  }
+
+  .copy {
+    max-width: 34rem;
+  }
+
+  .counter,
+  .facts dt,
+  .tags,
+  .offsite,
+  .direction,
+  .blurb summary {
+    font-family: var(--t-font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .counter {
+    margin: 0;
+    opacity: 0.45;
+  }
+
+  h1 {
+    margin: 0.9rem 0 0;
+    font-size: clamp(1.9rem, 4.2vw, 2.9rem);
+    line-height: 1.1;
+    color: inherit;
+  }
+
+  .author {
+    margin: 0.6rem 0 0;
+    font-size: 0.9375rem;
+    opacity: 0.62;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    margin: 1.75rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .facts div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .facts dt {
+    opacity: 0.45;
+  }
+
+  .facts dd {
+    margin: 0;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+  }
+
+  .facts .dim {
+    opacity: 0.25;
+  }
+
+  .note {
+    margin-top: 1.75rem;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .note :global(p) {
+    margin: 0 0 1em;
+  }
+
+  .note :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .note:empty {
+    display: none;
+  }
+
+  /* The publisher's copy is folded away by default. It is the one block on the
+     page that nobody wrote for this shelf, and it should not be the first thing
+     read. */
+  .blurb {
+    margin-top: 1.75rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+  }
+
+  .blurb summary {
+    cursor: pointer;
+    list-style: none;
+    opacity: 0.45;
+    transition: opacity 200ms ease;
+  }
+
+  .blurb summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Without a marker nothing says this line can be opened, and the default
+     triangle does not belong next to letter-spaced small caps. */
+  .blurb summary::after {
+    content: ' +';
+  }
+
+  .blurb[open] summary::after {
+    content: ' −';
+  }
+
+  .blurb summary:hover,
+  .blurb[open] summary {
+    opacity: 0.8;
+  }
+
+  .blurb p {
+    margin: 1rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    opacity: 0.62;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 1.75rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags li {
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    opacity: 0.6;
+  }
+
+  .offsite {
+    margin: 1.5rem 0 0;
+  }
+
+  .offsite a {
+    color: inherit;
+    opacity: 0.55;
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.2rem;
+    transition: opacity 200ms ease;
+  }
+
+  .offsite a:hover {
+    opacity: 1;
+  }
+
+  /* ---- neighbours -------------------------------------------------------- */
+
+  .neighbours {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem clamp(1.25rem, 5vw, 3rem) 1.25rem;
+    background: linear-gradient(to top, var(--shelf-bg) 45%, transparent);
+  }
+
+  .neighbours a {
+    display: flex;
+    max-width: 42%;
+    flex-direction: column;
+    gap: 0.3rem;
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.4;
+    transition: opacity 200ms ease;
+  }
+
+  .neighbours a:hover,
+  .neighbours a:focus-visible {
+    opacity: 1;
+  }
+
+  .to-next {
+    text-align: right;
+  }
+
+  .neighbour-title {
+    overflow: hidden;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 54rem) {
+    .page {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      align-content: start;
+      gap: 2.25rem;
+      text-align: center;
+    }
+
+    .plate {
+      justify-self: center;
+      width: min(220px, 55vw);
+    }
+
+    .facts,
+    .tags {
+      justify-content: center;
+    }
+
+    .note {
+      text-align: left;
+    }
+
+    /* On a narrow screen the page scrolls, and a fixed bar would sit on top of
+       whatever the reader is currently reading. Let it come at the end. */
+    .neighbours {
+      position: static;
+      width: 100%;
+      margin-top: 3rem;
+      padding-inline: 0;
+      background: none;
+    }
+  }
+</style>

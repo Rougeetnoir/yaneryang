@@ -52,4 +52,46 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { projects, writing };
+/**
+ * The bookshelf.
+ *
+ * Generated from a Notion export by `scripts/import-notion-books.mjs`, but what
+ * it writes is ordinary MDX meant to be edited by hand afterwards. Nothing here
+ * reads back to Notion, and re-running the import never overwrites a body.
+ *
+ * The split between `blurb` and the MDX body is deliberate: the body is Yaner's
+ * own note on the book, the blurb is the publisher's copy. Merging them would
+ * make it impossible to tell whose sentence you are reading.
+ */
+const books = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/books' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      author: z.string(),
+      /** Lives in `src/content/books/covers/`. Optimised by astro:assets. */
+      cover: image(),
+      /** As recorded, e.g. "2023/08/01" or "2023/08/01 → 2023/08/03". */
+      read: z.string().optional(),
+      rating: z.number().min(1).max(5).optional(),
+      /** Genre and reading-list labels, merged from Notion's Type and 标签. */
+      tags: z.array(z.string()).default([]),
+      /** Douban entry, for anyone who wants the book rather than the note. */
+      link: z.string().url().optional(),
+      /** Publisher's description. Not Yaner's words — rendered as such. */
+      blurb: z.string().optional(),
+      /** Sorts the shelf left to right, oldest read first. */
+      featured: z.number().optional(),
+      /**
+       * Extracted from the cover by the import and written back here, so a bad
+       * guess is fixed by editing this file rather than by changing code.
+       * `spine` is the closed book on the shelf; `detailColor` fills the whole
+       * detail page behind it.
+       */
+      spine: z.string().optional(),
+      detailColor: z.string().optional(),
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { projects, writing, books };

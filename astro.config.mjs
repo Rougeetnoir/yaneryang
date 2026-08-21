@@ -5,6 +5,13 @@ import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
+/* The bookshelf is almost entirely Chinese titles, and none of the three
+   webfonts below carry a single CJK glyph. Without these the browser falls back
+   to whatever it likes, which on Windows means SimSun. Named explicitly so the
+   Chinese sits at the same weight as the Latin next to it. */
+const CJK_SANS = ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC'];
+const CJK_SERIF = ['Songti SC', 'SimSun', 'Noto Serif CJK SC'];
+
 // https://astro.build/config
 export default defineConfig({
   // Required for sitemap, canonical URLs, and RSS. Update this the moment the
@@ -30,7 +37,7 @@ export default defineConfig({
       cssVariable: '--font-inter',
       weights: [400, 500, 600, 700],
       subsets: ['latin'],
-      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif']
+      fallbacks: [...CJK_SANS, 'ui-sans-serif', 'system-ui', 'sans-serif']
     },
     {
       provider: fontProviders.google(),
@@ -39,7 +46,7 @@ export default defineConfig({
       weights: [400, 500, 600],
       styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['ui-serif', 'Georgia', 'serif']
+      fallbacks: [...CJK_SERIF, 'ui-serif', 'Georgia', 'serif']
     },
     {
       provider: fontProviders.google(),
@@ -47,7 +54,7 @@ export default defineConfig({
       cssVariable: '--font-plex-mono',
       weights: [400, 500],
       subsets: ['latin'],
-      fallbacks: ['ui-monospace', 'SFMono-Regular', 'monospace']
+      fallbacks: [...CJK_SANS, 'ui-monospace', 'SFMono-Regular', 'monospace']
     }
   ]
 });
