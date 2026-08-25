@@ -1,0 +1,90 @@
+---
+title: Odyssey Reader
+summary: A twenty-minute crash course on Homer's Odyssey, built the afternoon before seeing Nolan's film. A clickable map of thirty-one characters, a timeline that switches between story order and Homer's order, and a cast table.
+period: '2026'
+featured: 6
+group: learning
+role: Sole developer
+stack: ['HTML', 'CSS', 'Vanilla JS', 'SVG']
+demo:
+  url: 'https://yaneryang.pages.dev/odyssey/'
+  aspect: '4/3'
+---
+
+## The problem
+
+I had tickets to Christopher Nolan's *The Odyssey* that evening and knew
+essentially nothing about the source — not the plot, not who Odysseus was, not
+why any of it mattered. The obvious fix is a plot summary, and the obvious
+problem with a plot summary is that it does not survive contact with the film.
+Thirty Greek names arrive in the first twenty minutes and a paragraph I read
+once cannot tell me which of them is the wife, which is the sea god with a
+grudge, and which is the son I am supposed to care about.
+
+What I wanted was not something to read. It was something to *look things up
+in* — where the answer to "who was that again?" is one click, and where the
+shape of the story is visible rather than described.
+
+## How it works
+
+One HTML file, no build step, no framework, no dependencies beyond three
+Google fonts. Six tabs:
+
+- **A thirty-second summary**, plus the five Greek words the film keeps acting
+  out — *nostos* (homecoming), *xenia* (how you treat a stranger), *metis*
+  (cunning), *kleos* (fame), *hubris*. Knowing those five is most of the
+  decoder ring.
+- **A character map.** Thirty-one figures as an SVG constellation, coloured by
+  faction — gods, Ithaca, the encounters at sea, the suitors, the Trojan War.
+  Click anyone for who they are and what they want; edges are coloured by
+  relationship type, and the relationship list in the detail panel is itself
+  clickable, so you can walk the graph.
+- **The ten-year voyage**, seventeen stops, each with a note on why it matters
+  rather than just what happened.
+- **Ten scenes** worth recognising when they arrive on screen.
+- **The cast**, searchable by actor or character.
+- **A viewing guide** — what is Homer, what is Virgil, and what Nolan is likely
+  doing with the structure.
+
+## The one decision that mattered
+
+The timeline has a toggle: *story order* or *Homer's order*.
+
+Homer does not begin at the beginning. The poem opens in year twenty with
+Odysseus already stranded on Calypso's island, and the ten years of monsters and
+shipwrecks arrive in books nine through twelve as a flashback the hero narrates
+himself, at a dinner party, to strangers. The adventures everyone knows are a
+story told by an unreliable man about his own conduct.
+
+That is not trivia — it is the thing most likely to lose you in the cinema, and
+it is exactly the structure a director who made *Memento* and *Dunkirk* would
+keep. So rather than pick an order, the page holds both and lets you flip
+between them. Reading the same seventeen events twice, in two orders, teaches
+the structure faster than any amount of explaining it.
+
+## On getting the facts right
+
+The film's cast was the part I could not do from memory, and neither could the
+model I built this with: roles reported during production had changed by
+release. Charlize Theron was widely rumoured as Circe and is actually Calypso;
+Circe is Samantha Morton. So the cast section was checked against published
+sources instead of recalled, and the two entries where sources still disagree
+are labelled as reported rather than confirmed.
+
+Which is the general lesson, and not really about this page: the failure mode of
+building fast with a model is not bad code, it is confident detail. Anything the
+model states about a fact that changed recently is a claim to verify, not an
+answer to ship — and it is worth designing the artefact so uncertainty has
+somewhere to live, in this case a small "reported" tag rather than a silent
+guess.
+
+## Where it goes next
+
+The content is data at the top of the file — factions, characters, edges,
+events, scenes, cast — and the rendering is a handful of functions underneath.
+Pointing it at a different story means replacing the data, not the code, which
+was the actual goal: not a page about the *Odyssey*, but a shape that works for
+any story I need to walk into cold.
+
+The visual direction should not carry over, though. The dark sea-and-bronze
+palette belongs to this poem. The next one gets its own.
