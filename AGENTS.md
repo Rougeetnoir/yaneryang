@@ -5,8 +5,8 @@ This repo is cloned on two machines. Either clone can be behind the other, and
 are per-machine and never travel with a pull.
 
 Run this first thing in a session, and again after any pause, **before**
-`astro dev --background`, `npm run build`, `npx astro check`, or any script in
-`scripts/`:
+`npx astro dev --background`, `npm run build`, `npx astro check`, or any
+script in `scripts/`:
 
 ```sh
 git fetch origin
@@ -29,7 +29,7 @@ Then act on what it says:
 
 After a pull that touched `package-lock.json`, run `npm install` — the lockfile
 syncs, the installed tree does not. If a dev server is already running, stop it
-(`astro dev stop`) before pulling: it keeps serving the pre-pull tree and its
+(`npx astro dev stop`) before pulling: it keeps serving the pre-pull tree and its
 `.astro/` cache goes stale.
 
 ## Development
@@ -37,10 +37,12 @@ syncs, the installed tree does not. If a dev server is already running, stop it
 When starting the dev server, use background mode:
 
 ```
-astro dev --background
+npx astro dev --background
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Manage the background server with `npx astro dev stop`, `npx astro dev status`,
+and `npx astro dev logs`. `astro` is not installed globally — it lives in
+`node_modules/.bin/`, so every invocation needs `npx`.
 
 ## Documentation
 

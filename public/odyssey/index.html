@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="看诺兰《奥德赛》之前的二十分钟速成：故事脉络、31 个人物的可点击关系星图、十年归途时间线、十个名场面，以及演员角色对照。">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>奥德赛导览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@500;700&display=swap">
+
+<style>
+:root{
+  --abyss:#070B10;
+  --sea:#0D1620;
+  --sea-2:#132330;
+  --sea-3:#1A2E3C;
+  --line:#22333F;
+  --line-soft:#18262F;
+  --bone:#EAE4D8;
+  --bone-2:#A3B0B7;
+  --bone-3:#6B7A84;
+  --bronze:#C08A3E;
+  --bronze-lit:#EFC178;
+  --f-gods:#E0B455;
+  --f-ithaca:#5FB0A6;
+  --f-sea:#7C93C9;
+  --f-suitors:#B25A54;
+  --f-troy:#A98CC0;
+  --r-kin:#C08A3E;
+  --r-ally:#5FB0A6;
+  --r-foe:#B25A54;
+  --r-bond:#C67FA0;
+
+  --display:"Cinzel","Noto Serif SC",Georgia,serif;
+  --head:"Noto Serif SC","Songti SC",Georgia,serif;
+  --body:"Noto Sans SC","PingFang SC","Helvetica Neue",Arial,sans-serif;
+
+  --w:1180px;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--abyss);
+  color:var(--bone);
+  font-family:var(--body);
+  font-weight:300;
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--bronze-lit);}
+:focus-visible{outline:2px solid var(--bronze-lit);outline-offset:3px;border-radius:2px;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+.wrap{max-width:var(--w);margin:0 auto;padding-left:24px;padding-right:24px;}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line-soft);}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 50% -20%, #16303F 0%, transparent 62%),
+    radial-gradient(90% 60% at 82% 8%, rgba(192,138,62,.14) 0%, transparent 60%);
+  pointer-events:none;
+}
+.hero-mark{
+  position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);
+  font-family:var(--display);font-size:clamp(64px,15vw,190px);letter-spacing:.14em;
+  color:transparent;-webkit-text-stroke:1px rgba(192,138,62,.16);
+  white-space:nowrap;pointer-events:none;user-select:none;
+}
+.hero-in{position:relative;padding:88px 24px 40px;}
+.eyebrow{
+  font-family:var(--display);font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--bronze);display:flex;align-items:center;gap:14px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(192,138,62,.5),transparent);}
+h1{
+  font-family:var(--head);font-weight:700;
+  font-size:clamp(38px,6.2vw,68px);line-height:1.12;letter-spacing:.02em;
+  margin:22px 0 0;text-wrap:balance;
+}
+h1 .sub{display:block;font-family:var(--display);font-size:clamp(13px,1.6vw,17px);
+  letter-spacing:.3em;color:var(--bone-3);font-weight:400;margin-top:18px;}
+.lede{max-width:60ch;margin:26px 0 0;color:var(--bone-2);font-size:17px;line-height:1.85;}
+.facts{display:flex;flex-wrap:wrap;gap:0;margin:36px 0 0;border-top:1px solid var(--line-soft);}
+.fact{padding:16px 28px 16px 0;margin-right:28px;border-right:1px solid var(--line-soft);}
+.fact:last-child{border-right:0;}
+.fact dt{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--bone-3);font-family:var(--display);}
+.fact dd{margin:6px 0 0;font-size:15px;color:var(--bone);font-variant-numeric:tabular-nums;}
+
+/* ---------- nav ---------- */
+.nav{position:sticky;top:0;z-index:40;background:rgba(7,11,16,.93);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft);}
+.nav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.nav-in::-webkit-scrollbar{display:none;}
+.tab{
+  appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  color:var(--bone-3);font-family:var(--body);font-size:14px;font-weight:400;
+  padding:16px 18px;cursor:pointer;white-space:nowrap;transition:color .18s,border-color .18s;
+}
+.tab .n{font-family:var(--display);font-size:10px;letter-spacing:.14em;margin-right:8px;opacity:.65;}
+.tab:hover{color:var(--bone-2);}
+.tab[aria-selected="true"]{color:var(--bronze-lit);border-bottom-color:var(--bronze);}
+
+/* ---------- sections ---------- */
+section[hidden]{display:none;}
+.panel-sec{padding:56px 24px 96px;}
+h2{font-family:var(--head);font-weight:700;font-size:clamp(24px,3.2vw,34px);
+  margin:0 0 10px;letter-spacing:.01em;text-wrap:balance;}
+.sec-note{color:var(--bone-3);font-size:14px;margin:0 0 34px;max-width:64ch;}
+h3{font-family:var(--head);font-weight:500;font-size:19px;margin:0 0 8px;}
+
+.rule{height:1px;background:var(--line-soft);border:0;margin:48px 0;}
+
+/* ---------- cards ---------- */
+.grid{display:grid;gap:16px;}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));}
+.card{
+  background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;
+  padding:22px 24px;
+}
+.card p{margin:0;color:var(--bone-2);font-size:14px;line-height:1.8;}
+.card p + p{margin-top:12px;}
+
+/* greek word chips */
+.words{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:3px;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));overflow:hidden;}
+.word{background:var(--sea);padding:22px 22px 24px;}
+.word .gr{font-family:var(--head);font-size:26px;color:var(--bronze-lit);line-height:1.2;}
+.word .tr{font-family:var(--display);font-size:11px;letter-spacing:.2em;color:var(--bone-3);
+  text-transform:uppercase;margin-top:6px;}
+.word .zh{font-family:var(--head);font-size:16px;font-weight:500;margin-top:12px;}
+.word p{margin:8px 0 0;font-size:13.5px;color:var(--bone-2);line-height:1.75;}
+
+/* threads */
+.threads{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
+.thread{border:1px solid var(--line-soft);border-radius:3px;padding:20px 22px;background:var(--sea);
+  border-top:2px solid var(--tc,var(--bronze));}
+.thread .who{font-family:var(--head);font-size:17px;font-weight:500;color:var(--tc);}
+.thread .where{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--bone-3);
+  font-family:var(--display);margin:4px 0 10px;}
+.thread p{margin:0;font-size:13.5px;color:var(--bone-2);line-height:1.78;}
+
+/* ---------- character map ---------- */
+.wide{max-width:1440px;}
+.map-layout{display:grid;gap:24px;grid-template-columns:minmax(0,1fr) 340px;align-items:start;}
+@media (max-width:1320px){.map-layout{grid-template-columns:1fr;}
+  .detail{position:static;}}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;}
+.chip{
+  appearance:none;cursor:pointer;font-family:var(--body);font-size:12.5px;
+  background:var(--sea);border:1px solid var(--line);color:var(--bone-2);
+  padding:6px 13px 6px 10px;border-radius:100px;display:inline-flex;align-items:center;gap:7px;
+  transition:border-color .18s,color .18s,background .18s;
+}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c);flex:none;}
+.chip[aria-pressed="true"]{border-color:var(--c);color:var(--bone);background:var(--sea-2);}
+.chip:hover{color:var(--bone);}
+
+.map-box{border:1px solid var(--line-soft);border-radius:3px;background:
+  radial-gradient(90% 70% at 50% 40%, #0E1B26 0%, var(--sea) 70%);overflow-x:auto;}
+.map-box svg{display:block;width:100%;min-width:700px;height:auto;}
+.node{cursor:pointer;}
+.node circle.hit{fill:transparent;}
+.node circle.core{transition:r .18s,fill-opacity .18s;}
+.node text{font-family:var(--body);font-size:12.5px;fill:var(--bone-2);text-anchor:middle;
+  pointer-events:none;transition:fill .18s;}
+.node .en{font-family:var(--display);font-size:9px;letter-spacing:.13em;fill:var(--bone-3);
+  text-transform:uppercase;}
+.node:hover text,.node.on text{fill:var(--bone);}
+.node.on .ring{stroke-width:2.2;}
+.edge{transition:stroke-opacity .18s,stroke-width .18s;}
+.map-box.focus .node:not(.on):not(.near){opacity:.42;}
+.map-box.focus .edge:not(.lit){stroke-opacity:.1;}
+.map-box .node.dim{opacity:.1;pointer-events:none;}
+
+/* detail panel */
+.detail{background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;
+  padding:24px 24px 26px;position:sticky;top:78px;}
+.detail .tagline{font-family:var(--display);font-size:10px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dc,var(--bronze));}
+.detail h3{font-family:var(--head);font-size:26px;font-weight:700;margin:8px 0 2px;}
+.detail .en-name{font-family:var(--display);font-size:12px;letter-spacing:.2em;color:var(--bone-3);}
+.detail .role{margin:14px 0 0;font-size:13.5px;color:var(--bone);border-left:2px solid var(--dc);
+  padding-left:12px;}
+.detail .bio{margin:16px 0 0;font-size:14px;color:var(--bone-2);line-height:1.85;}
+.detail .watch{margin:16px 0 0;font-size:13.5px;color:var(--bronze-lit);background:rgba(192,138,62,.07);
+  border:1px solid rgba(192,138,62,.2);border-radius:2px;padding:11px 13px;line-height:1.7;}
+.detail .cast-line{margin:16px 0 0;font-size:13px;color:var(--bone-2);
+  border-top:1px solid var(--line-soft);padding-top:14px;}
+.detail .cast-line b{color:var(--bone);font-weight:500;}
+.rels{list-style:none;margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--line-soft);}
+.rels li{display:flex;gap:10px;align-items:baseline;font-size:13px;color:var(--bone-2);
+  padding:5px 0;cursor:pointer;}
+.rels li:hover .rn{color:var(--bronze-lit);}
+.rels .bar{width:3px;align-self:stretch;background:var(--rc);flex:none;border-radius:2px;}
+.rels .rn{color:var(--bone);font-weight:400;flex:none;}
+.rels .rl{color:var(--bone-3);font-size:12.5px;}
+
+/* roster fallback list */
+.roster{margin-top:28px;}
+.roster-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+.rbtn{appearance:none;text-align:left;cursor:pointer;background:var(--sea);
+  border:1px solid var(--line-soft);border-left:2px solid var(--c);color:var(--bone-2);
+  padding:9px 12px;border-radius:2px;font-family:var(--body);font-size:13px;transition:color .16s,background .16s;}
+.rbtn:hover{color:var(--bone);background:var(--sea-2);}
+.rbtn small{display:block;font-family:var(--display);font-size:8.5px;letter-spacing:.14em;
+  color:var(--bone-3);text-transform:uppercase;margin-top:2px;}
+
+/* ---------- timeline ---------- */
+.tl-switch{display:inline-flex;border:1px solid var(--line);border-radius:100px;padding:3px;margin-bottom:8px;}
+.tl-switch button{appearance:none;background:none;border:0;cursor:pointer;color:var(--bone-3);
+  font-family:var(--body);font-size:13px;padding:7px 17px;border-radius:100px;transition:.18s;}
+.tl-switch button[aria-pressed="true"]{background:var(--sea-3);color:var(--bone);}
+.tl-hint{font-size:13px;color:var(--bone-3);margin:14px 0 32px;max-width:64ch;line-height:1.75;}
+
+.tl{position:relative;padding-left:40px;}
+.tl::before{content:"";position:absolute;left:11px;top:6px;bottom:20px;width:1px;
+  background:linear-gradient(180deg,var(--bronze),var(--line-soft) 70%,transparent);}
+.ev{position:relative;padding:0 0 26px;}
+.ev::before{content:"";position:absolute;left:-34px;top:9px;width:9px;height:9px;border-radius:50%;
+  background:var(--abyss);border:1.5px solid var(--ec,var(--bronze));}
+.ev-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;cursor:pointer;}
+.ev-idx{font-family:var(--display);font-size:11px;letter-spacing:.16em;color:var(--bone-3);
+  font-variant-numeric:tabular-nums;flex:none;}
+.ev-title{font-family:var(--head);font-size:18px;font-weight:500;color:var(--bone);}
+.ev-badge{font-family:var(--display);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ec);border:1px solid currentColor;border-radius:100px;padding:2px 9px;opacity:.75;}
+.ev-sub{margin:5px 0 0;font-size:13px;color:var(--bone-3);}
+.ev-body{margin:12px 0 0;font-size:14px;color:var(--bone-2);line-height:1.85;max-width:66ch;}
+.ev-why{margin:12px 0 0;font-size:13.5px;color:var(--bronze-lit);max-width:66ch;line-height:1.75;
+  border-left:2px solid rgba(192,138,62,.45);padding-left:13px;}
+
+/* ---------- scenes ---------- */
+.scenes{display:grid;gap:1px;background:var(--line-soft);border:1px solid var(--line-soft);border-radius:3px;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));overflow:hidden;}
+.scene{background:var(--sea);padding:26px 26px 28px;}
+.scene .num{font-family:var(--display);font-size:11px;letter-spacing:.2em;color:var(--bronze);
+  font-variant-numeric:tabular-nums;}
+.scene h3{margin:10px 0 2px;font-size:19px;}
+.scene .gr{font-family:var(--display);font-size:10px;letter-spacing:.2em;color:var(--bone-3);
+  text-transform:uppercase;}
+.scene p{margin:13px 0 0;font-size:14px;color:var(--bone-2);line-height:1.82;}
+.scene .pt{margin:14px 0 0;font-size:13px;color:var(--bronze-lit);line-height:1.7;}
+
+/* ---------- cast ---------- */
+.cast-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 24px;}
+.search{background:var(--sea);border:1px solid var(--line);border-radius:2px;color:var(--bone);
+  font-family:var(--body);font-size:14px;padding:10px 14px;min-width:250px;}
+.search::placeholder{color:var(--bone-3);}
+.count{font-size:12.5px;color:var(--bone-3);font-variant-numeric:tabular-nums;}
+
+.cast-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));}
+.actor{background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;
+  border-left:2px solid var(--c,var(--bronze));padding:20px 22px 22px;}
+.actor .an{font-size:13px;color:var(--bone-2);}
+.actor .an b{color:var(--bone);font-weight:500;font-size:15px;}
+.actor .arrow{color:var(--bone-3);margin:9px 0 7px;font-family:var(--display);font-size:10px;letter-spacing:.2em;}
+.actor .cn{font-family:var(--head);font-size:21px;font-weight:700;color:var(--bone);line-height:1.3;}
+.actor .cen{font-family:var(--display);font-size:10px;letter-spacing:.2em;color:var(--c);
+  text-transform:uppercase;margin-top:4px;}
+.actor .who{margin:12px 0 0;font-size:13.5px;color:var(--bone-2);line-height:1.8;}
+.actor .note{margin:12px 0 0;padding-top:11px;border-top:1px solid var(--line-soft);
+  font-size:12.5px;color:var(--bone-3);line-height:1.7;}
+.actor .flag{display:inline-block;font-size:10.5px;letter-spacing:.1em;color:var(--bone-3);
+  border:1px solid var(--line);border-radius:100px;padding:1px 8px;margin-left:8px;vertical-align:2px;}
+
+/* ---------- guide ---------- */
+.tips{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));}
+.tip{background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;padding:22px 24px;}
+.tip h3{font-size:17px;margin:0 0 9px;color:var(--bronze-lit);}
+.tip p{margin:0;font-size:13.5px;color:var(--bone-2);line-height:1.82;}
+.tip p + p{margin-top:10px;}
+.spoiler-note{border:1px dashed var(--line);border-radius:3px;padding:18px 22px;color:var(--bone-3);
+  font-size:13px;line-height:1.8;margin-top:22px;}
+footer{border-top:1px solid var(--line-soft);padding:30px 24px 60px;color:var(--bone-3);font-size:12.5px;line-height:1.9;}
+footer a{color:var(--bone-2);text-decoration:none;border-bottom:1px solid var(--line);}
+footer a:hover{color:var(--bronze-lit);}
+
+@media (max-width:640px){
+  .hero-in{padding:56px 20px 30px;}
+  .fact{padding-right:20px;margin-right:20px;}
+  .panel-sec{padding:40px 20px 70px;}
+  .detail{position:static;}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-mark" aria-hidden="true">ODYSSEIA</div>
+  <div class="wrap hero-in">
+    <p class="eyebrow">Homer &middot; 荷马史诗 &middot; 观影前速成</p>
+    <h1>他花十年打完仗，<br>又花十年才走回家门口
+      <span class="sub">The Odyssey &middot; Christopher Nolan &middot; 2026</span>
+    </h1>
+    <p class="lede">如果你对希腊神话一无所知，这一页就够了。故事的骨架、三十一个人物、十年归途的每一站、十个必须认出的名场面，以及诺兰这部电影里"谁演谁"。看完大约二十分钟。</p>
+    <dl class="facts">
+      <div class="fact"><dt>上映</dt><dd>2026.07.17</dd></div>
+      <div class="fact"><dt>片长</dt><dd>173 分钟</dd></div>
+      <div class="fact"><dt>格式</dt><dd>全片 IMAX 70mm 胶片</dd></div>
+      <div class="fact"><dt>原著</dt><dd>荷马《奥德赛》· 24 卷</dd></div>
+    </dl>
+  </div>
+</header>
+
+<nav class="nav" aria-label="章节">
+  <div class="wrap nav-in" id="tabs" role="tablist">
+    <button class="tab" role="tab" data-p="p1" aria-selected="true"><span class="n">I</span>三十秒速览</button>
+    <button class="tab" role="tab" data-p="p2" aria-selected="false"><span class="n">II</span>人物星图</button>
+    <button class="tab" role="tab" data-p="p3" aria-selected="false"><span class="n">III</span>十年归途</button>
+    <button class="tab" role="tab" data-p="p4" aria-selected="false"><span class="n">IV</span>十个名场面</button>
+    <button class="tab" role="tab" data-p="p5" aria-selected="false"><span class="n">V</span>演员对照</button>
+    <button class="tab" role="tab" data-p="p6" aria-selected="false"><span class="n">VI</span>观影指南</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ I ============ -->
+<section id="p1" class="wrap panel-sec" role="tabpanel" aria-label="三十秒速览">
+  <h2>三十秒速览</h2>
+  <p class="sec-note">先把整个故事装进一口气里，剩下的都是细节。</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>故事是什么</h3>
+      <p>特洛伊战争打了十年。想出"木马计"、亲手终结这场战争的人，叫<b style="color:var(--bone);font-weight:500">奥德修斯</b>，一个叫伊萨卡的小岛国的国王。</p>
+      <p>战争结束，别人陆续回家了，只有他没有。他在海上又漂了十年——因为他刺瞎了海神波塞冬的儿子，海神让整片海洋与他为敌。他的十二艘船、几百名同伴，一个接一个死光，最后只剩他一个人。</p>
+      <p>而在伊萨卡，他的妻子<b style="color:var(--bone);font-weight:500">珀涅罗珀</b>被一百多个求婚者堵在家里：他们赖在王宫吃喝，逼她改嫁，还打算杀掉她的儿子。儿子<b style="color:var(--bone);font-weight:500">忒勒马科斯</b>出生时父亲就出征了，二十年来没见过父亲一面。</p>
+      <p>《奥德赛》讲的就是最后这段：一个人怎么回家，以及回到家之后，怎么把家夺回来。</p>
+    </div>
+    <div class="card">
+      <h3>为什么它不只是一个冒险故事</h3>
+      <p>希腊人给英雄两条路：一条是像阿喀琉斯那样早死、留下不朽的名声；另一条是活着回家、然后老去。奥德修斯选了第二条。</p>
+      <p>故事中段，女神卡吕普索留他在岛上七年，开出的条件是<b style="color:var(--bone);font-weight:500">永生和永远年轻</b>。他拒绝了。他要回到一个会衰老、会死的妻子身边，回到一座石头很多、地不肥的小岛上。</p>
+      <p>所以这不是一个关于"如何变强"的故事，而是关于"人为什么想回家"，以及一个人在外面待了二十年之后，还算不算原来那个人。</p>
+      <p>这也是诺兰会拍它的原因——他所有的片子几乎都在讲同一件事：一个男人穿过时间，想回到某个再也回不去的地方。</p>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <h3 style="font-size:22px;margin-bottom:6px;">五个希腊词，抓住主题</h3>
+  <p class="sec-note">这五个词在片中会反复被"演"出来，认识它们等于拿到了解码器。</p>
+  <div class="words" id="words"></div>
+
+  <hr class="rule">
+
+  <h3 style="font-size:22px;margin-bottom:6px;">三条线，同时在走</h3>
+  <p class="sec-note">原著和电影都在三个地方来回切。看的时候只要随时知道"现在在哪条线上"，就不会迷路。</p>
+  <div class="threads" id="threads"></div>
+</section>
+
+<!-- ============ II ============ -->
+<section id="p2" class="wrap panel-sec wide" role="tabpanel" aria-label="人物星图" hidden>
+  <h2>人物星图</h2>
+  <p class="sec-note">点任意一个名字看他是谁、和别人什么关系。连线颜色代表关系类型：青铜色是血亲与婚姻，青色是助力与忠诚，赤色是敌对，玫色是情感纠葛。上方色标可以只看某一阵营。</p>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="map-layout">
+    <div class="map-box" id="mapBox">
+      <svg id="map" viewBox="0 0 1040 820" role="img" aria-label="奥德赛人物关系图"></svg>
+    </div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+
+  <div class="roster">
+    <p class="sec-note" style="margin-bottom:12px;">或者直接从名单里挑：</p>
+    <div class="roster-grid" id="roster"></div>
+  </div>
+</section>
+
+<!-- ============ III ============ -->
+<section id="p3" class="wrap panel-sec" role="tabpanel" aria-label="十年归途" hidden>
+  <h2>十年归途</h2>
+  <p class="sec-note">同一批事件，可以按两种顺序排。这个切换很重要——因为荷马原著本身就不是按时间顺序讲的，而诺兰几乎肯定会沿用这种结构。</p>
+
+  <div class="tl-switch" id="tlSwitch" role="group" aria-label="排序方式">
+    <button data-o="story" aria-pressed="true">按故事时间</button>
+    <button data-o="homer" aria-pressed="false">按荷马叙事</button>
+  </div>
+  <p class="tl-hint" id="tlHint"></p>
+
+  <div class="tl" id="tl"></div>
+</section>
+
+<!-- ============ IV ============ -->
+<section id="p4" class="wrap panel-sec" role="tabpanel" aria-label="十个名场面" hidden>
+  <h2>十个名场面</h2>
+  <p class="sec-note">如果只记住十个瞬间，就记这十个。每一个都是三千年来被反复引用的画面，出现在银幕上时你会想"啊，就是这个"。</p>
+  <div class="scenes" id="scenes"></div>
+</section>
+
+<!-- ============ V ============ -->
+<section id="p5" class="wrap panel-sec" role="tabpanel" aria-label="演员对照" hidden>
+  <h2>演员对照</h2>
+  <p class="sec-note">诺兰这部片的卡司规模是他生涯之最。下面按戏份轻重排，每张卡片给出角色是谁、在故事里干什么、以及这个选角本身值得注意的地方。搜索框可以按演员名或角色名过滤。</p>
+  <div class="cast-tools">
+    <input class="search" id="castSearch" type="search" placeholder="搜演员或角色，如：帕丁森 / 雅典娜 / Circe" aria-label="搜索演员或角色">
+    <span class="count" id="castCount"></span>
+  </div>
+  <div class="cast-grid" id="cast"></div>
+</section>
+
+<!-- ============ VI ============ -->
+<section id="p6" class="wrap panel-sec" role="tabpanel" aria-label="观影指南" hidden>
+  <h2>观影指南</h2>
+  <p class="sec-note">今晚进影院之前，这几件事知道了会舒服很多。以下不涉及电影的具体改编剧情。</p>
+  <div class="tips" id="tips"></div>
+  <div class="spoiler-note" id="srcNote"></div>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p>神话内容依据荷马《奥德赛》与《伊利亚特》，西农一角出自维吉尔《埃涅阿斯纪》。演职员信息核对自公开报道，如与正片字幕不符，以正片为准。</p>
+</footer>
+
+<script>
+/* ============================================================
+   数据
+   ============================================================ */
+const FACTIONS = {
+  gods:    {zh:'众神',       c:'#E0B455'},
+  ithaca:  {zh:'伊萨卡',     c:'#5FB0A6'},
+  sea:     {zh:'归途遭遇',   c:'#7C93C9'},
+  suitors: {zh:'求婚者',     c:'#B25A54'},
+  troy:    {zh:'特洛伊战场', c:'#A98CC0'}
+};
+
+const REL = {
+  kin:  {zh:'血亲 / 婚姻', c:'#C08A3E'},
+  ally: {zh:'助力 / 忠诚', c:'#5FB0A6'},
+  foe:  {zh:'敌对 / 阻挠', c:'#B25A54'},
+  bond: {zh:'情感纠葛',    c:'#C67FA0'}
+};
+
+const CHARS = [
+{id:'odysseus',zh:'奥德修斯',en:'Odysseus',f:'ithaca',x:500,y:340,r:26,
+ role:'伊萨卡之王 · 全片主角',
+ bio:'希腊人中最"多智"的英雄，木马计的发明者。荷马给他的第一个形容词是 polytropos——"千变万化的人"。他的武器不是长矛，是谎言、伪装和耐心。战争打了十年，回家又漂了十年，同伴全部死光，最后独自一人爬上伊萨卡的海滩。',
+ watch:'留意他每次报出真名的时刻。整部史诗的灾难，正是从他忍不住喊出"我是奥德修斯"开始的。'},
+
+{id:'penelope',zh:'珀涅罗珀',en:'Penelope',f:'ithaca',x:312,y:330,r:19,
+ role:'奥德修斯之妻 · 伊萨卡王后',
+ bio:'二十年守着一座被求婚者占领的宫殿。她答应"织完这件寿衣就改嫁"，然后白天织、夜里拆，用这个办法拖了三年。她的智谋与丈夫同一级别，最后一场戏里她用"婚床"反过来试探他，是全篇最锋利的一次交锋。',
+ watch:'她不是"等待"的象征。她在打一场没有武器的持久战，而且赢了。'},
+
+{id:'telemachus',zh:'忒勒马科斯',en:'Telemachus',f:'ithaca',x:262,y:198,r:19,
+ role:'奥德修斯之子 · 伊萨卡王子',
+ bio:'父亲出征时他还是襁褓中的婴儿，二十年来没见过父亲一面，也没人相信他还活着。史诗的前四卷是他的成年礼：他离开伊萨卡，去邻国打听父亲的下落，从一个在自家宴席上不敢开口的少年，变成能与父亲并肩杀人的成年男子。',
+ watch:'他是给"不知道背景的观众"准备的入口——他和你一样，对这个父亲一无所知。'},
+
+{id:'athena',zh:'雅典娜',en:'Athena',f:'gods',x:330,y:88,r:20,
+ role:'智慧与战术女神 · 奥德修斯的保护神',
+ bio:'全篇的隐形导演。她乔装成各种凡人推动剧情：给忒勒马科斯壮胆、把奥德修斯变成满脸皱纹的老乞丐、在最后关头强行叫停了一场即将失控的血仇。她偏爱奥德修斯的理由很直白——他和她一样擅长撒谎。',
+ watch:'留意银幕上突然出现、说了几句关键的话就消失的陌生人。那多半是她。'},
+
+{id:'zeus',zh:'宙斯',en:'Zeus',f:'gods',x:520,y:48,r:17,
+ role:'众神之王 · 仲裁者',
+ bio:'他允许波塞冬折磨奥德修斯，也最终拍板放人。船员宰杀太阳神的牛之后，是他劈下那道把最后一条船炸成碎片的雷。他代表的是"规矩"：人可以受苦，但苦难必须有理由。'},
+
+{id:'poseidon',zh:'波塞冬',en:'Poseidon',f:'gods',x:712,y:78,r:20,
+ role:'海神 · 全篇的对手',
+ bio:'因为奥德修斯刺瞎了他的儿子波吕斐摩斯，他把整片海洋变成刑场。命运不允许他杀死奥德修斯，但他可以让这个人晚回家十年、失去每一条船、每一个同伴，最后光着身子被浪拍上岸。',
+ watch:'风暴不是天气，是一个神在动手。'},
+
+{id:'hermes',zh:'赫尔墨斯',en:'Hermes',f:'gods',x:868,y:132,r:15,
+ role:'信使神',
+ bio:'出现两次，两次都是救命：给奥德修斯一株叫 moly 的抗魔草药，让他不会被喀耳刻变成猪；后来又奉宙斯之命飞到卡吕普索的岛上，命令她放人。'},
+
+{id:'calypso',zh:'卡吕普索',en:'Calypso',f:'sea',x:872,y:312,r:20,
+ role:'俄古癸亚岛的女神',
+ bio:'把奥德修斯留在她的岛上七年——这是他二十年漂流里最长的一段停留。她开出的条件是永生、永远年轻、以及她本人。他每天坐在海边哭着看海，最后拒绝了她。',
+ watch:'这是整部史诗的主题所在：他放弃了不死，换一个会变老、会死的妻子和一座石头很多的小岛。'},
+
+{id:'circe',zh:'喀耳刻',en:'Circe',f:'sea',x:682,y:340,r:20,
+ role:'埃埃亚岛的女巫',
+ bio:'先是敌人：她用一杯掺了药的酒把奥德修斯的船员全变成猪。被制服之后反倒成了最关键的盟友——留他一年，并且告诉他一件谁都想不到的事：想回家，得先下一趟冥府问路。塞壬、斯库拉、太阳神牛群的应对办法，全是她教的。'},
+
+{id:'polyphemus',zh:'波吕斐摩斯',en:'Polyphemus',f:'sea',x:786,y:224,r:20,
+ role:'独眼巨人 · 波塞冬之子',
+ bio:'把奥德修斯一行关进山洞，每天抓两个人生吃。奥德修斯自称"无人"（Outis），灌醉他，用削尖的橄榄木桩刺瞎他唯一的眼睛。巨人惨叫着喊"无人在害我"，邻居听了觉得他疯了，没人来救。',
+ watch:'这是"智谋战胜蛮力"的教科书，也是奥德修斯犯下致命错误的地方——船开出去后，他忍不住回头喊出了真名。'},
+
+{id:'sirens',zh:'塞壬',en:'The Sirens',f:'sea',x:952,y:206,r:16,
+ role:'歌声妖女',
+ bio:'她们唱的不是情歌，而是"我们知道一切，包括你想知道的"。听过的人都死在她们脚下的骸骨堆里。奥德修斯让全体船员用蜡封住耳朵，自己却要求被绑在桅杆上——他要听，又不想死。'},
+
+{id:'scylla',zh:'斯库拉与卡律布狄斯',en:'Scylla & Charybdis',f:'sea',x:966,y:396,r:16,
+ role:'海峡两侧的双重死路',
+ bio:'一边是六个头的怪物斯库拉，一边是能整船吞下的漩涡卡律布狄斯。喀耳刻给的建议很冷酷：走斯库拉那边，宁可被叼走六个人，也别全船沉没。奥德修斯没有把这个选择告诉船员。'},
+
+{id:'aeolus',zh:'埃俄罗斯',en:'Aeolus',f:'sea',x:628,y:172,r:15,
+ role:'风神',
+ bio:'热情款待了奥德修斯，临别送他一只牛皮袋，把所有逆风都装了进去，只留一股顺风。伊萨卡的海岸已经能看见炊烟了——船员怀疑袋子里是国王私藏的金子，趁他睡着解开了绳子。'},
+
+{id:'tiresias',zh:'忒瑞西阿斯',en:'Tiresias',f:'sea',x:792,y:428,r:15,
+ role:'冥府中的盲人先知',
+ bio:'底比斯的先知，死后仍保有神志。奥德修斯必须活着走进冥府、用血把他召唤出来，才能问到回家的路。他给出的不只是航线，还有结局，以及一段连奥德修斯自己都没料到的、回家之后仍要出发的旅程。'},
+
+{id:'eurylochus',zh:'欧律罗科斯',en:'Eurylochus',f:'sea',x:608,y:466,r:16,
+ role:'船上的副手',
+ bio:'唯一敢当众顶撞奥德修斯的人。在喀耳刻岛上，他的谨慎救了全船——他没进屋，所以没变成猪；但在太阳神的岛上，是他带头劝大家宰牛，害死了所有人。他是"船员"这个集体的脸。'},
+
+{id:'elpenor',zh:'埃尔佩诺耳',en:'Elpenor',f:'sea',x:716,y:536,r:14,
+ role:'最年轻的船员',
+ bio:'喝醉了睡在喀耳刻家的屋顶上，第二天听见集合的号令，起身就摔了下来，当场死掉。没人发现。他成了奥德修斯在冥府里遇见的第一个鬼魂，只求一件事：回去把我埋了。',
+ watch:'他的份量在于提醒你：英雄传奇之外，还有一整船普通人在无声地死去。'},
+
+{id:'nausicaa',zh:'瑙西卡',en:'Nausicaa',f:'sea',x:924,y:496,r:15,
+ role:'法伊阿基亚公主',
+ bio:'在海边洗衣服时发现了赤身裸体、被海水泡得不成人形的奥德修斯。她没有尖叫也没有逃走，而是给他衣服和食物，把他带回宫廷。她的国家收留他、听他讲完全部冒险，最后用一条船把他送回伊萨卡。'},
+
+{id:'eumaeus',zh:'欧迈俄斯',en:'Eumaeus',f:'ithaca',x:300,y:470,r:16,
+ role:'牧猪人 · 老仆',
+ bio:'奥德修斯回国后投宿的第一个人。他认不出乔装成乞丐的主人，却照样杀猪款待、把自己的斗篷让给他。这正是希腊人最看重的"待客之道"，与王宫里那群蹭吃蹭喝的求婚者形成刺眼的对照。'},
+
+{id:'eurycleia',zh:'欧律克勒亚',en:'Eurycleia',f:'ithaca',x:150,y:462,r:15,
+ role:'老乳母',
+ bio:'从小带大奥德修斯的人。给"乞丐"洗脚时，她的手摸到了大腿上那道少年时被野猪咬出的疤，第一个认出了主人。她张嘴要喊，奥德修斯一把掐住她的喉咙，让她别出声。'},
+
+{id:'argos',zh:'阿尔戈斯',en:'Argos',f:'ithaca',x:86,y:560,r:13,
+ role:'猎犬',
+ bio:'奥德修斯出征前亲手养的小狗，二十年后已经老得走不动，躺在门口的粪堆上生虱子。乞丐走过时，它抬起头，竖了竖耳朵，摇了摇尾巴——然后死了。全篇最短、也最著名的一段。'},
+
+{id:'laertes',zh:'拉厄耳忒斯',en:'Laertes',f:'ithaca',x:108,y:236,r:14,
+ role:'奥德修斯之父 · 退位的老王',
+ bio:'因为儿子失踪，他搬到乡下的果园独居，穿着补丁衣服自己刨土。父子相认靠的不是眼泪，是一份清单：奥德修斯一棵一棵背出小时候父亲指给他看、说"这些将来都是你的"的果树。'},
+
+{id:'anticlea',zh:'安提克勒亚',en:'Anticlea',f:'ithaca',x:112,y:356,r:14,
+ role:'奥德修斯之母',
+ bio:'因为思念儿子而死。奥德修斯是在冥府才知道母亲已经不在的——他三次伸手要抱她，三次抱了个空。'},
+
+{id:'antinous',zh:'安提诺俄斯',en:'Antinous',f:'suitors',x:330,y:610,r:20,
+ role:'求婚者之首 · 主要反派',
+ bio:'一百多个求婚者里最嚣张的一个。他吃光伊萨卡的牛羊、在别人的家里发号施令、策划在海上伏杀忒勒马科斯、朝上门乞讨的老人扔凳子。屠杀开始时，第一支箭射穿的就是他的喉咙。'},
+
+{id:'eurymachus',zh:'欧律马科斯',en:'Eurymachus',f:'suitors',x:196,y:664,r:16,
+ role:'求婚者 · 第二号人物',
+ bio:'比安提诺俄斯更会说话，也因此更危险。他对珀涅罗珀甜言蜜语、对忒勒马科斯假装长辈。安提诺俄斯一倒下，他立刻改口求饶，把全部责任推给刚死的同伙。'},
+
+{id:'polybus',zh:'波吕玻斯',en:'Polybus',f:'suitors',x:206,y:566,r:14,
+ role:'求婚者',
+ bio:'求婚者阵营中的一员，安提诺俄斯的帮手。他代表的是那群没有名字、却同样把别人的家吃空的人。'},
+
+{id:'melantho',zh:'墨兰托',en:'Melantho',f:'suitors',x:430,y:702,r:16,
+ role:'女仆 · 叛徒',
+ bio:'在王宫里长大，被珀涅罗珀当女儿一样养大，却倒向了求婚者，成了安提诺俄斯的情人，还当着主人的面羞辱那个乞丐。她的结局在最后一章里结清，而且毫不留情。'},
+
+{id:'agamemnon',zh:'阿伽门农',en:'Agamemnon',f:'troy',x:832,y:630,r:17,
+ role:'希腊联军统帅 · 迈锡尼王',
+ bio:'奥德修斯的镜像。他也打赢了、也回家了——回家当晚就被妻子和她的情人杀死在浴室里。他在冥府里给奥德修斯留下一句忠告：进城前别声张，谁都别信，包括你自己的老婆。',
+ watch:'他的存在是为了让你在最后一幕紧张起来：回家这件事，本身就可能是最危险的一步。'},
+
+{id:'clytemnestra',zh:'克吕泰涅斯特拉',en:'Clytemnestra',f:'troy',x:936,y:684,r:16,
+ role:'阿伽门农之妻',
+ bio:'珀涅罗珀的反面。丈夫为了求得出征的顺风，把他们的女儿献祭给了女神。她一个人等了十年，然后在他跨进家门的那天动手。'},
+
+{id:'helen',zh:'海伦',en:'Helen',f:'troy',x:700,y:742,r:16,
+ role:'斯巴达王后 · 战争的起因',
+ bio:'"那张让一千条船出海的脸"。她跟着特洛伊王子帕里斯私奔，引发了十年战争；战后又回到墨涅拉俄斯身边，若无其事地在斯巴达宫廷里接待了前来打听父亲消息的忒勒马科斯。'},
+
+{id:'menelaus',zh:'墨涅拉俄斯',en:'Menelaus',f:'troy',x:566,y:684,r:16,
+ role:'斯巴达王 · 海伦之夫',
+ bio:'阿伽门农的弟弟。为了抢回妻子发动了整场战争，战后自己也在海上漂了八年才回家。忒勒马科斯是从他嘴里第一次听到那句话的：你父亲还活着，被困在一个岛上。'},
+
+{id:'sinon',zh:'西农',en:'Sinon',f:'troy',x:556,y:580,r:14,
+ role:'希腊间谍 · 木马计的另一半',
+ bio:'木马造好了，可总得有人骗特洛伊人把它拉进城。西农假装成被希腊人抛弃、准备献祭的可怜逃兵，跪在特洛伊人面前哭诉，成功了。',
+ watch:'这个角色出自维吉尔的《埃涅阿斯纪》而不是荷马——他出现在演员表里，说明电影会正面拍到特洛伊战争本身。'}
+];
+
+const LINKS = [
+ ['odysseus','penelope','kin','夫妻，分离二十年'],
+ ['odysseus','telemachus','kin','父子，从未见过面'],
+ ['penelope','telemachus','kin','母子，共同守着王宫'],
+ ['laertes','odysseus','kin','父子，靠果树清单相认'],
+ ['anticlea','odysseus','kin','母子，她因思念而死'],
+ ['zeus','athena','kin','父女'],
+ ['zeus','poseidon','kin','兄弟，宙斯是最终仲裁者'],
+ ['poseidon','polyphemus','kin','父子，复仇的起点'],
+ ['agamemnon','menelaus','kin','兄弟，两位统帅'],
+ ['menelaus','helen','kin','夫妻，战争因她而起'],
+
+ ['athena','odysseus','ally','守护他二十年，也是全篇的隐形导演'],
+ ['athena','telemachus','ally','化身导师，推他离家寻父'],
+ ['hermes','odysseus','ally','两次奉命相救'],
+ ['aeolus','odysseus','ally','赠他一袋逆风'],
+ ['tiresias','odysseus','ally','在冥府为他指路'],
+ ['nausicaa','odysseus','ally','在海滩上救起他'],
+ ['eumaeus','odysseus','ally','认不出主人，仍待客如仪'],
+ ['eurycleia','odysseus','ally','从伤疤认出他'],
+ ['argos','odysseus','ally','等了二十年，认出他后死去'],
+ ['eurylochus','odysseus','ally','副手，也是唯一敢反对他的人'],
+ ['elpenor','odysseus','ally','第一个在冥府等他的鬼魂'],
+ ['sinon','odysseus','ally','木马计的执行者'],
+ ['agamemnon','odysseus','ally','统帅；在冥府给他忠告'],
+ ['menelaus','telemachus','ally','告诉他"你父亲还活着"'],
+
+ ['poseidon','odysseus','foe','全篇的对手，让海洋与他为敌'],
+ ['polyphemus','odysseus','foe','被刺瞎的独眼巨人'],
+ ['sirens','odysseus','foe','以"全知"为诱饵'],
+ ['scylla','odysseus','foe','六名船员的代价'],
+ ['antinous','odysseus','foe','占据他的家，也吃他的第一箭'],
+ ['antinous','penelope','foe','强逼她改嫁'],
+ ['antinous','telemachus','foe','密谋在海上伏杀他'],
+ ['eurymachus','penelope','foe','花言巧语的求婚者'],
+ ['polybus','penelope','foe','求婚者之一'],
+ ['melantho','penelope','foe','被当女儿养大，却倒戈'],
+ ['clytemnestra','agamemnon','foe','在他回家当晚下手'],
+
+ ['calypso','odysseus','bond','七年挽留，许诺永生'],
+ ['circe','odysseus','bond','从敌人变成情人与引路人'],
+ ['melantho','antinous','bond','情人']
+];
+</script>
+
+<script>
+const WORDS = [
+ {gr:'νόστος',tr:'nostos',zh:'归乡',
+  d:'整部史诗的目标，也是"乡愁 nostalgia"的词根。希腊人认为，打赢仗还不算完，活着回到自己的家才算把故事讲完。'},
+ {gr:'ξενία',tr:'xenia',zh:'待客之道',
+  d:'判断好人坏人的唯一标准：你怎么对待敲门的陌生人。牧猪人款待乞丐是善，求婚者在别人家里吃喝是恶——这条线贯穿全片。'},
+ {gr:'μῆτις',tr:'metis',zh:'智谋',
+  d:'奥德修斯的武器。不是力气，是骗术、伪装和临场算计。木马是 metis，"我叫无人"是 metis，装成乞丐回家也是 metis。'},
+ {gr:'κλέος',tr:'kleos',zh:'声名',
+  d:'英雄唯一能得到的不朽。人会死，但吟游诗人会一直唱你的名字。奥德修斯对着独眼巨人喊出真名，就是为了这个——代价是十年。'},
+ {gr:'ὕβρις',tr:'hubris',zh:'僭越之傲',
+  d:'凡人越过自己的界限去挑衅神。喊出真名是 hubris，宰杀太阳神的牛是 hubris。在这个世界里，傲慢不是性格缺陷，是会被兑现的账单。'}
+];
+
+const THREADS = [
+ {who:'奥德修斯',where:'海上 · 二十年',c:'#7C93C9',
+  d:'从特洛伊的废墟出发，一路撞上巨人、女巫、海妖和神的怒火，船和同伴一件件丢掉，最后一个人被冲上陌生的海滩。'},
+ {who:'珀涅罗珀',where:'伊萨卡王宫 · 同时',c:'#5FB0A6',
+  d:'家被一百多个求婚者占领，粮仓在见底，儿子随时可能被杀。她用织布、用比赛、用一切能拖延的手段守着一个也许已经死掉的丈夫。'},
+ {who:'忒勒马科斯',where:'皮洛斯 → 斯巴达 · 第二十年',c:'#A98CC0',
+  d:'受女神鼓动第一次离开小岛，去父亲的战友那里打听消息。这条线在电影里可能就是观众的眼睛：他和你一样，什么都不知道。'}
+];
+
+const EVENTS = [
+ {id:'e0',t:'木马计 · 特洛伊陷落',sub:'战争第十年',f:'troy',book:'诗中由吟游诗人唱出',
+  d:'围城十年不下，奥德修斯想出一个主意：造一匹巨大的木马，藏进精兵，全军假装撤退。西农留下来骗特洛伊人把它拖进城。当夜城破。',
+  why:'这一夜让他成为传奇，也让他成为一个"靠欺骗取胜的人"。之后二十年的每一次伪装，都是这一夜的延长。'},
+ {id:'e1',t:'基科涅斯人之劫',sub:'伊斯玛洛斯 · 出发后数日',f:'sea',book:'第九卷',
+  d:'离开特洛伊的第一站，他们照着战时的习惯洗劫了沿岸的城市。船员不肯走，喝酒庆祝，援兵赶到，一船折损六人。',
+  why:'第一课：战争结束了，但他们还在用战争的方式活着。归途的失败从这里开始。'},
+ {id:'e2',t:'食忘忧果之地',sub:'洛托法戈伊人的国土',f:'sea',book:'第九卷',
+  d:'派去探路的人吃了当地的花果，立刻忘掉了家、忘掉了名字，只想留下。奥德修斯把他们绑起来拖回船上。',
+  why:'第一个诱惑，也是最温柔的一个：忘记你是谁，就不必再受苦了。他每一次拒绝的，都是这同一个提议。'},
+ {id:'e3',t:'独眼巨人之洞',sub:'波吕斐摩斯',f:'sea',book:'第九卷',
+  d:'一行人被关进山洞，巨人每天生吃两个。奥德修斯自称"无人"，灌醉他，用烧尖的木桩刺瞎他唯一的眼睛，然后让大家抱住羊肚子混出洞口。',
+  why:'全篇的转折点。船开远后他忍不住喊出真名——巨人向父亲波塞冬告状，从此整片海洋与他为敌。一句话，十年。'},
+ {id:'e4',t:'风神的皮袋',sub:'埃俄利亚岛',f:'sea',book:'第十卷',
+  d:'风神把所有逆风装进一只牛皮袋送给他，只留顺风。九天后伊萨卡的海岸已经能看见炊烟。他终于睡着了，船员怀疑袋里是私藏的金子，解开了绳子。',
+  why:'离家最近的一次，也是最惨的一次失败。而且失败的原因不是神，是自己人。'},
+ {id:'e5',t:'食人巨人的港湾',sub:'莱斯特律戈涅斯人',f:'sea',book:'第十卷',
+  d:'看似安全的深水港，其实是陷阱。巨人从崖顶投下巨石，把港内的船一条条砸沉，再用鱼叉把人叉起来。十二条船只剩下停在港外的那一条。',
+  why:'从这里开始，这不再是一支舰队的故事，而是一条船和一群将死之人的故事。'},
+ {id:'e6',t:'喀耳刻的岛',sub:'埃埃亚 · 停留一年',f:'sea',book:'第十卷',
+  d:'女巫用一杯酒把先遣队全变成猪。赫尔墨斯给了奥德修斯抗魔草药 moly，他反制成功，逼她恢复人形——然后在她那里住了整整一年。',
+  why:'船员必须提醒他"该走了"。想回家的人，也会在舒服的地方停下来。'},
+ {id:'e7',t:'冥府问路',sub:'世界尽头',f:'sea',book:'第十一卷',
+  d:'喀耳刻说，想回家先得下地府。他挖坑放血召来亡魂：先知忒瑞西阿斯给了航线和结局，母亲告诉他自己是怎么死的，阿伽门农警告他小心回家那一刻，阿喀琉斯说宁愿在人间做奴隶也不愿在这里做王。',
+  why:'全篇的正中心。他在这里第一次听见"你会老死在家里"——而这正是他想要的结局。'},
+ {id:'e8',t:'绑在桅杆上',sub:'塞壬海峡',f:'sea',book:'第十二卷',
+  d:'船员用蜡封耳，他自己被绳子绑在桅杆上，命令谁都不许松绑。歌声传来时他拼命挣扎、用眼神哀求，水手反而把绳子勒得更紧。',
+  why:'他不是抵抗诱惑，是设计了一套让自己无法屈服的机制。这是全篇最"现代"的一个瞬间。'},
+ {id:'e9',t:'两害相权',sub:'斯库拉与卡律布狄斯',f:'sea',book:'第十二卷',
+  d:'一侧是六头怪物，一侧是吞船漩涡。喀耳刻的建议是走怪物那边：损失六个人，好过全船沉没。他照做了，而且没有事先告诉船员。',
+  why:'领导者的算术题。他眼睁睁看着六个喊着他名字的人被叼上悬崖。'},
+ {id:'e10',t:'太阳神的牛',sub:'特里纳基亚岛 · 全船覆没',f:'sea',book:'第十二卷',
+  d:'先知和女巫都警告过：那座岛上的牛一头都不能碰。逆风困了他们一个月，粮食吃光。他睡着的时候，欧律罗科斯带头宰了牛。开船不久，宙斯一道雷把船劈成碎片。',
+  why:'所有同伴都死在这里。此后他是一个人。'},
+ {id:'e11',t:'卡吕普索之岛',sub:'俄古癸亚 · 七年',f:'sea',book:'第五卷',
+  d:'抱着一块船板漂到女神的岛上，被留下七年。她给他永生、永远年轻、以及她自己。他白天坐在礁石上望海哭泣，晚上回她的洞里。最后宙斯派赫尔墨斯来，命令她放人。',
+  why:'他拒绝了不死。这是这个故事真正的分量所在——他要的不是永恒，是回家。'},
+ {id:'e13',t:'忒勒马科斯远行',sub:'皮洛斯 → 斯巴达 · 并行发生',f:'ithaca',book:'第一至四卷',
+  d:'雅典娜化身为长者，劝这个从没出过门的年轻人去找父亲的战友打听消息。他见了涅斯托耳，又到斯巴达见墨涅拉俄斯和海伦，第一次听说父亲可能还活着。求婚者在他回程的海上设了埋伏。',
+  why:'这是儿子从"某人的儿子"长成"一个人"的过程。父亲还没回来，他就得先成为能替父亲守家的人。'},
+ {id:'e12',t:'讲述自己的故事',sub:'法伊阿基亚宫廷',f:'sea',book:'第六至十二卷',
+  d:'被瑙西卡救起后，他隐姓埋名做客。宴席上吟游诗人唱起特洛伊的往事，他掩面而泣，终于报出姓名，然后把上面所有的冒险一口气讲了出来。这一国人用一条船把他送回了伊萨卡。',
+  why:'史诗里最著名的结构：中间那四卷全是主角亲口的倒叙。你听到的冒险，是他自己的版本。'},
+ {id:'e14',t:'乔装归乡',sub:'伊萨卡 · 第二十年',f:'ithaca',book:'第十三至十六卷',
+  d:'雅典娜把他变成一个满脸皱纹的老乞丐。他先投宿牧猪人家，与刚从斯巴达赶回的儿子相认，一起摸清宫里的情况。老狗阿尔戈斯在门口认出他，然后死了；老乳母洗脚时摸到疤痕，被他掐住喉咙。',
+  why:'回到家门口的人，还得再演一场戏才能进门。他做了二十年的伪装，最后一次是装成自己家的乞丐。'},
+ {id:'e15',t:'拉弓与清算',sub:'大厅之战',f:'ithaca',book:'第十七至二十二卷',
+  d:'珀涅罗珀宣布比赛：谁能拉开奥德修斯的硬弓、一箭穿过十二把斧头的孔，她就嫁给谁。求婚者一个个失败。乞丐要求一试，轻松拉满弓弦——然后转身把第二支箭射进了安提诺俄斯的喉咙。',
+  why:'身份不靠语言证明，靠一件只有他能做到的事。之后是全篇唯一一场正面的、彻底的屠杀。'},
+ {id:'e16',t:'婚床的秘密',sub:'最后的试探',f:'ithaca',book:'第二十三卷',
+  d:'仗打完了，珀涅罗珀却不认他。她当着他的面吩咐仆人"把那张床搬出卧室"。他勃然大怒：那张床是他亲手用一棵活着的橄榄树干凿成的，根扎在地里，谁也搬不动。她这才哭着扑上去。',
+  why:'她赢了最后一回合。二十年后确认丈夫身份的，不是伤疤也不是弓，是一个只有他们两个人知道的秘密。'}
+];
+
+const ORDER_STORY = ['e0','e1','e2','e3','e4','e5','e6','e7','e8','e9','e10','e11','e13','e12','e14','e15','e16'];
+const ORDER_HOMER = ['e13','e11','e12','e0','e1','e2','e3','e4','e5','e6','e7','e8','e9','e10','e14','e15','e16'];
+const TL_HINT = {
+ story:'事情实际发生的先后。特洛伊陷落在最前，回到婚床在最后。第一次接触这个故事，先按这个顺序理一遍最省力。',
+ homer:'荷马的讲法：开篇已经是第二十年，主角还被困在卡吕普索的岛上；观众要等到第九卷，才由主角本人在宴席上倒叙前面十年的全部冒险。诺兰几乎肯定会沿用这种"中途切入 + 倒叙"的结构——银幕上的顺序不等于时间顺序。'
+};
+
+const SCENES = [
+ {n:'I',t:'木马',gr:'The Wooden Horse',
+  d:'十年攻不下的城，被一个礼物打开。这是"用脑子赢"的原型场景，也是奥德修斯全部名声的来源。',
+  pt:'诺兰的片场照里出现过大型木马结构——这一段大概率是实拍的开场重头戏。'},
+ {n:'II',t:'"我叫无人"',gr:'Outis / Nobody',
+  d:'被困洞中，他先报了个假名。刺瞎巨人后，巨人喊"无人在害我"，赶来的邻居听了大笑着走开。一个双关救了所有人。',
+  pt:'这是全片理解主角的钥匙：他的生存方式，是暂时放弃自己的名字。'},
+ {n:'III',t:'喊出真名',gr:'Hubris',
+  d:'船已经开远，安全了。他却站到船尾，冲着瞎眼的巨人喊出全名和家乡——为了让对方知道是谁干的。巨人当场向父亲波塞冬祈求诅咒。',
+  pt:'如果电影只保留一个"因果起点"，就是这一句。之后十年的每一场风暴都从这里发出。'},
+ {n:'IV',t:'打开的风袋',gr:'The Bag of Winds',
+  d:'家乡的海岸已经在望，炊烟都看得见。船员趁国王熟睡解开皮袋，逆风一起，把他们吹回了起点。',
+  pt:'注意这不是神的惩罚，是猜疑。他从不告诉船员实情，代价在这里到期。'},
+ {n:'V',t:'冥府里的阿喀琉斯',gr:'Nekyia',
+  d:'那位选择"早死换不朽名声"的最伟大英雄，在阴间对他说：我宁愿在人间给最穷的人当雇工，也不愿在死人堆里做王。',
+  pt:'整部史诗的价值判断在这一句里翻转：活着回家，比不朽的名声更值钱。'},
+ {n:'VI',t:'桅杆上的塞壬',gr:'The Sirens',
+  d:'他堵住所有人的耳朵，唯独让自己听。歌声唱的是"我们知道一切"。他挣扎、哀求、下令松绑，水手照事先约定把绳子勒得更紧。',
+  pt:'三千年前就写出的场景：一个人预先设计好，让未来的自己无法作出错误决定。'},
+ {n:'VII',t:'拒绝永生',gr:'Kalypso',
+  d:'女神提供不死、青春和一座乐园。他要的是一座石头很多的小岛，和一个"论美貌远不如你、而且会衰老会死"的妻子。他自己也这么说。',
+  pt:'如果你想知道诺兰为什么要拍这个故事，答案在这一场。'},
+ {n:'VIII',t:'老狗阿尔戈斯',gr:'Argos',
+  d:'二十年后，第一个认出他的不是妻子、不是儿子，是一条躺在粪堆上、老得爬不起来的猎犬。它摇了摇尾巴就死了。他别过头，偷偷擦掉眼泪，继续演乞丐。',
+  pt:'全篇最短的一段，也是最难拍的一段。留意演员在这一刻不能做的表情。'},
+ {n:'IX',t:'拉开那张弓',gr:'The Bow',
+  d:'满屋子年轻力壮的求婚者一个也拉不开，衣衫褴褛的老乞丐接过来，像琴师上弦一样毫不费力地拉满，一箭穿过十二把斧孔。全场安静下来。',
+  pt:'身份证明的经典写法：不用说一个字。'},
+ {n:'X',t:'婚床',gr:'The Olive-Tree Bed',
+  d:'血洗大厅之后，妻子仍不肯认他，反而设了个圈套：让人把床搬出来。他一听就炸了——床是用一棵活树凿的，根还在地里。她这才承认。',
+  pt:'两个同样多疑、同样擅长设局的人，最后靠一场互相试探重新确认了彼此。这是全篇真正的结尾。'}
+];
+</script>
+
+<script>
+const CAST = [
+ {a:'马特·达蒙',ae:'Matt Damon',c:'奥德修斯',ce:'Odysseus',f:'ithaca',
+  who:'伊萨卡之王，木马计的发明者，全片主角。战争打了十年，回家又漂了十年。',
+  note:'达蒙比荷马笔下的奥德修斯年长——这大概是有意的：诺兰要拍的是一个已经耗尽了的人，而不是一个正当年的英雄。'},
+ {a:'汤姆·赫兰德',ae:'Tom Holland',c:'忒勒马科斯',ce:'Telemachus',f:'ithaca',
+  who:'奥德修斯之子。父亲出征时他还是婴儿，二十年没见过父亲，却要独自面对占据自家王宫的一百多个求婚者。',
+  note:'原著前四卷完全是他的戏。他很可能是观众的代入视角——他和你一样，对这个父亲一无所知。'},
+ {a:'安妮·海瑟薇',ae:'Anne Hathaway',c:'珀涅罗珀',ce:'Penelope',f:'ithaca',
+  who:'奥德修斯之妻。用"织完寿衣就改嫁"的谎言拖了三年，独自守住一座被围困的王宫。',
+  note:'她的智谋在原著里与丈夫同级。最后一场"婚床"戏是全篇最锋利的对手戏，看她怎么演。'},
+ {a:'罗伯特·帕丁森',ae:'Robert Pattinson',c:'安提诺俄斯',ce:'Antinous',f:'suitors',
+  who:'求婚者之首，主要反派。吃空伊萨卡的粮仓，策划刺杀王子，向乞丐扔凳子。第一支箭射的就是他。',
+  note:'诺兰第三次用帕丁森（《信条》《奥本海默》）。这次是他第一次在诺兰片里演纯粹的恶人。'},
+ {a:'赞达亚',ae:'Zendaya',c:'雅典娜',ce:'Athena',f:'gods',
+  who:'智慧与战术女神，奥德修斯的保护神，也是全篇的隐形导演——她乔装成凡人推动每一次转折。',
+  note:'留意那些突然出现、说完关键的话就消失的陌生人。神在这个故事里从不以神的样子登场。'},
+ {a:'查理兹·塞隆',ae:'Charlize Theron',c:'卡吕普索',ce:'Calypso',f:'sea',
+  who:'把奥德修斯留在岛上七年的女神，开出的条件是永生与永远年轻。',
+  note:'她提出的交易是全片的主题考题。他的拒绝，就是这个故事的答案。'},
+ {a:'萨曼莎·莫顿',ae:'Samantha Morton',c:'喀耳刻',ce:'Circe',f:'sea',
+  who:'埃埃亚岛的女巫。先把船员变成猪，被制服后成为最关键的引路人——下冥府的主意就是她出的。',
+  note:'她是全片里唯一一个从敌人变成盟友、又变成情人的角色。'},
+ {a:'露皮塔·尼永奥',ae:"Lupita Nyong'o",c:'海伦 & 克吕泰涅斯特拉',ce:'Helen & Clytemnestra',f:'troy',
+  who:'一人分饰两角：引发战争的斯巴达王后海伦，以及在丈夫回家当晚杀了他的克吕泰涅斯特拉。两人是姐妹。',
+  note:'这个双角安排本身就是解读线索：两个女人分别代表"战争的起因"和"归乡的最坏结局"，而她们都在对照珀涅罗珀。'},
+ {a:'乔·博恩瑟',ae:'Jon Bernthal',c:'墨涅拉俄斯',ce:'Menelaus',f:'troy',
+  who:'斯巴达王，海伦的丈夫，阿伽门农的弟弟。战争因他的妻子被拐而起，他自己也漂了八年才到家。',
+  note:'忒勒马科斯是从他嘴里第一次听到"你父亲还活着"。'},
+ {a:'本尼·萨夫迪',ae:'Benny Safdie',c:'阿伽门农',ce:'Agamemnon',f:'troy',
+  who:'希腊联军统帅。他也打赢了、也回家了，回家当晚被妻子杀死在浴室里。',
+  note:'他是奥德修斯的镜像，存在的意义是让你在最后一幕紧张：回家本身就是最危险的一步。'},
+ {a:'希梅什·帕特尔',ae:'Himesh Patel',c:'欧律罗科斯',ce:'Eurylochus',f:'sea',
+  who:'船上的副手，唯一敢当众顶撞奥德修斯的人。他的谨慎救过全船，他的冒失也害死了全船。',
+  note:'他代表"船员"这个集体。全船人的死，账要算在他和他的船长两个人头上。'},
+ {a:'米娅·高斯',ae:'Mia Goth',c:'墨兰托',ce:'Melantho',f:'suitors',
+  who:'王宫女仆，被珀涅罗珀当女儿养大，却倒向求婚者，成了安提诺俄斯的情人。',
+  note:'背叛来自家里人。她的结局在原著最后一章里，写得极其冷酷。'},
+ {a:'约翰·雷吉扎莫',ae:'John Leguizamo',c:'欧迈俄斯',ce:'Eumaeus',f:'ithaca',
+  who:'牧猪人。奥德修斯回国后投宿的第一个人，认不出乔装的主人，却照样杀猪款待。',
+  note:'他是"待客之道"的正面样本，与王宫里蹭吃蹭喝的求婚者构成全片最重要的一组对照。'},
+ {a:'艾略特·佩吉',ae:'Elliot Page',c:'西农',ce:'Sinon',f:'troy',
+  who:'希腊间谍，木马计的另一半——假扮成被抛弃的逃兵，骗特洛伊人把木马拉进城。',
+  note:'这个角色出自维吉尔而非荷马。他出现在演员表里，说明电影会正面拍特洛伊战争。诺兰与佩吉自《盗梦空间》后再度合作。'},
+ {a:'比尔·欧文',ae:'Bill Irwin',c:'波吕斐摩斯',ce:'Polyphemus',f:'sea',
+  who:'独眼巨人，波塞冬之子。被奥德修斯灌醉刺瞎，由此引来海神二十年的追杀。',
+  note:'欧文是舞台肢体剧演员出身，据报道担任现场表演。诺兰一贯排斥纯 CG，这个巨人很可能有大量实拍成分。'},
+ {a:'科里·霍金斯',ae:'Corey Hawkins',c:'波吕玻斯',ce:'Polybus',f:'suitors',
+  who:'求婚者之一，安提诺俄斯的帮手。'},
+ {a:'乔万·阿德坡',ae:'Jovan Adepo',c:'埃尔佩诺耳',ce:'Elpenor',f:'sea',
+  who:'最年轻的船员。醉酒从屋顶摔死，成为奥德修斯在冥府遇见的第一个鬼魂，只求一件事：回去把我埋了。',
+  note:'一个小角色，但作用是提醒观众：英雄传奇之外，还有一整船普通人在无声地死去。'},
+ {a:'詹姆斯·瑞马',ae:'James Remar',c:'忒瑞西阿斯',ce:'Tiresias',f:'sea',flag:'据报道',
+  who:'冥府中的盲人先知。奥德修斯必须活着走进地府，才能从他口中问到回家的路和自己的结局。'},
+ {a:'特拉维斯·斯科特',ae:'Travis Scott',c:'吟游诗人',ce:'The Bard',f:'gods',flag:'据报道',
+  who:'宫廷里唱诵英雄事迹的歌手。正是他的歌让奥德修斯在异国的宴席上掩面而泣、终于报出真名。',
+  note:'吟游诗人是《奥德赛》的"叙述者装置"——荷马本人就是这个角色。让一位音乐人来演，是个很直白的自指。'}
+];
+const CAST_TAIL = 'Logan Marshall-Green、Ryan Hurst、Josh Stewart、Jesse Garcia、Cosmo Jarvis、Will Yun Lee、Iddo Goldberg、Elyes Gabel、Niko Nicotera、Rafi Gavron、Shiloh Fernandez、Jamie Harris、Andrew Howard 等亦有出演，角色未公开——多为奥德修斯的船员与伊萨卡的求婚者。';
+
+const TIPS = [
+ {t:'银幕上的顺序 ≠ 发生的顺序',
+  d:'荷马原著就是"中途切入"的：开篇已经是第二十年，主角还困在卡吕普索的岛上，前十年的冒险要等到第九卷才由他本人在宴席上倒叙出来。',
+  d2:'诺兰拍《记忆碎片》《敦刻尔克》《信条》《奥本海默》都在玩时间结构，这次原著先递上了刀。看的时候别急着按顺序拼，先认人和地点。'},
+ {t:'认四组人就够了',
+  d:'家人（妻子、儿子、父母、老仆）／神（雅典娜帮他，波塞冬整他，宙斯管规矩）／船员（会一批批死掉）／求婚者（占着他的家）。',
+  d2:'希腊名字长且相似，但只要能分清"这个人属于哪一组"，剧情就不会丢。第二页的人物星图按这四组＋特洛伊一组上了颜色。'},
+ {t:'一人分饰两角是提示',
+  d:'露皮塔·尼永奥同时演海伦和克吕泰涅斯特拉。前者引发了战争，后者杀死了归乡的丈夫。',
+  d2:'这两个角色都是拿来对照珀涅罗珀的：同样是等丈夫回家的女人，三条完全不同的路。看到同一张脸出现在两条线上时，那是刻意的。'},
+ {t:'看"怎么对待陌生人"',
+  d:'希腊人用 xenia（待客之道）判断善恶：牧猪人款待乞丐是善，求婚者赖在别人家吃喝是恶，独眼巨人吃掉客人则是彻底的野蛮。',
+  d2:'片中几乎每一站都是一次"待客测试"。谁通过了、谁没通过，决定了他们的下场。'},
+ {t:'关于 IMAX',
+  d:'全片用 IMAX 70mm 摄影机拍摄，是影史第一部完全如此的商业长片。片长 173 分钟。',
+  d2:'如果能买到 IMAX 70mm 胶片厅的票，画幅会撑满整个方形银幕；普通厅会看到上下裁切。海上和巨人洞的段落差别最明显。'},
+ {t:'哪些是荷马没写的',
+  d:'木马计的细节和西农这个人物出自维吉尔《埃涅阿斯纪》；特洛伊战争本身属于《伊利亚特》。原著《奥德赛》里，这些只是被人回忆和唱起。',
+  d2:'既然西农出现在演员表里，电影多半会把战争正面拍出来，而不只是让人物回忆。这属于合理扩写，不是"改错了"。'}
+];
+</script>
+
+<script>
+(function(){
+const $  = (s,r)=> (r||document).querySelector(s);
+const $$ = (s,r)=> Array.from((r||document).querySelectorAll(s));
+const NS = 'http://www.w3.org/2000/svg';
+const svgEl = (n,attrs)=>{const e=document.createElementNS(NS,n);
+  for(const k in attrs) e.setAttribute(k,attrs[k]); return e;};
+
+const BY_ID = {}; CHARS.forEach(c=>BY_ID[c.id]=c);
+const ACTOR_MAP = {
+  odysseus:'马特·达蒙', telemachus:'汤姆·赫兰德', penelope:'安妮·海瑟薇', antinous:'罗伯特·帕丁森',
+  athena:'赞达亚', calypso:'查理兹·塞隆', circe:'萨曼莎·莫顿', helen:'露皮塔·尼永奥',
+  clytemnestra:'露皮塔·尼永奥', menelaus:'乔·博恩瑟', agamemnon:'本尼·萨夫迪',
+  eurylochus:'希梅什·帕特尔', melantho:'米娅·高斯', eumaeus:'约翰·雷吉扎莫',
+  sinon:'艾略特·佩吉', polyphemus:'比尔·欧文', polybus:'科里·霍金斯',
+  elpenor:'乔万·阿德坡', tiresias:'詹姆斯·瑞马（据报道）'
+};
+
+/* ---------- tabs ---------- */
+$$('#tabs .tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    $$('#tabs .tab').forEach(b=>b.setAttribute('aria-selected', String(b===btn)));
+    $$('main > section').forEach(s=>{ s.hidden = (s.id !== btn.dataset.p); });
+    window.scrollTo({top: document.querySelector('.nav').offsetTop - 1,
+      behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto':'smooth'});
+  });
+});
+
+/* ---------- I. 速览 ---------- */
+$('#words').innerHTML = WORDS.map(w=>
+  '<div class="word"><div class="gr">'+w.gr+'</div><div class="tr">'+w.tr+'</div>'+
+  '<div class="zh">'+w.zh+'</div><p>'+w.d+'</p></div>').join('');
+
+$('#threads').innerHTML = THREADS.map(t=>
+  '<div class="thread" style="--tc:'+t.c+'"><div class="who">'+t.who+'</div>'+
+  '<div class="where">'+t.where+'</div><p>'+t.d+'</p></div>').join('');
+
+/* ---------- II. 人物星图 ---------- */
+const map = $('#map'), mapBox = $('#mapBox');
+const hidden = new Set();
+let sel = 'odysseus';
+
+const gEdges = svgEl('g',{}), gNodes = svgEl('g',{});
+map.appendChild(gEdges); map.appendChild(gNodes);
+
+const edgeEls = LINKS.map(([a,b,type,label])=>{
+  const A=BY_ID[a], B=BY_ID[b];
+  const ln = svgEl('line',{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
+    stroke:REL[type].c, 'stroke-opacity':.3, 'stroke-width':1.1});
+  ln.setAttribute('class','edge');
+  gEdges.appendChild(ln);
+  return {el:ln,a:a,b:b,type:type,label:label};
+});
+
+const nodeEls = {};
+CHARS.forEach(c=>{
+  const col = FACTIONS[c.f].c;
+  const g = svgEl('g',{tabindex:'0',role:'button','aria-label':c.zh});
+  g.setAttribute('class','node');
+  g.appendChild(svgEl('circle',{cx:c.x,cy:c.y,r:c.r,fill:'#070B10'}));
+  const ring = svgEl('circle',{cx:c.x,cy:c.y,r:c.r,fill:col,'fill-opacity':.15,
+    stroke:col,'stroke-opacity':.65,'stroke-width':1.4});
+  ring.setAttribute('class','ring');
+  g.appendChild(ring);
+  const t1 = svgEl('text',{x:c.x,y:c.y+c.r+16}); t1.textContent=c.zh;
+  const t2 = svgEl('text',{x:c.x,y:c.y+c.r+28}); t2.setAttribute('class','en'); t2.textContent=c.en;
+  g.appendChild(t1); g.appendChild(t2);
+  const hit = svgEl('circle',{cx:c.x,cy:c.y,r:Math.max(c.r+8,22)});
+  hit.setAttribute('class','hit'); g.appendChild(hit);
+  g.addEventListener('mouseenter',()=>focusOn(c.id));
+  g.addEventListener('mouseleave',()=>focusOn(sel));
+  g.addEventListener('focus',()=>focusOn(c.id));
+  g.addEventListener('click',()=>select(c.id));
+  g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();select(c.id);} });
+  gNodes.appendChild(g);
+  nodeEls[c.id]=g;
+});
+
+function neighbours(id){
+  const s=new Set();
+  LINKS.forEach(([a,b])=>{ if(a===id)s.add(b); if(b===id)s.add(a); });
+  return s;
+}
+function focusOn(id){
+  const near = neighbours(id);
+  mapBox.classList.add('focus');
+  CHARS.forEach(c=>{
+    const g=nodeEls[c.id];
+    g.classList.toggle('on', c.id===id);
+    g.classList.toggle('near', near.has(c.id));
+  });
+  edgeEls.forEach(e=> e.el.classList.toggle('lit', e.a===id||e.b===id));
+  applyHidden();
+}
+function applyHidden(){
+  CHARS.forEach(c=> nodeEls[c.id].classList.toggle('dim', hidden.has(c.f)));
+  edgeEls.forEach(e=>{
+    const off = hidden.has(BY_ID[e.a].f) || hidden.has(BY_ID[e.b].f);
+    e.el.style.display = off ? 'none' : '';
+  });
+}
+function select(id){ sel=id; focusOn(id); renderDetail(id); }
+
+function renderDetail(id){
+  const c = BY_ID[id], col = FACTIONS[c.f].c;
+  const rels = LINKS.filter(l=>l[0]===id||l[1]===id).map(l=>{
+    const other = l[0]===id ? l[1] : l[0];
+    return '<li data-go="'+other+'"><span class="bar" style="--rc:'+REL[l[2]].c+'"></span>'+
+      '<span class="rn">'+BY_ID[other].zh+'</span><span class="rl">'+l[3]+'</span></li>';
+  }).join('');
+  const actor = ACTOR_MAP[id];
+  $('#detail').style.setProperty('--dc',col);
+  $('#detail').innerHTML =
+    '<div class="tagline">'+FACTIONS[c.f].zh+'</div>'+
+    '<h3>'+c.zh+'</h3><div class="en-name">'+c.en+'</div>'+
+    '<p class="role">'+c.role+'</p>'+
+    '<p class="bio">'+c.bio+'</p>'+
+    (c.watch ? '<p class="watch">'+c.watch+'</p>' : '')+
+    (actor ? '<p class="cast-line">电影中由 <b>'+actor+'</b> 饰演</p>' : '')+
+    (rels ? '<ul class="rels">'+rels+'</ul>' : '');
+  $$('#detail .rels li').forEach(li=>{
+    li.addEventListener('click',()=>select(li.dataset.go));
+  });
+}
+
+/* legend */
+$('#legend').innerHTML = Object.keys(FACTIONS).map(k=>
+  '<button class="chip" data-f="'+k+'" aria-pressed="true" style="--c:'+FACTIONS[k].c+'">'+
+  '<span class="dot"></span>'+FACTIONS[k].zh+'</button>').join('');
+$$('#legend .chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const f=ch.dataset.f, on = ch.getAttribute('aria-pressed')==='true';
+    if(on){ hidden.add(f); ch.setAttribute('aria-pressed','false'); }
+    else  { hidden.delete(f); ch.setAttribute('aria-pressed','true'); }
+    applyHidden();
+  });
+});
+
+/* roster */
+$('#roster').innerHTML = CHARS.slice().sort((a,b)=>
+  Object.keys(FACTIONS).indexOf(a.f)-Object.keys(FACTIONS).indexOf(b.f)
+).map(c=>'<button class="rbtn" data-go="'+c.id+'" style="--c:'+FACTIONS[c.f].c+'">'+
+  c.zh+'<small>'+c.en+'</small></button>').join('');
+$$('#roster .rbtn').forEach(b=>b.addEventListener('click',()=>{
+  select(b.dataset.go);
+  $('#detail').scrollIntoView({block:'nearest',
+    behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
+}));
+
+select('odysseus');
+
+/* ---------- III. 时间线 ---------- */
+const EV_BY = {}; EVENTS.forEach(e=>EV_BY[e.id]=e);
+function renderTL(order){
+  const ids = order==='homer' ? ORDER_HOMER : ORDER_STORY;
+  $('#tlHint').textContent = TL_HINT[order];
+  $('#tl').innerHTML = ids.map((id,i)=>{
+    const e = EV_BY[id], col = FACTIONS[e.f].c;
+    return '<article class="ev" style="--ec:'+col+'">'+
+      '<div class="ev-head"><span class="ev-idx">'+String(i+1).padStart(2,'0')+'</span>'+
+      '<span class="ev-title">'+e.t+'</span>'+
+      '<span class="ev-badge">'+(order==='homer'? e.book : e.sub)+'</span></div>'+
+      '<p class="ev-sub">'+(order==='homer'? e.sub : e.book)+'</p>'+
+      '<p class="ev-body">'+e.d+'</p>'+
+      (e.why ? '<p class="ev-why">'+e.why+'</p>' : '')+
+    '</article>';
+  }).join('');
+}
+$$('#tlSwitch button').forEach(b=>b.addEventListener('click',()=>{
+  $$('#tlSwitch button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  renderTL(b.dataset.o);
+}));
+renderTL('story');
+
+/* ---------- IV. 名场面 ---------- */
+$('#scenes').innerHTML = SCENES.map(s=>
+  '<article class="scene"><div class="num">'+s.n+'</div><h3>'+s.t+'</h3>'+
+  '<div class="gr">'+s.gr+'</div><p>'+s.d+'</p>'+
+  (s.pt?'<p class="pt">'+s.pt+'</p>':'')+'</article>').join('');
+
+/* ---------- V. 演员 ---------- */
+function renderCast(q){
+  q = (q||'').trim().toLowerCase();
+  const list = CAST.filter(c=> !q || (c.a+c.ae+c.c+c.ce+c.who).toLowerCase().includes(q));
+  $('#castCount').textContent = q ? (list.length+' / '+CAST.length+' 位') : (CAST.length+' 位已公布角色');
+  $('#cast').innerHTML = list.map(c=>{
+    const col = FACTIONS[c.f].c;
+    return '<article class="actor" style="--c:'+col+'">'+
+      '<div class="an"><b>'+c.a+'</b> · '+c.ae+'</div>'+
+      '<div class="arrow">plays</div>'+
+      '<div class="cn">'+c.c+(c.flag?'<span class="flag">'+c.flag+'</span>':'')+'</div>'+
+      '<div class="cen">'+c.ce+'</div>'+
+      '<p class="who">'+c.who+'</p>'+
+      (c.note?'<p class="note">'+c.note+'</p>':'')+
+    '</article>';
+  }).join('') || '<p class="sec-note">没有匹配的结果。</p>';
+}
+$('#castSearch').addEventListener('input',e=>renderCast(e.target.value));
+renderCast('');
+
+/* ---------- VI. 观影指南 ---------- */
+$('#tips').innerHTML = TIPS.map(t=>
+  '<div class="tip"><h3>'+t.t+'</h3><p>'+t.d+'</p>'+(t.d2?'<p>'+t.d2+'</p>':'')+'</div>').join('');
+$('#srcNote').innerHTML =
+  '<b style="color:var(--bone-2);font-weight:500;">其余演员</b><br>'+CAST_TAIL+
+  '<br><br><b style="color:var(--bone-2);font-weight:500;">关于剧透</b><br>'+
+  '本页只讲三千年前就已公开的原著情节，不含电影的改编内容与结局处理。原著的结局在最后一页写着——如果你连这个也想在影院里第一次知道，跳过"十年归途"的最后三条和"名场面"的第九、十条。';
+})();
+</script>
+</body>
+</html>
