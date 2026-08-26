@@ -1,3 +1,37 @@
+## Before running anything: check sync
+
+This repo is cloned on two machines. Either clone can be behind the other, and
+`node_modules/`, `dist/`, `.astro/`, and `.notion-export/` are gitignored — they
+are per-machine and never travel with a pull.
+
+Run this first thing in a session, and again after any pause, **before**
+`astro dev --background`, `npm run build`, `npx astro check`, or any script in
+`scripts/`:
+
+```sh
+git fetch origin
+git status -sb     # the branch line shows [ahead N] / [behind N]
+```
+
+Then act on what it says:
+
+- **Behind** — `git pull --rebase` before running or editing anything.
+  Running the old tree produces output that looks broken for no reason.
+- **Ahead, or a dirty tree** — the other machine cannot see this work. Commit
+  and push before switching machines; end every session with nothing
+  uncommitted and nothing unpushed.
+- **Diverged** — stop and reconcile the two histories before touching files.
+  Do not force-push; both clones are real work.
+- **Wrong branch** — work happens on feature branches (e.g.
+  `add-odyssey-guide`), not always `main`. `git branch -vv` also shows whether
+  the branch you want even exists locally; `git fetch` first, or it will look
+  missing when it is only unfetched.
+
+After a pull that touched `package-lock.json`, run `npm install` — the lockfile
+syncs, the installed tree does not. If a dev server is already running, stop it
+(`astro dev stop`) before pulling: it keeps serving the pre-pull tree and its
+`.astro/` cache goes stale.
+
 ## Development
 
 When starting the dev server, use background mode:
