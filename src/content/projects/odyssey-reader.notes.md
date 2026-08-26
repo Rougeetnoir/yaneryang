@@ -6,6 +6,10 @@
 行号都指 `public/odyssey/index.html`（共 1037 行，2026-08-25 的版本）。
 如果行号对不上，用旁边给的常量名/函数名搜。
 
+> **2026-08-26：加演员头像之后，文件变成 1102 行（120KB），下面绝大多数行号
+> 已经错位了**——改动落在 CSS（约 L174 / L261 / L302）和节点渲染里，插入点之后
+> 的一切都往后挪了。**别再照行号跳，一律用常量名/函数名搜。** 新增的部分见第 7 节。
+
 > 这份文档由当时写这个页面的会话本人写的，不是事后重建。凡是标了「不确定」
 > 的地方是真的不确定，不是客套。
 
@@ -28,6 +32,10 @@ Reader 那份之所以缺 head，是因为 Artifact 宿主会自己套
 `<head>`，后半塞进 `<body>`，再在最前面加 doctype、`charset`、`viewport`、
 `color-scheme=dark`、favicon 链接。`viewport` 那行是必须的，Artifact 宿主会自动加，
 静态托管不会——漏了手机上会当成 980px 桌面页渲染。
+
+**2026-08-26 起漂移更严重了**：网站这份加了 19 张内联的演员头像（见第 7 节），
+另外两份没有。要同步它们，不是复制粘贴几行就行，得把整个
+`ODYSSEY-FACES` 区块搬过去——那是一百多 KB 的 base64。
 
 **建议**：以后只维护 `public/odyssey/index.html` 这一份，Reader 仓库那份当归档。
 如果一定要两边都活，改完记得手动同步，并且注意 Reader 那份不能加 head
@@ -356,9 +364,14 @@ L976 有一句 `select('odysseus');`，初始化时就选中了奥德修斯。
 
 ## 6. 约束
 
-### 单文件、无构建
+### 单文件、无构建（**运行时仍然成立，但现在有一个生成步骤**）
 
 这是硬约束（要能作为 Artifact 发布、要能当静态资源塞进 `public/`、要能离线打开）。
+
+**2026-08-26 更新**：加演员头像之后，页面在**运行时**依然是零依赖的单文件，
+但它不再是纯手写的了——`ODYSSEY-FACES:BEGIN` / `:END` 之间那段 base64 由
+`scripts/build-odyssey-faces.mjs` 生成。见第 7 节。
+
 代价：
 
 - 数据和视图挤在同一个文件里，1037 行。
@@ -410,3 +423,106 @@ sandbox 是 `allow-scripts allow-same-origin allow-forms allow-downloads`。
 glob 都是 `**/*.mdx`（`src/content.config.ts` L12/43/67），所以它不会被
 Astro 当成内容条目，不进构建。**别改成 `.mdx`**，一改就会因为缺 frontmatter
 让整个构建挂掉。
+
+---
+
+## 7. 演员头像（2026-08-26 加）
+
+星图里 19 个节点的圆圈里放了演员头像，演员对照页每张卡片右上角放了同一张。
+这一节写的是这套东西的坑。
+
+### 为什么必须内联成 base64
+
+试过的替代方案全部走不通：
+
+- **外链**（TMDb 的图床）——Artifact 的 CSP 只放行 Google Fonts，直接被拦。
+- **放 `public/odyssey/portraits/`**——网站这份能用，但 Artifact 那份会 404，
+  离线打开也会全裂。
+
+所以只剩内联。`ODYSSEY-FACES:BEGIN` / `:END` 之间那一段是
+`scripts/build-odyssey-faces.mjs` 生成的，**不要手改**。流程写在 `CLAUDE.md` 里。
+
+实际体积：19 张 128px WebP 共 35KB，转成 base64 后 48KB，
+整个文件从 72KB 涨到 120KB。
+
+`FACE_SRC` 按演员 slug 存图，`FACE_BY_CHAR` 把 `CHARS[].id` 映射到 slug。
+分成两张表是因为露皮塔·尼永奥一个人对应 `helen` 和 `clytemnestra` 两个节点，
+合成一张表的话她那几 KB 要存两份。
+
+### 19 / 31
+
+只有已公布卡司的角色有脸。宙斯、波塞冬、赫尔墨斯、埃俄罗斯、瑙西卡、
+欧律克勒亚、拉厄耳忒斯、安提克勒亚、欧律马科斯、塞壬、斯库拉、阿尔戈斯
+这 12 个维持原来的空心彩环。**这是有意的**，不是没做完——有脸=电影已公布卡司，
+没脸=纯原著人物，而且给一条狗和一群海妖配头像本来也很怪。图例那句小字说的就是这个。
+
+特拉维斯·斯科特（吟游诗人）反过来：他有卡片头像，但星图里没有对应节点。
+
+### `<g>` 的子元素顺序又多了两个成员
+
+第 2 节那条「`.hit` 必须是最后一个子元素」现在更容易踩了。完整顺序是：
+
+```
+黑色垫底圆 → image.face → circle.tint → circle.ring → text → text.en → circle.hit
+```
+
+- `image.face` 必须在 `ring` **之前**，否则阵营描边被照片盖住。
+- `.node image.face` 设了 `pointer-events:none`，和 `.node text` 同理。
+- **有头像的节点，`ring` 的 `fill-opacity` 是 0**（无头像时是 .15）。
+  忘了这条的话，环的半透明填充会和 `tint` 叠成双重上色，照片会糊掉一层。
+
+### clipPath 为什么是每节点一个
+
+用的是每节点一个 `userSpaceOnUse` 的 `<clipPath id="fc-<id>">`，放在 `<defs>` 里。
+看起来啰嗦——理论上一个 `clipPathUnits="objectBoundingBox"` 的圆就能给所有节点复用。
+**没这么做是因为 Safari 对 `<image>` 上的 objectBoundingBox 裁剪历史上有 bug，
+而这个页面从来没在 Safari 上测过**（见第 5 节「已知未修」）。19 个 defs 不值得
+为省事去赌。
+
+### 裁剪策略：`top`，不是 `attention`
+
+`sharp` 的 `position` 用的是 `'top'`——从 2:3 竖版原图顶部取正方形。
+
+**先试的是 `sharp.strategy.attention`（显著性裁剪），19 张里错了 3 张**：
+汤姆·赫兰德、乔万·阿德坡（白衬衫）、露皮塔·尼永奥（亮黄色高领）。
+显著性算法找的是高对比区域，不是脸，于是衣服赢了头，裁出来是下巴加半身。
+TMDb 的 profile 是标准化头像、脸恒在上三分之一，这种规整格式上按顶部裁比
+猜显著性稳。换成 `top` 之后三张全部修好，其余 16 张没有一张变差。
+
+个别还是不满意的，在 `scripts/odyssey-faces.json` 里给那个人加 `crop`
+字段（`sharp` 的 `extract` 参数），脚本会改用它并退回 `centre`。
+
+### 脱色是 CSS filter，不是图片本身
+
+图片存的是彩色原图，脱色靠 `.node image.face{filter:grayscale(1)…}`，
+悬停/选中时换成 `grayscale(0)`。所以：
+
+- **改配色时这层 filter 要一起想**，它和阵营色的 `tint` 是配合着调的
+  （默认 tint .28，选中降到 .06）。
+- 用 resvg 之类的非浏览器渲染器给这个 SVG 出图时，CSS filter 不生效，
+  出来的东西和实际观感不一样。**别拿那种图判断视觉效果。**
+
+### 验证时的坑（真踩过）
+
+- **`@resvg/resvg-js` 2.6.2 解不了 WebP**，头像会静默不画，渲出来是一堆暗盘。
+  不是页面的问题。
+- 浏览器里把这个 SVG 序列化成 `<img>` 再画进 canvas 采样，也拿不到正确像素。
+- 真正有效的检查是直接问 DOM：`new Image().src = FACE_SRC[…]` 看
+  `naturalWidth` 是不是 128，以及用 `Range.getClientRects()` 量文字的真实右边界
+  （量 `.an` 这种块级元素的 `getBoundingClientRect().right` 永远顶到内容盒右缘，
+  会假报「文字和头像重叠」）。
+
+### 卡片头像的布局约束
+
+头像 `position:absolute` 在卡片右上角，占 y≈18–76px。只有 `.an` / `.arrow` / `.cn`
+这三行在这个高度上，所以只给它们加了 `padding-right:74px`，`.cen` 及以下没加。
+**换更大的头像或改 `.actor` 的 padding 时，这三个数要一起改。**
+640px 以下头像降到 48px、`padding-right` 降到 62px。
+
+注意 `.actor` 用的是 `padding` 简写，但这次没碰它，所以不涉及第 5 节那个
+`.wrap` padding 塌陷的雷。
+
+### 署名是义务
+
+页脚 `#srcNote` 里那句「本页使用 TMDB API，但未获 TMDB 认可或认证」是 TMDb
+使用条款要求的，**不能删**。

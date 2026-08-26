@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # Raw Notion export — the import script's input, not site content.
 .notion-export/
+
+# Downloaded TMDb headshots — the face script's input. The generated base64 is
+# committed inside public/odyssey/index.html, so a clone never needs these.
+.odyssey-faces/

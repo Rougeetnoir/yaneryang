@@ -1,0 +1,26 @@
+{
+  "_comment": "奥德赛导览的演员头像清单。slug / name / chars 由人维护；tmdb_person_id 与 profile_path 由 `node scripts/build-odyssey-faces.mjs --init` 填。chars 是 public/odyssey/index.html 里 CHARS[].id 的数组——这是 CAST 表和 CHARS 表之间唯一的一根线，两张表本身没有任何 id 关联。chars 为空表示该演员的角色在星图里没有节点。",
+  "movie_tmdb_id": 1368337,
+  "movie_query": {"title":"The Odyssey","year":2026},
+  "people": [
+    {"slug":"matt-damon","name_en":"Matt Damon","name_zh":"马特·达蒙","chars":["odysseus"],"tmdb_person_id":1892,"profile_path":"/aCvBXTAR9B1qRjIRzMBYhhbm1fR.jpg"},
+    {"slug":"tom-holland","name_en":"Tom Holland","name_zh":"汤姆·赫兰德","chars":["telemachus"],"tmdb_person_id":1136406,"profile_path":"/xKBAaPIa1c7tzZD3Y0MhBLv4hPE.jpg"},
+    {"slug":"anne-hathaway","name_en":"Anne Hathaway","name_zh":"安妮·海瑟薇","chars":["penelope"],"tmdb_person_id":1813,"profile_path":"/nbccV2pMoyLTCeg5DQip24Eq0Jp.jpg"},
+    {"slug":"robert-pattinson","name_en":"Robert Pattinson","name_zh":"罗伯特·帕丁森","chars":["antinous"],"tmdb_person_id":11288,"profile_path":"/3qZ09UE7lN6AtorfXFRYpEtSY93.jpg"},
+    {"slug":"zendaya","name_en":"Zendaya","name_zh":"赞达亚","chars":["athena"],"tmdb_person_id":505710,"profile_path":"/1qup8tSt95HLbcy2c2xrx4iJNxv.jpg"},
+    {"slug":"charlize-theron","name_en":"Charlize Theron","name_zh":"查理兹·塞隆","chars":["calypso"],"tmdb_person_id":6885,"profile_path":"/gd7ShD0yt4bsR2STeQ19KQ6hvXL.jpg"},
+    {"slug":"samantha-morton","name_en":"Samantha Morton","name_zh":"萨曼莎·莫顿","chars":["circe"],"tmdb_person_id":2206,"profile_path":"/hyxtpw9axreB8CcS30eRmvzdLAY.jpg"},
+    {"slug":"lupita-nyongo","name_en":"Lupita Nyong'o","name_zh":"露皮塔·尼永奥","chars":["helen","clytemnestra"],"tmdb_person_id":1267329,"profile_path":"/y40Wu1T742kynOqtwXASc5Qgm49.jpg"},
+    {"slug":"jon-bernthal","name_en":"Jon Bernthal","name_zh":"乔·博恩瑟","chars":["menelaus"],"tmdb_person_id":19498,"profile_path":"/o0t6EVkJOrFAjESDilZUlf46IbQ.jpg"},
+    {"slug":"benny-safdie","name_en":"Benny Safdie","name_zh":"本尼·萨夫迪","chars":["agamemnon"],"tmdb_person_id":227564,"profile_path":"/u10A5DpUYRB1zMF7YoGYcyvhois.jpg"},
+    {"slug":"himesh-patel","name_en":"Himesh Patel","name_zh":"希梅什·帕特尔","chars":["eurylochus"],"tmdb_person_id":1227717,"profile_path":"/4mfOQgnwmewNURfQApyyHxt1qUF.jpg"},
+    {"slug":"mia-goth","name_en":"Mia Goth","name_zh":"米娅·高斯","chars":["melantho"],"tmdb_person_id":1137824,"profile_path":"/rwko7XVaKFcJH1dtAIIsrgLMzHb.jpg"},
+    {"slug":"john-leguizamo","name_en":"John Leguizamo","name_zh":"约翰·雷吉扎莫","chars":["eumaeus"],"tmdb_person_id":5723,"profile_path":"/kwYCdxTlDh9zauUCg4mp2XTCQTw.jpg"},
+    {"slug":"elliot-page","name_en":"Elliot Page","name_zh":"艾略特·佩吉","chars":["sinon"],"tmdb_person_id":27578,"profile_path":"/nXO8DE4biVXY4UDYP0NdIY1zvXS.jpg"},
+    {"slug":"bill-irwin","name_en":"Bill Irwin","name_zh":"比尔·欧文","chars":["polyphemus"],"tmdb_person_id":58549,"profile_path":"/bAV5qsljgiHQkn3QluB5clVYC13.jpg"},
+    {"slug":"corey-hawkins","name_en":"Corey Hawkins","name_zh":"科里·霍金斯","chars":["polybus"],"tmdb_person_id":1154054,"profile_path":"/wRt0Bc0chN5BSjvYzmg2evgqNzp.jpg"},
+    {"slug":"jovan-adepo","name_en":"Jovan Adepo","name_zh":"乔万·阿德坡","chars":["elpenor"],"tmdb_person_id":1607522,"profile_path":"/aJcuEbYru85meNGzM0oSeW3nsd6.jpg"},
+    {"slug":"james-remar","name_en":"James Remar","name_zh":"詹姆斯·瑞马","chars":["tiresias"],"tmdb_person_id":1736,"profile_path":"/ctMVpFDKKWCty60lLORf3IoJcv9.jpg"},
+    {"slug":"travis-scott","name_en":"Travis Scott","name_zh":"特拉维斯·斯科特","chars":[],"tmdb_person_id":1978406,"profile_path":"/eBdm7HQS6lLGg4BocgfoJ5qB9yp.jpg"}
+  ]
+}

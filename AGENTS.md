@@ -74,3 +74,20 @@ frontmatter. Re-running is safe: MDX bodies (the notes) and any hand-corrected
 
 Slugs are pinyin, via the `pinyin-pro` devDependency — that is the only thing
 it is there for.
+
+## Odyssey Reader 的演员头像
+
+`public/odyssey/index.html` 里 `ODYSSEY-FACES:BEGIN` / `:END` 之间的那段
+base64 是**生成的，不要手改**。改动流程：
+
+1. 人物增减改 `scripts/odyssey-faces.json`（`slug` / `name_en` / `chars`
+   由人维护，`chars` 是 `CHARS[].id` 数组）。
+2. `TMDB_API_KEY=… node scripts/build-odyssey-faces.mjs --init` 填 TMDb id。
+3. `node scripts/build-odyssey-faces.mjs` 下载、裁剪、写回页面。
+
+原图缓存在 `.odyssey-faces/`（gitignored）。生成结果是提交进仓库的，所以另一台
+机器既不需要 key 也不需要重跑——除非要换头像。缓存里已有的文件不会重新下载，
+想换某个人就删掉 `.odyssey-faces/<slug>.*` 再跑。
+
+头像必须内联成 data URI，不能放 `public/odyssey/` 当独立文件——原因见
+`src/content/projects/odyssey-reader.notes.md` 的 §0 和 §6。
