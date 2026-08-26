@@ -257,6 +257,55 @@ h3{font-family:var(--head);font-weight:500;font-size:19px;margin:0 0 8px;}
   text-transform:uppercase;}
 .scene p{margin:13px 0 0;font-size:14px;color:var(--bone-2);line-height:1.82;}
 .scene .pt{margin:14px 0 0;font-size:13px;color:var(--bronze-lit);line-height:1.7;}
+/* 出处徽章。前传这一节没有一条出自《奥德赛》，标出处是它成立的前提。 */
+.scene .src{float:right;font-family:var(--body);font-size:10.5px;color:var(--bone-3);
+  border:1px solid var(--line);border-radius:100px;padding:2px 9px;margin-left:10px;}
+
+/* ---------- II. 前传与后续 ---------- */
+.sub-h{font-family:var(--head);font-size:21px;font-weight:700;color:var(--bone);
+  margin:52px 0 10px;padding-top:32px;border-top:1px solid var(--line-soft);}
+.side-note{margin-top:16px;font-size:13px;}
+
+/* 硬两列，不用 auto-fit：这里的列数是有语义的（希腊方 / 特洛伊方），
+   auto-fit 在宽屏会排出第三列，把宙斯那栏之外的地方留一个空洞。 */
+.sides{display:grid;gap:14px;grid-template-columns:1fr 1fr;}
+.side{background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;
+  border-left:2px solid var(--sc);padding:20px 22px 8px;}
+/* 宙斯是仲裁者，单独占满一行——他不属于任何一栏，视觉上也不该并列。 */
+.side.neutral{grid-column:1/-1;}
+.side-h{font-family:var(--display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--sc);margin-bottom:4px;}
+.god{padding:14px 0;border-bottom:1px solid var(--line-soft);}
+.side .god:last-child{border-bottom:0;}
+.god b{font-size:15px;color:var(--bone);font-weight:500;}
+.god .gen{font-family:var(--display);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bone-3);margin-left:9px;}
+.god p{margin:6px 0 0;font-size:13.5px;color:var(--bone-2);line-height:1.8;}
+
+.afters{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));}
+.after{background:var(--sea);border:1px solid var(--line-soft);border-radius:3px;padding:20px 22px 22px;}
+.after h4{margin:0;font-family:var(--head);font-size:18px;font-weight:700;color:var(--bone);}
+.after .aen{font-family:var(--display);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--bone-3);margin-left:10px;font-weight:400;}
+.after p{margin:11px 0 0;font-size:13.5px;color:var(--bone-2);line-height:1.8;}
+.after .pt{color:var(--bronze-lit);font-size:13px;line-height:1.7;}
+
+/* 剧透区。用原生 <details>，不引入任何 JS——这个页面必须能离线单文件打开。 */
+.spoiler{margin-top:40px;border:1px solid var(--line);border-radius:3px;background:var(--sea);}
+.spoiler summary{cursor:pointer;padding:16px 20px;font-size:13.5px;color:var(--bronze-lit);
+  list-style:none;}
+.spoiler summary::-webkit-details-marker{display:none;}
+.spoiler summary::before{content:"▸";margin-right:10px;color:var(--bronze);display:inline-block;
+  transition:transform .18s;}
+.spoiler[open] summary::before{transform:rotate(90deg);}
+.spoiler summary:hover{color:var(--bone);}
+.spoiler-in{padding:0 20px 6px;border-top:1px solid var(--line-soft);}
+.beyond{padding:18px 0;border-bottom:1px solid var(--line-soft);}
+.beyond:last-child{border-bottom:0;}
+.beyond h4{margin:0;font-family:var(--head);font-size:17px;font-weight:700;color:var(--bone);}
+.beyond .src-line{font-size:11px;color:var(--bone-3);margin-top:3px;}
+.beyond p{margin:10px 0 0;font-size:13.5px;color:var(--bone-2);line-height:1.8;}
+.beyond .pt{color:var(--bronze-lit);font-size:13px;line-height:1.7;}
 
 /* ---------- cast ---------- */
 .cast-tools{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:0 0 24px;}
@@ -306,6 +355,7 @@ footer a:hover{color:var(--bronze-lit);}
   .detail{position:static;}
   .actor .face{top:16px;right:16px;width:48px;height:48px;}
   .actor .an,.actor .arrow,.actor .cn{padding-right:62px;}
+  .sides{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -330,11 +380,12 @@ footer a:hover{color:var(--bronze-lit);}
 <nav class="nav" aria-label="章节">
   <div class="wrap nav-in" id="tabs" role="tablist">
     <button class="tab" role="tab" data-p="p1" aria-selected="true"><span class="n">I</span>三十秒速览</button>
-    <button class="tab" role="tab" data-p="p2" aria-selected="false"><span class="n">II</span>人物星图</button>
-    <button class="tab" role="tab" data-p="p3" aria-selected="false"><span class="n">III</span>十年归途</button>
-    <button class="tab" role="tab" data-p="p4" aria-selected="false"><span class="n">IV</span>十个名场面</button>
-    <button class="tab" role="tab" data-p="p5" aria-selected="false"><span class="n">V</span>演员对照</button>
-    <button class="tab" role="tab" data-p="p6" aria-selected="false"><span class="n">VI</span>观影指南</button>
+    <button class="tab" role="tab" data-p="p2" aria-selected="false"><span class="n">II</span>前传与后续</button>
+    <button class="tab" role="tab" data-p="p3" aria-selected="false"><span class="n">III</span>人物星图</button>
+    <button class="tab" role="tab" data-p="p4" aria-selected="false"><span class="n">IV</span>十年归途</button>
+    <button class="tab" role="tab" data-p="p5" aria-selected="false"><span class="n">V</span>十个名场面</button>
+    <button class="tab" role="tab" data-p="p6" aria-selected="false"><span class="n">VI</span>演员对照</button>
+    <button class="tab" role="tab" data-p="p7" aria-selected="false"><span class="n">VII</span>观影指南</button>
   </div>
 </nav>
 
@@ -376,7 +427,32 @@ footer a:hover{color:var(--bronze-lit);}
 </section>
 
 <!-- ============ II ============ -->
-<section id="p2" class="wrap panel-sec wide" role="tabpanel" aria-label="人物星图" hidden>
+<section id="p2" class="wrap panel-sec" role="tabpanel" aria-label="前传与后续" hidden>
+  <h2>战争是怎么开始的</h2>
+  <p class="sec-note">电影从奥德修斯回家的路上讲起，但这场仗为什么打、众神为什么各站一边，都发生在开场之前。
+    下面这些<strong>没有一件写在《奥德赛》里</strong>——它们来自更早的《塞浦路斯之歌》、荷马的《伊利亚特》，
+    以及晚了几百年的罗马人。每一段都标了出处。</p>
+  <div class="scenes" id="pre"></div>
+
+  <h3 class="sub-h">众神站在哪一边</h3>
+  <p class="sec-note">神不是中立的裁判，他们是有私怨的当事人。金苹果那一下，把奥林匹斯劈成了两半。</p>
+  <div class="sides" id="sides"></div>
+  <p class="sec-note side-note">这是简化过的阵形。《伊利亚特》里众神反复插手、临阵倒戈，宙斯还几次下令禁止他们参战。
+    把它当成"谁欠谁的"，不是一张固定的战场编制表。</p>
+
+  <h3 class="sub-h">战后：每个人的归途</h3>
+  <p class="sec-note">特洛伊陷落之后，希腊人各自回家。《奥德赛》只讲了其中一个人的路——其余人的下场，
+    是这部史诗一直拿来和奥德修斯作对照的东西。</p>
+  <div class="afters" id="afters"></div>
+
+  <details class="spoiler">
+    <summary>《奥德赛》结局之后还发生了什么（剧透，想在影院里第一次知道就别点）</summary>
+    <div class="spoiler-in" id="beyond"></div>
+  </details>
+</section>
+
+<!-- ============ III ============ -->
+<section id="p3" class="wrap panel-sec wide" role="tabpanel" aria-label="人物星图" hidden>
   <h2>人物星图</h2>
   <p class="sec-note">点任意一个名字看他是谁、和别人什么关系。连线颜色代表关系类型：青铜色是血亲与婚姻，青色是助力与忠诚，赤色是敌对，玫色是情感纠葛。上方色标可以只看某一阵营。带头像的是电影已公布卡司的角色，其余为原著人物。</p>
 
@@ -395,8 +471,8 @@ footer a:hover{color:var(--bronze-lit);}
   </div>
 </section>
 
-<!-- ============ III ============ -->
-<section id="p3" class="wrap panel-sec" role="tabpanel" aria-label="十年归途" hidden>
+<!-- ============ IV ============ -->
+<section id="p4" class="wrap panel-sec" role="tabpanel" aria-label="十年归途" hidden>
   <h2>十年归途</h2>
   <p class="sec-note">同一批事件，可以按两种顺序排。这个切换很重要——因为荷马原著本身就不是按时间顺序讲的，而诺兰几乎肯定会沿用这种结构。</p>
 
@@ -409,15 +485,15 @@ footer a:hover{color:var(--bronze-lit);}
   <div class="tl" id="tl"></div>
 </section>
 
-<!-- ============ IV ============ -->
-<section id="p4" class="wrap panel-sec" role="tabpanel" aria-label="十个名场面" hidden>
+<!-- ============ V ============ -->
+<section id="p5" class="wrap panel-sec" role="tabpanel" aria-label="十个名场面" hidden>
   <h2>十个名场面</h2>
   <p class="sec-note">如果只记住十个瞬间，就记这十个。每一个都是三千年来被反复引用的画面，出现在银幕上时你会想"啊，就是这个"。</p>
   <div class="scenes" id="scenes"></div>
 </section>
 
-<!-- ============ V ============ -->
-<section id="p5" class="wrap panel-sec" role="tabpanel" aria-label="演员对照" hidden>
+<!-- ============ VI ============ -->
+<section id="p6" class="wrap panel-sec" role="tabpanel" aria-label="演员对照" hidden>
   <h2>演员对照</h2>
   <p class="sec-note">诺兰这部片的卡司规模是他生涯之最。下面按戏份轻重排，每张卡片给出角色是谁、在故事里干什么、以及这个选角本身值得注意的地方。搜索框可以按演员名或角色名过滤。</p>
   <div class="cast-tools">
@@ -427,8 +503,8 @@ footer a:hover{color:var(--bronze-lit);}
   <div class="cast-grid" id="cast"></div>
 </section>
 
-<!-- ============ VI ============ -->
-<section id="p6" class="wrap panel-sec" role="tabpanel" aria-label="观影指南" hidden>
+<!-- ============ VII ============ -->
+<section id="p7" class="wrap panel-sec" role="tabpanel" aria-label="观影指南" hidden>
   <h2>观影指南</h2>
   <p class="sec-note">今晚进影院之前，这几件事知道了会舒服很多。以下不涉及电影的具体改编剧情。</p>
   <div class="tips" id="tips"></div>
@@ -760,6 +836,91 @@ const SCENES = [
 </script>
 
 <script>
+/* 前传。`s` 是出处——这一节没有一条出自《奥德赛》，标出处是这一节存在的前提。
+   和第 1 节的其余神话内容一样，这些是凭知识写的，没有联网核对。 */
+const PRE = [
+ {n:'01',t:'金苹果',gr:'ΤΟ ΜΗΛΟΝ ΤΗΣ ΕΡΙΔΟΣ',s:'《塞浦路斯之歌》',
+  d:'珀琉斯与海洋女神忒提斯的婚礼，众神都请了，唯独漏了不和女神厄里斯。她照样来了，往席间扔下一只金苹果，上面刻着"给最美的"。赫拉、雅典娜、阿佛洛狄忒同时伸手。',
+  pt:'这对新人就是阿喀琉斯的父母。同一场婚宴，既生出了希腊最强的战士，也生出了那场要他命的战争。'},
+
+ {n:'02',t:'帕里斯的裁判',gr:'Η ΚΡΙΣΙΣ ΤΟΥ ΠΑΡΙΔΟΣ',s:'《塞浦路斯之歌》',
+  d:'宙斯不敢裁，把这烫手的差事推给了特洛伊王子帕里斯。三位女神各开条件：赫拉给他统治亚细亚的权力，雅典娜给他战无不胜，阿佛洛狄忒给他世上最美的女人。他选了第三个。',
+  pt:'整场战争的根在这里，众神站队的根也在这里——被拒绝的那两位女神，从此站到了特洛伊的对面。'},
+
+ {n:'03',t:'廷达柔斯的誓言',gr:'Ο ΟΡΚΟΣ ΤΟΥ ΤΥΝΔΑΡΕΩ',s:'阿波罗多洛斯《书库》',
+  d:'海伦太美，全希腊的王侯都来求婚，多到斯巴达王廷达柔斯不敢开口——选中任何一个，都等于得罪其余所有人。是奥德修斯出的主意：让所有求婚者先立下誓言，无论谁娶到海伦，其余人都必须出手保卫这桩婚姻。于是海伦嫁给了墨涅拉俄斯，全场无人翻脸。',
+  pt:'这个誓言是奥德修斯自己设计的，十年后它把他自己拖去了特洛伊。他当时要的回报是娶到珀涅罗珀——而这笔交易最终让他和她分开了二十年。'},
+
+ {n:'04',t:'拐走海伦',gr:'Η ΑΡΠΑΓΗ ΤΗΣ ΕΛΕΝΗΣ',s:'《伊利亚特》/《塞浦路斯之歌》',
+  d:'帕里斯以客人的身份住进墨涅拉俄斯的王宫，趁主人外出，带走了海伦和大批财宝。誓言当场生效，全希腊出兵。',
+  pt:'注意他犯的到底是什么罪：破坏待客之道。这正是《奥德赛》一路在考的那条规矩——求婚者赖在别人家吃喝、独眼巨人吃掉客人，和帕里斯是同一类罪。这个故事从头到尾都在讲同一件事。'},
+
+ {n:'05',t:'两个不想去的人',gr:'ΟΙ ΔΥΟ ΦΥΓΑΔΕΣ',s:'阿波罗多洛斯 / 许癸努斯',
+  d:'奥德修斯装疯躲兵役：把牛和马套在同一张犁上耕地，往犁沟里撒盐。帕拉墨得斯把还是婴儿的忒勒马科斯放到犁前，他立刻收手——装疯败露。轮到他去征召阿喀琉斯时，那孩子正被母亲藏在斯基罗斯岛女扮男装；奥德修斯摆出一堆首饰，中间放一把剑，只有一个"少女"伸手拿了剑。',
+  pt:'这两段是全片最好的人物注脚：他自己躲不掉，也绝不让别人躲掉。他的武器从一开始就是识破别人的伪装。'},
+
+ {n:'06',t:'奥利斯的风',gr:'ΑΥΛΙΣ',s:'欧里庇得斯《在奥利斯的伊菲革涅亚》',
+  d:'联军的船在奥利斯港等不到风。先知说，阿伽门农得罪了阿尔忒弥斯，要起风，就得献祭自己的女儿伊菲革涅亚。他骗妻子说要把女儿嫁给阿喀琉斯，然后照做了。风起了，一千条船开了。',
+  pt:'克吕泰涅斯特拉为什么在丈夫回家当晚杀了他——理由在这里。页面上她被列作"归乡的最坏结局"，但这个结局是十年前她丈夫自己种下的。'},
+
+ {n:'07',t:'十年，然后是木马',gr:'ΔΟΥΡΕΙΟΣ ΙΠΠΟΣ',s:'《伊利亚特》/维吉尔《埃涅阿斯纪》',
+  d:'围城打了十年。《伊利亚特》只写了其中五十几天，讲的是阿喀琉斯的愤怒，全书结束时特洛伊还没破。木马和陷落之夜根本不在荷马笔下，最完整的版本出自罗马诗人维吉尔，比荷马晚了七百年。',
+  pt:'木马是奥德修斯的主意。他一手赢下了这场战争，也因此惹上了那位让他二十年回不了家的神。'}
+];
+
+/* 众神站队。`w` 是"为什么站这边"——这一栏才是重点，不然就只是一份名单。 */
+const GODS = {
+ greek:[
+  {zh:'赫拉',en:'Hera',w:'金苹果里被帕里斯当面拒绝。她是这场战争最执著的推手，宙斯几次想收手都被她拦下。'},
+  {zh:'雅典娜',en:'Athena',w:'同样被拒绝。这份恨她一路带进了《奥德赛》——她偏爱奥德修斯，也因为他和她一样擅长撒谎。'},
+  {zh:'波塞冬',en:'Poseidon',w:'当年为特洛伊建了城墙，国王赖账不给报酬。注意他会换边：《伊利亚特》里他帮希腊人，到《奥德赛》里却成了奥德修斯的头号敌人——因为被刺瞎的独眼巨人是他儿子。'},
+  {zh:'赫尔墨斯',en:'Hermes',w:'传令与引路的神，站希腊一侧。《奥德赛》里是他去逼卡吕普索放人的。'},
+  {zh:'赫菲斯托斯',en:'Hephaestus',w:'火与锻造之神。阿喀琉斯那副著名的盔甲是他打的。'},
+  {zh:'忒提斯',en:'Thetis',w:'阿喀琉斯的母亲，海洋女神。严格说她不算奥林匹斯的站队，她只为儿子一个人奔走。'}
+ ],
+ trojan:[
+  {zh:'阿佛洛狄忒',en:'Aphrodite',w:'帕里斯选了她，她就把海伦给了他。此后一路护着特洛伊，甚至在战场上亲自把帕里斯从墨涅拉俄斯手里抢走。'},
+  {zh:'阿波罗',en:'Apollo',w:'特洛伊的守护神。开篇那场瘟疫是他射下来的，阿喀琉斯之死也有他一份。'},
+  {zh:'阿瑞斯',en:'Ares',w:'战神，跟着阿佛洛狄忒站队。他在《伊利亚特》里被雅典娜打得很难看。'},
+  {zh:'阿尔忒弥斯',en:'Artemis',w:'阿波罗的孪生姐妹，同一侧。在奥利斯扣住风、逼阿伽门农献女儿的也是她。'}
+ ],
+ neutral:[
+  {zh:'宙斯',en:'Zeus',w:'表面中立，实际在两边之间称量命运，并且几次下令禁止其他神下场。《奥德赛》里最后拍板放奥德修斯回家的是他。'}
+ ]
+};
+
+/* 战后归途。这些人在《奥德赛》正文里就被反复提起，用来和奥德修斯作对照。 */
+const AFTER = [
+ {t:'阿伽门农',en:'Agamemnon',
+  d:'打赢了，也顺利到家了，回家当晚被妻子克吕泰涅斯特拉与她的情夫杀死在浴室里。',
+  pt:'他是奥德修斯的镜像，存在的意义是让你在最后一幕紧张：回家本身就是最危险的一步。'},
+ {t:'俄瑞斯忒斯',en:'Orestes',
+  d:'阿伽门农之子。长大后回来杀了母亲和她的情夫，为父复仇。',
+  pt:'《奥德赛》里众神和长辈反复拿他当榜样讲给忒勒马科斯听——那是在说：你也该动手了。'},
+ {t:'墨涅拉俄斯与海伦',en:'Menelaus & Helen',
+  d:'为她打了十年仗，回程又漂了八年，经过埃及才到斯巴达。两人最后重新一起生活，忒勒马科斯去打听父亲下落时，见到的就是这一对。',
+  pt:'全篇最不动声色的一笔：那个引发了战争的女人，安然坐在自家厅堂里招待客人。'},
+ {t:'小埃阿斯',en:'Ajax the Lesser',
+  d:'城破之夜在雅典娜神庙里施暴，触怒女神，归途中遇难。',
+  pt:'《奥德赛》开篇就定下的规矩：人受苦必须有理由。众神的记性很好。'},
+ {t:'埃涅阿斯',en:'Aeneas',
+  d:'特洛伊一方唯一逃出焚城的主要人物，背着父亲、牵着儿子离开。',
+  pt:'荷马几乎没写他。是七百年后的罗马人把他接了下去——见下面那段。'}
+];
+
+/* 剧透区。放在 <details> 里，默认折叠。 */
+const BEYOND = [
+ {t:'奥德修斯还得再走一趟',s:'荷马《奥德赛》第十一卷',
+  d:'冥府里忒瑞西阿斯给了他一个预言：杀光求婚者还不算完，他必须扛着一支船桨往内陆走，一直走到遇见一个把船桨认成扬谷铲的人为止，在那里祭过波塞冬，才算真正和海神了结。'},
+ {t:'他死于自己儿子之手',s:'《忒勒戈诺斯纪》（已佚，仅存提要）',
+  d:'喀耳刻为他生的儿子忒勒戈诺斯长大后出海找父亲，登上伊萨卡时父子互不相识，打了起来。忒勒戈诺斯用一支魟鱼刺做的矛刺死了奥德修斯——应了"死亡将从海上来"的预言。'},
+ {t:'败的那一方去建了罗马',s:'维吉尔《埃涅阿斯纪》',
+  d:'埃涅阿斯带着特洛伊遗民漂到意大利，他的后裔建起了罗马。奥古斯都时代的罗马人主动把自己的血统认到特洛伊这个败方，而不是希腊胜方。',
+  pt:'所以这个故事真正的续集不是希腊人写的，是被他们烧掉的那座城的后人写的。'}
+];
+</script>
+
+<script>
 const CAST = [
  {a:'马特·达蒙',ae:'Matt Damon',p:'matt-damon',c:'奥德修斯',ce:'Odysseus',f:'ithaca',
   who:'伊萨卡之王，木马计的发明者，全片主角。战争打了十年，回家又漂了十年。',
@@ -907,7 +1068,32 @@ $('#threads').innerHTML = THREADS.map(t=>
   '<div class="thread" style="--tc:'+t.c+'"><div class="who">'+t.who+'</div>'+
   '<div class="where">'+t.where+'</div><p>'+t.d+'</p></div>').join('');
 
-/* ---------- II. 人物星图 ---------- */
+/* ---------- II. 前传与后续 ---------- */
+/* 前传复用名场面那套 .scenes/.scene 卡片，只多一个出处徽章 .src。 */
+$('#pre').innerHTML = PRE.map(p=>
+  '<article class="scene"><div class="num">'+p.n+'</div>'+
+  '<span class="src">'+p.s+'</span>'+
+  '<h3>'+p.t+'</h3><div class="gr">'+p.gr+'</div>'+
+  '<p>'+p.d+'</p><p class="pt">'+p.pt+'</p></article>').join('');
+
+const side = (list,cls,title,col) =>
+  '<div class="side '+cls+'" style="--sc:'+col+'"><div class="side-h">'+title+'</div>'+
+  list.map(g=>'<div class="god"><b>'+g.zh+'</b><span class="gen">'+g.en+'</span>'+
+    '<p>'+g.w+'</p></div>').join('')+'</div>';
+$('#sides').innerHTML =
+  side(GODS.greek,'greek','希腊一方',FACTIONS.ithaca.c)+
+  side(GODS.trojan,'trojan','特洛伊一方',FACTIONS.troy.c)+
+  side(GODS.neutral,'neutral','居中',FACTIONS.gods.c);
+
+$('#afters').innerHTML = AFTER.map(a=>
+  '<article class="after"><h4>'+a.t+'<span class="aen">'+a.en+'</span></h4>'+
+  '<p>'+a.d+'</p><p class="pt">'+a.pt+'</p></article>').join('');
+
+$('#beyond').innerHTML = BEYOND.map(b=>
+  '<article class="beyond"><h4>'+b.t+'</h4><div class="src-line">'+b.s+'</div>'+
+  '<p>'+b.d+'</p>'+(b.pt?'<p class="pt">'+b.pt+'</p>':'')+'</article>').join('');
+
+/* ---------- III. 人物星图 ---------- */
 const map = $('#map'), mapBox = $('#mapBox');
 const hidden = new Set();
 let sel = 'odysseus';
@@ -1037,7 +1223,7 @@ $$('#roster .rbtn').forEach(b=>b.addEventListener('click',()=>{
 
 select('odysseus');
 
-/* ---------- III. 时间线 ---------- */
+/* ---------- IV. 时间线 ---------- */
 const EV_BY = {}; EVENTS.forEach(e=>EV_BY[e.id]=e);
 function renderTL(order){
   const ids = order==='homer' ? ORDER_HOMER : ORDER_STORY;
@@ -1060,13 +1246,13 @@ $$('#tlSwitch button').forEach(b=>b.addEventListener('click',()=>{
 }));
 renderTL('story');
 
-/* ---------- IV. 名场面 ---------- */
+/* ---------- V. 名场面 ---------- */
 $('#scenes').innerHTML = SCENES.map(s=>
   '<article class="scene"><div class="num">'+s.n+'</div><h3>'+s.t+'</h3>'+
   '<div class="gr">'+s.gr+'</div><p>'+s.d+'</p>'+
   (s.pt?'<p class="pt">'+s.pt+'</p>':'')+'</article>').join('');
 
-/* ---------- V. 演员 ---------- */
+/* ---------- VI. 演员 ---------- */
 function renderCast(q){
   q = (q||'').trim().toLowerCase();
   const list = CAST.filter(c=> !q || (c.a+c.ae+c.c+c.ce+c.who).toLowerCase().includes(q));
@@ -1087,13 +1273,14 @@ function renderCast(q){
 $('#castSearch').addEventListener('input',e=>renderCast(e.target.value));
 renderCast('');
 
-/* ---------- VI. 观影指南 ---------- */
+/* ---------- VII. 观影指南 ---------- */
 $('#tips').innerHTML = TIPS.map(t=>
   '<div class="tip"><h3>'+t.t+'</h3><p>'+t.d+'</p>'+(t.d2?'<p>'+t.d2+'</p>':'')+'</div>').join('');
 $('#srcNote').innerHTML =
   '<b style="color:var(--bone-2);font-weight:500;">其余演员</b><br>'+CAST_TAIL+
   '<br><br><b style="color:var(--bone-2);font-weight:500;">关于剧透</b><br>'+
   '本页只讲三千年前就已公开的原著情节，不含电影的改编内容与结局处理。原著的结局在最后一页写着——如果你连这个也想在影院里第一次知道，跳过"十年归途"的最后三条和"名场面"的第九、十条。'+
+  '"前传与后续"里讲到《奥德赛》结局之后的那一段是折叠起来的，不点开就不会看到。'+
   '<br><br><b style="color:var(--bone-2);font-weight:500;">演员头像</b><br>'+
   '演员头像来自 TMDB。本页使用 TMDB API，但未获 TMDB 认可或认证。';
 })();
