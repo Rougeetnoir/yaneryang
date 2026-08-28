@@ -79,6 +79,18 @@ a{color:var(--bronze-lit);}
   color:var(--bronze);display:flex;align-items:center;gap:14px;
 }
 .eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(192,138,62,.5),transparent);}
+/* 英文界面换成拉丁字体优先的字体栈。
+   必须换，不是审美问题：Noto Sans SC 把弯引号 U+2019 当成全角标点渲染，
+   左右各带巨大边距，"Nolan’s" 会显示成 "Nolan’ s"。
+   --display（Cinzel）本来就是拉丁字体，不用动。 */
+:root[lang="en"]{
+  --head:ui-serif,Georgia,"Iowan Old Style","Palatino Linotype",serif;
+  --body:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+/* 同一句话英文比中文长得多：中文标题两行，英文按原尺寸会折成四行、
+   压到水印和副标题上。所以英文单独收一档字号。 */
+:root[lang="en"] h1{font-size:clamp(31px,4.2vw,48px);}
+
 h1{
   font-family:var(--head);font-weight:700;
   font-size:clamp(38px,6.2vw,68px);line-height:1.12;letter-spacing:.02em;
@@ -96,8 +108,18 @@ h1 .sub{display:block;font-family:var(--display);font-size:clamp(13px,1.6vw,17px
 /* ---------- nav ---------- */
 .nav{position:sticky;top:0;z-index:40;background:rgba(7,11,16,.93);
   backdrop-filter:blur(12px);border-bottom:1px solid var(--line-soft);}
-.nav-in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
-.nav-in::-webkit-scrollbar{display:none;}
+/* .nav-in 同时挂着 .wrap，所以这里绝不能写 padding 简写——会清掉 .wrap 的
+   左右内边距（见 odyssey-reader.notes.md §5）。 */
+.nav-in{display:flex;gap:14px;align-items:stretch;}
+/* 只有 tab 那条横滑，语言开关留在滑动区之外，窄屏也始终可见。 */
+.tabs-strip{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;min-width:0;}
+.tabs-strip::-webkit-scrollbar{display:none;}
+.lang{flex:none;display:flex;align-items:center;gap:4px;}
+.lng{appearance:none;background:none;border:1px solid var(--line);border-radius:100px;
+  color:var(--bone-3);font-family:var(--body);font-size:11.5px;padding:4px 11px;cursor:pointer;
+  white-space:nowrap;transition:color .18s,border-color .18s,background .18s;}
+.lng:hover{color:var(--bone-2);}
+.lng[aria-pressed="true"]{color:var(--bronze-lit);border-color:var(--bronze);background:var(--sea-2);}
 .tab{
   appearance:none;background:none;border:0;border-bottom:2px solid transparent;
   color:var(--bone-3);font-family:var(--body);font-size:14px;font-weight:400;
@@ -363,29 +385,35 @@ footer a:hover{color:var(--bronze-lit);}
 <header class="hero">
   <div class="hero-mark" aria-hidden="true">ODYSSEIA</div>
   <div class="wrap hero-in">
-    <p class="eyebrow">Homer &middot; 荷马史诗 &middot; 观影前速成</p>
-    <h1>他花十年打完仗，<br>又花十年才走回家门口
+    <p class="eyebrow" data-t="hero.eyebrow">Homer &middot; 荷马史诗 &middot; 观影前速成</p>
+    <h1><span data-t="hero.h1">他花十年打完仗，<br>又花十年才走回家门口</span>
       <span class="sub">The Odyssey &middot; Christopher Nolan &middot; 2026</span>
     </h1>
-    <p class="lede">如果你对希腊神话一无所知，这一页就够了。故事的骨架、三十一个人物、十年归途的每一站、十个必须认出的名场面，以及诺兰这部电影里"谁演谁"。看完大约二十分钟。</p>
+    <p class="lede" data-t="hero.lede">如果你对希腊神话一无所知，这一页就够了。故事的骨架、三十一个人物、十年归途的每一站、十个必须认出的名场面，以及诺兰这部电影里"谁演谁"。看完大约二十分钟。</p>
     <dl class="facts">
-      <div class="fact"><dt>上映</dt><dd>2026.07.17</dd></div>
-      <div class="fact"><dt>片长</dt><dd>173 分钟</dd></div>
-      <div class="fact"><dt>格式</dt><dd>全片 IMAX 70mm 胶片</dd></div>
-      <div class="fact"><dt>原著</dt><dd>荷马《奥德赛》· 24 卷</dd></div>
+      <div class="fact"><dt data-t="fact.release">上映</dt><dd>2026.07.17</dd></div>
+      <div class="fact"><dt data-t="fact.runtime">片长</dt><dd data-t="fact.runtime.v">173 分钟</dd></div>
+      <div class="fact"><dt data-t="fact.format">格式</dt><dd data-t="fact.format.v">全片 IMAX 70mm 胶片</dd></div>
+      <div class="fact"><dt data-t="fact.source">原著</dt><dd data-t="fact.source.v">荷马《奥德赛》· 24 卷</dd></div>
     </dl>
   </div>
 </header>
 
-<nav class="nav" aria-label="章节">
-  <div class="wrap nav-in" id="tabs" role="tablist">
-    <button class="tab" role="tab" data-p="p1" aria-selected="true"><span class="n">I</span>三十秒速览</button>
-    <button class="tab" role="tab" data-p="p2" aria-selected="false"><span class="n">II</span>前传与后续</button>
-    <button class="tab" role="tab" data-p="p3" aria-selected="false"><span class="n">III</span>人物星图</button>
-    <button class="tab" role="tab" data-p="p4" aria-selected="false"><span class="n">IV</span>十年归途</button>
-    <button class="tab" role="tab" data-p="p5" aria-selected="false"><span class="n">V</span>十个名场面</button>
-    <button class="tab" role="tab" data-p="p6" aria-selected="false"><span class="n">VI</span>演员对照</button>
-    <button class="tab" role="tab" data-p="p7" aria-selected="false"><span class="n">VII</span>观影指南</button>
+<nav class="nav" aria-label="章节 / Sections">
+  <div class="wrap nav-in">
+    <div class="tabs-strip" id="tabs" role="tablist">
+      <button class="tab" role="tab" data-p="p1" aria-selected="true"><span class="n">I</span><span data-t="tab.1">三十秒速览</span></button>
+      <button class="tab" role="tab" data-p="p2" aria-selected="false"><span class="n">II</span><span data-t="tab.2">前传与后续</span></button>
+      <button class="tab" role="tab" data-p="p3" aria-selected="false"><span class="n">III</span><span data-t="tab.3">人物星图</span></button>
+      <button class="tab" role="tab" data-p="p4" aria-selected="false"><span class="n">IV</span><span data-t="tab.4">十年归途</span></button>
+      <button class="tab" role="tab" data-p="p5" aria-selected="false"><span class="n">V</span><span data-t="tab.5">十个名场面</span></button>
+      <button class="tab" role="tab" data-p="p6" aria-selected="false"><span class="n">VI</span><span data-t="tab.6">演员对照</span></button>
+      <button class="tab" role="tab" data-p="p7" aria-selected="false"><span class="n">VII</span><span data-t="tab.7">观影指南</span></button>
+    </div>
+    <div class="lang" id="lang" role="group" aria-label="语言 / Language">
+      <button class="lng" data-lang="c" aria-pressed="true">中文</button>
+      <button class="lng" data-lang="e" aria-pressed="false">EN</button>
+    </div>
   </div>
 </nav>
 
@@ -393,7 +421,7 @@ footer a:hover{color:var(--bronze-lit);}
 
 <!-- ============ I ============ -->
 <section id="p1" class="wrap panel-sec" role="tabpanel" aria-label="三十秒速览">
-  <h2>三十秒速览</h2>
+  <h2 data-t="p1.h2">三十秒速览</h2>
   <p class="sec-note">先把整个故事装进一口气里，剩下的都是细节。</p>
 
   <div class="grid g2">
@@ -428,25 +456,25 @@ footer a:hover{color:var(--bronze-lit);}
 
 <!-- ============ II ============ -->
 <section id="p2" class="wrap panel-sec" role="tabpanel" aria-label="前传与后续" hidden>
-  <h2>战争是怎么开始的</h2>
-  <p class="sec-note">电影从奥德修斯回家的路上讲起，但这场仗为什么打、众神为什么各站一边，都发生在开场之前。
+  <h2 data-t="p2.h2">战争是怎么开始的</h2>
+  <p class="sec-note" data-t="p2.note">电影从奥德修斯回家的路上讲起，但这场仗为什么打、众神为什么各站一边，都发生在开场之前。
     下面这些<strong>没有一件写在《奥德赛》里</strong>——它们来自更早的《塞浦路斯之歌》、荷马的《伊利亚特》，
     以及晚了几百年的罗马人。每一段都标了出处。</p>
   <div class="scenes" id="pre"></div>
 
-  <h3 class="sub-h">众神站在哪一边</h3>
-  <p class="sec-note">神不是中立的裁判，他们是有私怨的当事人。金苹果那一下，把奥林匹斯劈成了两半。</p>
+  <h3 class="sub-h" data-t="p2.gods.h">众神站在哪一边</h3>
+  <p class="sec-note" data-t="p2.gods.note">神不是中立的裁判，他们是有私怨的当事人。金苹果那一下，把奥林匹斯劈成了两半。</p>
   <div class="sides" id="sides"></div>
-  <p class="sec-note side-note">这是简化过的阵形。《伊利亚特》里众神反复插手、临阵倒戈，宙斯还几次下令禁止他们参战。
+  <p class="sec-note side-note" data-t="p2.gods.caveat">这是简化过的阵形。《伊利亚特》里众神反复插手、临阵倒戈，宙斯还几次下令禁止他们参战。
     把它当成"谁欠谁的"，不是一张固定的战场编制表。</p>
 
-  <h3 class="sub-h">战后：每个人的归途</h3>
-  <p class="sec-note">特洛伊陷落之后，希腊人各自回家。《奥德赛》只讲了其中一个人的路——其余人的下场，
+  <h3 class="sub-h" data-t="p2.after.h">战后：每个人的归途</h3>
+  <p class="sec-note" data-t="p2.after.note">特洛伊陷落之后，希腊人各自回家。《奥德赛》只讲了其中一个人的路——其余人的下场，
     是这部史诗一直拿来和奥德修斯作对照的东西。</p>
   <div class="afters" id="afters"></div>
 
   <details class="spoiler">
-    <summary>《奥德赛》结局之后还发生了什么（剧透，想在影院里第一次知道就别点）</summary>
+    <summary data-t="p2.spoiler">《奥德赛》结局之后还发生了什么（剧透，想在影院里第一次知道就别点）</summary>
     <div class="spoiler-in" id="beyond"></div>
   </details>
 </section>
@@ -836,87 +864,215 @@ const SCENES = [
 </script>
 
 <script>
+/* 界面文案。key 对应 markup 里的 data-t。
+   值可以是普通字符串（两种语言相同），也可以是 {c:中文, e:English}；
+   缺 e 时 T() 自动回落中文，所以还没翻译的部分不会崩，只会显示中文。 */
+const UI = {
+ 'meta.title':{c:'奥德赛导览',e:'The Odyssey — A Guide'},
+ 'meta.desc':{c:'看诺兰《奥德赛》之前的二十分钟速成：故事脉络、31 个人物的可点击关系星图、十年归途时间线、十个名场面，以及演员角色对照。',
+   e:'A twenty-minute crash course before Nolan’s Odyssey: the shape of the story, a clickable map of 31 characters, the ten-year voyage home, ten set pieces, and who plays whom.'},
+
+ 'hero.eyebrow':{c:'Homer &middot; 荷马史诗 &middot; 观影前速成',e:'Homer &middot; The Epic &middot; A Crash Course Before the Film'},
+ 'hero.h1':{c:'他花十年打完仗，<br>又花十年才走回家门口',e:'He spent ten years winning the war,<br>and ten more to reach his own door'},
+ 'hero.lede':{c:'如果你对希腊神话一无所知，这一页就够了。故事的骨架、三十一个人物、十年归途的每一站、十个必须认出的名场面，以及诺兰这部电影里"谁演谁"。看完大约二十分钟。',
+   e:'If you know nothing about Greek myth, this page is enough. The shape of the story, thirty-one characters, every stop on the ten-year voyage home, ten set pieces you need to recognise, and who plays whom in Nolan’s film. About twenty minutes.'},
+ 'fact.release':{c:'上映',e:'Release'},
+ 'fact.runtime':{c:'片长',e:'Runtime'},   'fact.runtime.v':{c:'173 分钟',e:'173 minutes'},
+ 'fact.format':{c:'格式',e:'Format'},     'fact.format.v':{c:'全片 IMAX 70mm 胶片',e:'Shot entirely on IMAX 70mm film'},
+ 'fact.source':{c:'原著',e:'Source'},     'fact.source.v':{c:'荷马《奥德赛》· 24 卷',e:'Homer’s Odyssey · 24 books'},
+
+ 'tab.1':{c:'三十秒速览',e:'In Thirty Seconds'},
+ 'tab.2':{c:'前传与后续',e:'Before &amp; After'},
+ 'tab.3':{c:'人物星图',e:'Character Map'},
+ 'tab.4':{c:'十年归途',e:'The Voyage Home'},
+ 'tab.5':{c:'十个名场面',e:'Ten Set Pieces'},
+ 'tab.6':{c:'演员对照',e:'Cast'},
+ 'tab.7':{c:'观影指南',e:'Before You Go'},
+
+ 'p1.h2':{c:'三十秒速览',e:'In Thirty Seconds'},
+
+ 'p2.h2':{c:'战争是怎么开始的',e:'How the War Started'},
+ 'p2.note':{c:'电影从奥德修斯回家的路上讲起，但这场仗为什么打、众神为什么各站一边，都发生在开场之前。下面这些<strong>没有一件写在《奥德赛》里</strong>——它们来自更早的《塞浦路斯之歌》、荷马的《伊利亚特》，以及晚了几百年的罗马人。每一段都标了出处。',
+   e:'The film opens with Odysseus already on his way home. But why the war was fought, and why the gods took the sides they did, all happened before that. <strong>None of what follows is in the Odyssey</strong> — it comes from the older Cypria, from Homer’s Iliad, and from Romans writing centuries later. Every entry is sourced.'},
+ 'p2.gods.h':{c:'众神站在哪一边',e:'Which Side the Gods Took'},
+ 'p2.gods.note':{c:'神不是中立的裁判，他们是有私怨的当事人。金苹果那一下，把奥林匹斯劈成了两半。',
+   e:'The gods are not neutral referees. They are parties with grudges. One golden apple split Olympus in two.'},
+ 'p2.gods.caveat':{c:'这是简化过的阵形。《伊利亚特》里众神反复插手、临阵倒戈，宙斯还几次下令禁止他们参战。把它当成"谁欠谁的"，不是一张固定的战场编制表。',
+   e:'This is a simplified line-up. In the Iliad the gods meddle constantly and change sides mid-battle, and Zeus more than once forbids them to fight at all. Read it as who owes whom, not as a fixed order of battle.'},
+ 'p2.after.h':{c:'战后：每个人的归途',e:'After the War: Everyone Else’s Way Home'},
+ 'p2.after.note':{c:'特洛伊陷落之后，希腊人各自回家。《奥德赛》只讲了其中一个人的路——其余人的下场，是这部史诗一直拿来和奥德修斯作对照的东西。',
+   e:'After Troy fell, the Greeks went home separately. The Odyssey follows only one of those journeys — what became of the others is what the poem keeps holding up against Odysseus.'},
+ 'p2.spoiler':{c:'《奥德赛》结局之后还发生了什么（剧透，想在影院里第一次知道就别点）',
+   e:'What happens after the Odyssey ends (spoilers — don’t open this if you want to find out in the cinema)'},
+
+ 'cast.unit':{c:' 位',e:''},
+ 'cast.total':{c:' 位已公布角色',e:' roles announced'},
+ 'cast.empty':{c:'没有匹配的结果。',e:'No matches.'},
+ 'cast.search':{c:'搜索演员或角色…',e:'Search actor or role…'},
+ 'src.rest':{c:'其余演员',e:'Also in the cast'},
+ 'src.spoiler':{c:'关于剧透',e:'On spoilers'},
+ 'src.spoiler.body':{c:'本页只讲三千年前就已公开的原著情节，不含电影的改编内容与结局处理。原著的结局在最后一页写着——如果你连这个也想在影院里第一次知道，跳过"十年归途"的最后三条和"名场面"的第九、十条。"前传与后续"里讲到《奥德赛》结局之后的那一段是折叠起来的，不点开就不会看到。',
+   e:'This page covers only what has been public for three thousand years. Nothing here is from the film’s own adaptation or ending. The poem’s ending is written out on the last page — if you would rather meet even that for the first time in the cinema, skip the last three entries of “The Voyage Home” and set pieces nine and ten. In “Before &amp; After”, everything past the end of the Odyssey is folded away; you will not see it unless you open it.'},
+ 'src.faces':{c:'演员头像',e:'Headshots'},
+ 'src.faces.body':{c:'演员头像来自 TMDB。本页使用 TMDB API，但未获 TMDB 认可或认证。',
+   e:'Actor headshots come from TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB.'},
+
+ 'side.greek':{c:'希腊一方',e:'The Greek Side'},
+ 'side.trojan':{c:'特洛伊一方',e:'The Trojan Side'},
+ 'side.neutral':{c:'居中',e:'In the Middle'}
+};
+
 /* 前传。`s` 是出处——这一节没有一条出自《奥德赛》，标出处是这一节存在的前提。
-   和第 1 节的其余神话内容一样，这些是凭知识写的，没有联网核对。 */
+   和第 1 节的其余神话内容一样，这些是凭知识写的，没有联网核对。
+   可翻译字段是 {c:中文, e:English}；`gr`（希腊文）和 `n`（序号）两种语言相同。 */
 const PRE = [
- {n:'01',t:'金苹果',gr:'ΤΟ ΜΗΛΟΝ ΤΗΣ ΕΡΙΔΟΣ',s:'《塞浦路斯之歌》',
-  d:'珀琉斯与海洋女神忒提斯的婚礼，众神都请了，唯独漏了不和女神厄里斯。她照样来了，往席间扔下一只金苹果，上面刻着"给最美的"。赫拉、雅典娜、阿佛洛狄忒同时伸手。',
-  pt:'这对新人就是阿喀琉斯的父母。同一场婚宴，既生出了希腊最强的战士，也生出了那场要他命的战争。'},
+ {n:'01',gr:'ΤΟ ΜΗΛΟΝ ΤΗΣ ΕΡΙΔΟΣ',
+  t:{c:'金苹果',e:'The Golden Apple'},
+  s:{c:'《塞浦路斯之歌》',e:'The Cypria'},
+  d:{c:'珀琉斯与海洋女神忒提斯的婚礼，众神都请了，唯独漏了不和女神厄里斯。她照样来了，往席间扔下一只金苹果，上面刻着"给最美的"。赫拉、雅典娜、阿佛洛狄忒同时伸手。',
+     e:'At the wedding of Peleus and the sea goddess Thetis, every god was invited except Eris, goddess of discord. She came anyway, and threw a golden apple onto the table inscribed “to the fairest”. Hera, Athena and Aphrodite all reached for it at once.'},
+  pt:{c:'这对新人就是阿喀琉斯的父母。同一场婚宴，既生出了希腊最强的战士，也生出了那场要他命的战争。',
+      e:'That bride and groom are Achilles’s parents. The same wedding produced the greatest fighter in Greece and the war that killed him.'}},
 
- {n:'02',t:'帕里斯的裁判',gr:'Η ΚΡΙΣΙΣ ΤΟΥ ΠΑΡΙΔΟΣ',s:'《塞浦路斯之歌》',
-  d:'宙斯不敢裁，把这烫手的差事推给了特洛伊王子帕里斯。三位女神各开条件：赫拉给他统治亚细亚的权力，雅典娜给他战无不胜，阿佛洛狄忒给他世上最美的女人。他选了第三个。',
-  pt:'整场战争的根在这里，众神站队的根也在这里——被拒绝的那两位女神，从此站到了特洛伊的对面。'},
+ {n:'02',gr:'Η ΚΡΙΣΙΣ ΤΟΥ ΠΑΡΙΔΟΣ',
+  t:{c:'帕里斯的裁判',e:'The Judgement of Paris'},
+  s:{c:'《塞浦路斯之歌》',e:'The Cypria'},
+  d:{c:'宙斯不敢裁，把这烫手的差事推给了特洛伊王子帕里斯。三位女神各开条件：赫拉给他统治亚细亚的权力，雅典娜给他战无不胜，阿佛洛狄忒给他世上最美的女人。他选了第三个。',
+     e:'Zeus would not judge it himself and pushed the job onto Paris, a prince of Troy. Each goddess made him an offer: Hera, power over all Asia; Athena, victory in every battle; Aphrodite, the most beautiful woman in the world. He took the third.'},
+  pt:{c:'整场战争的根在这里，众神站队的根也在这里——被拒绝的那两位女神，从此站到了特洛伊的对面。',
+      e:'This is the root of the whole war, and the root of how the gods lined up: the two goddesses he turned down spent the next ten years on the far side of Troy’s walls.'}},
 
- {n:'03',t:'廷达柔斯的誓言',gr:'Ο ΟΡΚΟΣ ΤΟΥ ΤΥΝΔΑΡΕΩ',s:'阿波罗多洛斯《书库》',
-  d:'海伦太美，全希腊的王侯都来求婚，多到斯巴达王廷达柔斯不敢开口——选中任何一个，都等于得罪其余所有人。是奥德修斯出的主意：让所有求婚者先立下誓言，无论谁娶到海伦，其余人都必须出手保卫这桩婚姻。于是海伦嫁给了墨涅拉俄斯，全场无人翻脸。',
-  pt:'这个誓言是奥德修斯自己设计的，十年后它把他自己拖去了特洛伊。他当时要的回报是娶到珀涅罗珀——而这笔交易最终让他和她分开了二十年。'},
+ {n:'03',gr:'Ο ΟΡΚΟΣ ΤΟΥ ΤΥΝΔΑΡΕΩ',
+  t:{c:'廷达柔斯的誓言',e:'The Oath of Tyndareus'},
+  s:{c:'阿波罗多洛斯《书库》',e:'Apollodorus, Bibliotheca'},
+  d:{c:'海伦太美，全希腊的王侯都来求婚，多到斯巴达王廷达柔斯不敢开口——选中任何一个，都等于得罪其余所有人。是奥德修斯出的主意：让所有求婚者先立下誓言，无论谁娶到海伦，其余人都必须出手保卫这桩婚姻。于是海伦嫁给了墨涅拉俄斯，全场无人翻脸。',
+     e:'Helen was so beautiful that every lord in Greece came to court her — so many that Tyndareus, king of Sparta, did not dare open his mouth. Choosing any one of them meant insulting all the rest. It was Odysseus who found the way out: make every suitor swear an oath first, that whoever won her, the others would defend the marriage. Helen married Menelaus, and nobody drew a sword.'},
+  pt:{c:'这个誓言是奥德修斯自己设计的，十年后它把他自己拖去了特洛伊。他当时要的回报是娶到珀涅罗珀——而这笔交易最终让他和她分开了二十年。',
+      e:'Odysseus designed that oath himself, and ten years later it dragged him to Troy. What he asked in return was Penelope’s hand — and the bargain ended up keeping them apart for twenty years.'}},
 
- {n:'04',t:'拐走海伦',gr:'Η ΑΡΠΑΓΗ ΤΗΣ ΕΛΕΝΗΣ',s:'《伊利亚特》/《塞浦路斯之歌》',
-  d:'帕里斯以客人的身份住进墨涅拉俄斯的王宫，趁主人外出，带走了海伦和大批财宝。誓言当场生效，全希腊出兵。',
-  pt:'注意他犯的到底是什么罪：破坏待客之道。这正是《奥德赛》一路在考的那条规矩——求婚者赖在别人家吃喝、独眼巨人吃掉客人，和帕里斯是同一类罪。这个故事从头到尾都在讲同一件事。'},
+ {n:'04',gr:'Η ΑΡΠΑΓΗ ΤΗΣ ΕΛΕΝΗΣ',
+  t:{c:'拐走海伦',e:'The Taking of Helen'},
+  s:{c:'《伊利亚特》/《塞浦路斯之歌》',e:'The Iliad / The Cypria'},
+  d:{c:'帕里斯以客人的身份住进墨涅拉俄斯的王宫，趁主人外出，带走了海伦和大批财宝。誓言当场生效，全希腊出兵。',
+     e:'Paris came to Menelaus’s palace as a guest, and while his host was away he left with Helen and a great deal of treasure. The oath took effect on the spot, and Greece went to war.'},
+  pt:{c:'注意他犯的到底是什么罪：破坏待客之道。这正是《奥德赛》一路在考的那条规矩——求婚者赖在别人家吃喝、独眼巨人吃掉客人，和帕里斯是同一类罪。这个故事从头到尾都在讲同一件事。',
+      e:'Notice what his crime actually is: he broke the rule of hospitality. That is the exact rule the Odyssey tests over and over — suitors eating another man’s stores, a Cyclops eating his guests. Paris is guilty of the same thing. This story is about one idea from beginning to end.'}},
 
- {n:'05',t:'两个不想去的人',gr:'ΟΙ ΔΥΟ ΦΥΓΑΔΕΣ',s:'阿波罗多洛斯 / 许癸努斯',
-  d:'奥德修斯装疯躲兵役：把牛和马套在同一张犁上耕地，往犁沟里撒盐。帕拉墨得斯把还是婴儿的忒勒马科斯放到犁前，他立刻收手——装疯败露。轮到他去征召阿喀琉斯时，那孩子正被母亲藏在斯基罗斯岛女扮男装；奥德修斯摆出一堆首饰，中间放一把剑，只有一个"少女"伸手拿了剑。',
-  pt:'这两段是全片最好的人物注脚：他自己躲不掉，也绝不让别人躲掉。他的武器从一开始就是识破别人的伪装。'},
+ {n:'05',gr:'ΟΙ ΔΥΟ ΦΥΓΑΔΕΣ',
+  t:{c:'两个不想去的人',e:'Two Men Who Tried Not to Go'},
+  s:{c:'阿波罗多洛斯 / 许癸努斯',e:'Apollodorus / Hyginus'},
+  d:{c:'奥德修斯装疯躲兵役：把牛和马套在同一张犁上耕地，往犁沟里撒盐。帕拉墨得斯把还是婴儿的忒勒马科斯放到犁前，他立刻收手——装疯败露。轮到他去征召阿喀琉斯时，那孩子正被母亲藏在斯基罗斯岛女扮男装；奥德修斯摆出一堆首饰，中间放一把剑，只有一个"少女"伸手拿了剑。',
+     e:'Odysseus played mad to dodge the draft: he yoked an ox and a horse to the same plough and sowed the furrows with salt. Palamedes set the infant Telemachus down in front of the blade, and he stopped at once — the act was over. When his own turn came to recruit Achilles, the boy was hidden on Scyros dressed as a girl. Odysseus laid out a heap of jewellery with a sword in the middle of it, and only one of the girls reached for the sword.'},
+  pt:{c:'这两段是全片最好的人物注脚：他自己躲不掉，也绝不让别人躲掉。他的武器从一开始就是识破别人的伪装。',
+      e:'These two scenes are the best note on the man in the whole story: he could not get out of it himself, and he would not let anyone else get out of it either. His weapon, from the very start, is seeing through other people’s disguises.'}},
 
- {n:'06',t:'奥利斯的风',gr:'ΑΥΛΙΣ',s:'欧里庇得斯《在奥利斯的伊菲革涅亚》',
-  d:'联军的船在奥利斯港等不到风。先知说，阿伽门农得罪了阿尔忒弥斯，要起风，就得献祭自己的女儿伊菲革涅亚。他骗妻子说要把女儿嫁给阿喀琉斯，然后照做了。风起了，一千条船开了。',
-  pt:'克吕泰涅斯特拉为什么在丈夫回家当晚杀了他——理由在这里。页面上她被列作"归乡的最坏结局"，但这个结局是十年前她丈夫自己种下的。'},
+ {n:'06',gr:'ΑΥΛΙΣ',
+  t:{c:'奥利斯的风',e:'The Wind at Aulis'},
+  s:{c:'欧里庇得斯《在奥利斯的伊菲革涅亚》',e:'Euripides, Iphigenia at Aulis'},
+  d:{c:'联军的船在奥利斯港等不到风。先知说，阿伽门农得罪了阿尔忒弥斯，要起风，就得献祭自己的女儿伊菲革涅亚。他骗妻子说要把女儿嫁给阿喀琉斯，然后照做了。风起了，一千条船开了。',
+     e:'The fleet sat at Aulis and no wind came. The seer said Agamemnon had offended Artemis, and that to get his wind he would have to sacrifice his own daughter Iphigenia. He told his wife the girl was to be married to Achilles, and then he did it. The wind came, and a thousand ships sailed.'},
+  pt:{c:'克吕泰涅斯特拉为什么在丈夫回家当晚杀了他——理由在这里。页面上她被列作"归乡的最坏结局"，但这个结局是十年前她丈夫自己种下的。',
+      e:'Why Clytemnestra killed her husband on the night he came home — the reason is here. This page lists her as the worst possible homecoming, but her husband planted that ending himself, ten years earlier.'}},
 
- {n:'07',t:'十年，然后是木马',gr:'ΔΟΥΡΕΙΟΣ ΙΠΠΟΣ',s:'《伊利亚特》/维吉尔《埃涅阿斯纪》',
-  d:'围城打了十年。《伊利亚特》只写了其中五十几天，讲的是阿喀琉斯的愤怒，全书结束时特洛伊还没破。木马和陷落之夜根本不在荷马笔下，最完整的版本出自罗马诗人维吉尔，比荷马晚了七百年。',
-  pt:'木马是奥德修斯的主意。他一手赢下了这场战争，也因此惹上了那位让他二十年回不了家的神。'}
+ {n:'07',gr:'ΔΟΥΡΕΙΟΣ ΙΠΠΟΣ',
+  t:{c:'十年，然后是木马',e:'Ten Years, Then the Horse'},
+  s:{c:'《伊利亚特》/维吉尔《埃涅阿斯纪》',e:'The Iliad / Virgil, the Aeneid'},
+  d:{c:'围城打了十年。《伊利亚特》只写了其中五十几天，讲的是阿喀琉斯的愤怒，全书结束时特洛伊还没破。木马和陷落之夜根本不在荷马笔下，最完整的版本出自罗马诗人维吉尔，比荷马晚了七百年。',
+     e:'The siege ran ten years. The Iliad covers about fifty days of it and is really about the anger of Achilles; when the poem ends, Troy is still standing. The horse and the night the city fell are not in Homer at all — the fullest version comes from the Roman poet Virgil, seven hundred years later.'},
+  pt:{c:'木马是奥德修斯的主意。他一手赢下了这场战争，也因此惹上了那位让他二十年回不了家的神。',
+      e:'The horse was Odysseus’s idea. He won the war more or less single-handed, and in doing so made an enemy of the god who would keep him from home for twenty years.'}}
 ];
 
-/* 众神站队。`w` 是"为什么站这边"——这一栏才是重点，不然就只是一份名单。 */
+/* 众神站队。`w` 是"为什么站这边"——这一栏才是重点，不然就只是一份名单。
+   `zh` / `en` 是名字的两种写法，不是 i18n 字段：中文界面显示 zh 大、en 小，
+   英文界面只显示 en。 */
 const GODS = {
  greek:[
-  {zh:'赫拉',en:'Hera',w:'金苹果里被帕里斯当面拒绝。她是这场战争最执著的推手，宙斯几次想收手都被她拦下。'},
-  {zh:'雅典娜',en:'Athena',w:'同样被拒绝。这份恨她一路带进了《奥德赛》——她偏爱奥德修斯，也因为他和她一样擅长撒谎。'},
-  {zh:'波塞冬',en:'Poseidon',w:'当年为特洛伊建了城墙，国王赖账不给报酬。注意他会换边：《伊利亚特》里他帮希腊人，到《奥德赛》里却成了奥德修斯的头号敌人——因为被刺瞎的独眼巨人是他儿子。'},
-  {zh:'赫尔墨斯',en:'Hermes',w:'传令与引路的神，站希腊一侧。《奥德赛》里是他去逼卡吕普索放人的。'},
-  {zh:'赫菲斯托斯',en:'Hephaestus',w:'火与锻造之神。阿喀琉斯那副著名的盔甲是他打的。'},
-  {zh:'忒提斯',en:'Thetis',w:'阿喀琉斯的母亲，海洋女神。严格说她不算奥林匹斯的站队，她只为儿子一个人奔走。'}
+  {zh:'赫拉',en:'Hera',
+   w:{c:'金苹果里被帕里斯当面拒绝。她是这场战争最执著的推手，宙斯几次想收手都被她拦下。',
+      e:'Turned down to her face over the apple. She is the war’s most relentless driver — every time Zeus moves to end it, she blocks him.'}},
+  {zh:'雅典娜',en:'Athena',
+   w:{c:'同样被拒绝。这份恨她一路带进了《奥德赛》——她偏爱奥德修斯，也因为他和她一样擅长撒谎。',
+      e:'Turned down as well. She carries the grudge all the way into the Odyssey — and she favours Odysseus partly because he lies as well as she does.'}},
+  {zh:'波塞冬',en:'Poseidon',
+   w:{c:'当年为特洛伊建了城墙，国王赖账不给报酬。注意他会换边：《伊利亚特》里他帮希腊人，到《奥德赛》里却成了奥德修斯的头号敌人——因为被刺瞎的独眼巨人是他儿子。',
+      e:'He built Troy’s walls and the king refused to pay him. Note that he switches sides: in the Iliad he helps the Greeks, but in the Odyssey he is Odysseus’s chief enemy — the Cyclops who gets blinded is his son.'}},
+  {zh:'赫尔墨斯',en:'Hermes',
+   w:{c:'传令与引路的神，站希腊一侧。《奥德赛》里是他去逼卡吕普索放人的。',
+      e:'God of messages and safe passage, on the Greek side. In the Odyssey he is the one sent to make Calypso let her prisoner go.'}},
+  {zh:'赫菲斯托斯',en:'Hephaestus',
+   w:{c:'火与锻造之神。阿喀琉斯那副著名的盔甲是他打的。',
+      e:'God of fire and the forge. He made Achilles’s famous armour.'}},
+  {zh:'忒提斯',en:'Thetis',
+   w:{c:'阿喀琉斯的母亲，海洋女神。严格说她不算奥林匹斯的站队，她只为儿子一个人奔走。',
+      e:'Achilles’s mother, a sea goddess. Strictly she is not taking Olympus’s side at all — everything she does is for one man, her son.'}}
  ],
  trojan:[
-  {zh:'阿佛洛狄忒',en:'Aphrodite',w:'帕里斯选了她，她就把海伦给了他。此后一路护着特洛伊，甚至在战场上亲自把帕里斯从墨涅拉俄斯手里抢走。'},
-  {zh:'阿波罗',en:'Apollo',w:'特洛伊的守护神。开篇那场瘟疫是他射下来的，阿喀琉斯之死也有他一份。'},
-  {zh:'阿瑞斯',en:'Ares',w:'战神，跟着阿佛洛狄忒站队。他在《伊利亚特》里被雅典娜打得很难看。'},
-  {zh:'阿尔忒弥斯',en:'Artemis',w:'阿波罗的孪生姐妹，同一侧。在奥利斯扣住风、逼阿伽门农献女儿的也是她。'}
+  {zh:'阿佛洛狄忒',en:'Aphrodite',
+   w:{c:'帕里斯选了她，她就把海伦给了他。此后一路护着特洛伊，甚至在战场上亲自把帕里斯从墨涅拉俄斯手里抢走。',
+      e:'Paris chose her, so she gave him Helen. She shields Troy from then on, at one point snatching Paris off the battlefield out of Menelaus’s hands.'}},
+  {zh:'阿波罗',en:'Apollo',
+   w:{c:'特洛伊的守护神。开篇那场瘟疫是他射下来的，阿喀琉斯之死也有他一份。',
+      e:'Troy’s patron. The plague that opens the Iliad is his, and he has a hand in the death of Achilles.'}},
+  {zh:'阿瑞斯',en:'Ares',
+   w:{c:'战神，跟着阿佛洛狄忒站队。他在《伊利亚特》里被雅典娜打得很难看。',
+      e:'God of war, siding with Aphrodite. Athena knocks him about badly in the Iliad.'}},
+  {zh:'阿尔忒弥斯',en:'Artemis',
+   w:{c:'阿波罗的孪生姐妹，同一侧。在奥利斯扣住风、逼阿伽门农献女儿的也是她。',
+      e:'Apollo’s twin sister, same side. She is also the one holding back the wind at Aulis, forcing Agamemnon to give up his daughter.'}}
  ],
  neutral:[
-  {zh:'宙斯',en:'Zeus',w:'表面中立，实际在两边之间称量命运，并且几次下令禁止其他神下场。《奥德赛》里最后拍板放奥德修斯回家的是他。'}
+  {zh:'宙斯',en:'Zeus',
+   w:{c:'表面中立，实际在两边之间称量命运，并且几次下令禁止其他神下场。《奥德赛》里最后拍板放奥德修斯回家的是他。',
+      e:'Neutral on the surface, but weighing fates between the two sides, and more than once forbidding the other gods to join in. In the Odyssey it is he who finally rules that Odysseus may go home.'}}
  ]
 };
 
 /* 战后归途。这些人在《奥德赛》正文里就被反复提起，用来和奥德修斯作对照。 */
 const AFTER = [
- {t:'阿伽门农',en:'Agamemnon',
-  d:'打赢了，也顺利到家了，回家当晚被妻子克吕泰涅斯特拉与她的情夫杀死在浴室里。',
-  pt:'他是奥德修斯的镜像，存在的意义是让你在最后一幕紧张：回家本身就是最危险的一步。'},
- {t:'俄瑞斯忒斯',en:'Orestes',
-  d:'阿伽门农之子。长大后回来杀了母亲和她的情夫，为父复仇。',
-  pt:'《奥德赛》里众神和长辈反复拿他当榜样讲给忒勒马科斯听——那是在说：你也该动手了。'},
- {t:'墨涅拉俄斯与海伦',en:'Menelaus & Helen',
-  d:'为她打了十年仗，回程又漂了八年，经过埃及才到斯巴达。两人最后重新一起生活，忒勒马科斯去打听父亲下落时，见到的就是这一对。',
-  pt:'全篇最不动声色的一笔：那个引发了战争的女人，安然坐在自家厅堂里招待客人。'},
- {t:'小埃阿斯',en:'Ajax the Lesser',
-  d:'城破之夜在雅典娜神庙里施暴，触怒女神，归途中遇难。',
-  pt:'《奥德赛》开篇就定下的规矩：人受苦必须有理由。众神的记性很好。'},
- {t:'埃涅阿斯',en:'Aeneas',
-  d:'特洛伊一方唯一逃出焚城的主要人物，背着父亲、牵着儿子离开。',
-  pt:'荷马几乎没写他。是七百年后的罗马人把他接了下去——见下面那段。'}
+ {en:'Agamemnon',t:{c:'阿伽门农',e:'Agamemnon'},
+  d:{c:'打赢了，也顺利到家了，回家当晚被妻子克吕泰涅斯特拉与她的情夫杀死在浴室里。',
+     e:'He won, and he got home safely, and on his first night back his wife Clytemnestra and her lover killed him in his bath.'},
+  pt:{c:'他是奥德修斯的镜像，存在的意义是让你在最后一幕紧张：回家本身就是最危险的一步。',
+      e:'He is the mirror held up to Odysseus, and his job is to make you nervous in the final act: coming home is itself the most dangerous move.'}},
+ {en:'Orestes',t:{c:'俄瑞斯忒斯',e:'Orestes'},
+  d:{c:'阿伽门农之子。长大后回来杀了母亲和她的情夫，为父复仇。',
+     e:'Agamemnon’s son. He came back grown and killed his mother and her lover, avenging his father.'},
+  pt:{c:'《奥德赛》里众神和长辈反复拿他当榜样讲给忒勒马科斯听——那是在说：你也该动手了。',
+      e:'Gods and elders keep holding him up to Telemachus as an example. What they are actually saying is: your turn.'}},
+ {en:'Menelaus &amp; Helen',t:{c:'墨涅拉俄斯与海伦',e:'Menelaus &amp; Helen'},
+  d:{c:'为她打了十年仗，回程又漂了八年，经过埃及才到斯巴达。两人最后重新一起生活，忒勒马科斯去打听父亲下落时，见到的就是这一对。',
+     e:'Ten years of war over her, then eight more adrift on the way back, reaching Sparta by way of Egypt. They end up living together again — and it is this couple Telemachus finds when he goes asking after his father.'},
+  pt:{c:'全篇最不动声色的一笔：那个引发了战争的女人，安然坐在自家厅堂里招待客人。',
+      e:'The quietest stroke in the poem: the woman who started the war, sitting safely in her own hall, pouring wine for guests.'}},
+ {en:'Ajax the Lesser',t:{c:'小埃阿斯',e:'Ajax the Lesser'},
+  d:{c:'城破之夜在雅典娜神庙里施暴，触怒女神，归途中遇难。',
+     e:'On the night the city fell he committed violence inside Athena’s temple. He did not survive the journey home.'},
+  pt:{c:'《奥德赛》开篇就定下的规矩：人受苦必须有理由。众神的记性很好。',
+      e:'The rule the Odyssey lays down in its opening lines: suffering has to have a reason. The gods have long memories.'}},
+ {en:'Aeneas',t:{c:'埃涅阿斯',e:'Aeneas'},
+  d:{c:'特洛伊一方唯一逃出焚城的主要人物，背着父亲、牵着儿子离开。',
+     e:'The one major figure on the Trojan side to get out of the burning city, carrying his father and leading his son.'},
+  pt:{c:'荷马几乎没写他。是七百年后的罗马人把他接了下去——见下面那段。',
+      e:'Homer barely writes him. It was Romans, seven hundred years later, who picked him up — see below.'}}
 ];
 
 /* 剧透区。放在 <details> 里，默认折叠。 */
 const BEYOND = [
- {t:'奥德修斯还得再走一趟',s:'荷马《奥德赛》第十一卷',
-  d:'冥府里忒瑞西阿斯给了他一个预言：杀光求婚者还不算完，他必须扛着一支船桨往内陆走，一直走到遇见一个把船桨认成扬谷铲的人为止，在那里祭过波塞冬，才算真正和海神了结。'},
- {t:'他死于自己儿子之手',s:'《忒勒戈诺斯纪》（已佚，仅存提要）',
-  d:'喀耳刻为他生的儿子忒勒戈诺斯长大后出海找父亲，登上伊萨卡时父子互不相识，打了起来。忒勒戈诺斯用一支魟鱼刺做的矛刺死了奥德修斯——应了"死亡将从海上来"的预言。'},
- {t:'败的那一方去建了罗马',s:'维吉尔《埃涅阿斯纪》',
-  d:'埃涅阿斯带着特洛伊遗民漂到意大利，他的后裔建起了罗马。奥古斯都时代的罗马人主动把自己的血统认到特洛伊这个败方，而不是希腊胜方。',
-  pt:'所以这个故事真正的续集不是希腊人写的，是被他们烧掉的那座城的后人写的。'}
+ {t:{c:'奥德修斯还得再走一趟',e:'Odysseus has one more journey to make'},
+  s:{c:'荷马《奥德赛》第十一卷',e:'Homer, Odyssey XI'},
+  d:{c:'冥府里忒瑞西阿斯给了他一个预言：杀光求婚者还不算完，他必须扛着一支船桨往内陆走，一直走到遇见一个把船桨认成扬谷铲的人为止，在那里祭过波塞冬，才算真正和海神了结。',
+     e:'In the underworld Tiresias gives him a prophecy: killing the suitors is not the end of it. He must carry an oar inland, walking until he meets someone who mistakes it for a winnowing fan, and make sacrifice to Poseidon there. Only then is he finished with the sea god.'}},
+ {t:{c:'他死于自己儿子之手',e:'He dies at his own son’s hand'},
+  s:{c:'《忒勒戈诺斯纪》（已佚，仅存提要）',e:'The Telegony (lost; survives only in summary)'},
+  d:{c:'喀耳刻为他生的儿子忒勒戈诺斯长大后出海找父亲，登上伊萨卡时父子互不相识，打了起来。忒勒戈诺斯用一支魟鱼刺做的矛刺死了奥德修斯——应了"死亡将从海上来"的预言。',
+     e:'Telegonus, the son Circe bore him, grew up and sailed out to find his father. Neither recognised the other when he landed on Ithaca, and they fought. Telegonus killed Odysseus with a spear tipped in stingray barb — fulfilling the prophecy that death would come to him out of the sea.'}},
+ {t:{c:'败的那一方去建了罗马',e:'The losing side went on to found Rome'},
+  s:{c:'维吉尔《埃涅阿斯纪》',e:'Virgil, the Aeneid'},
+  d:{c:'埃涅阿斯带着特洛伊遗民漂到意大利，他的后裔建起了罗马。奥古斯都时代的罗马人主动把自己的血统认到特洛伊这个败方，而不是希腊胜方。',
+     e:'Aeneas carried the survivors of Troy as far as Italy, and his descendants founded Rome. Romans of Augustus’s day chose to trace their blood to the defeated city rather than to the Greek victors.'},
+  pt:{c:'所以这个故事真正的续集不是希腊人写的，是被他们烧掉的那座城的后人写的。',
+      e:'So the real sequel to this story was not written by the Greeks. It was written by the descendants of the city they burned.'}}
 ];
 </script>
 
@@ -1039,6 +1195,30 @@ const NS = 'http://www.w3.org/2000/svg';
 const svgEl = (n,attrs)=>{const e=document.createElementNS(NS,n);
   for(const k in attrs) e.setAttribute(k,attrs[k]); return e;};
 
+/* ---------- i18n ---------- */
+/* 'c' = 中文，'e' = English。可翻译字段写成 {c:…, e:…}；普通字符串两语言通用。
+   缺 e 时回落到 c，所以未翻译的部分只会显示中文，不会崩。 */
+const LANG_ATTR = {c:'zh-CN', e:'en'};
+let LANG = (function(){
+  try{
+    const q = new URLSearchParams(location.search).get('lang');
+    if(q==='en'||q==='e') return 'e';
+    if(q==='zh'||q==='cn'||q==='c') return 'c';
+  }catch(_){}
+  try{ const v = localStorage.getItem('odyssey-lang'); if(v==='c'||v==='e') return v; }catch(_){}
+  return /^zh/i.test(navigator.language||'') ? 'c' : 'e';
+})();
+const T = v => (v && typeof v==='object' && !Array.isArray(v)) ? (v[LANG] != null ? v[LANG] : v.c) : v;
+const U = k => T(UI[k]);
+
+function applyStatic(){
+  document.documentElement.lang = LANG_ATTR[LANG];
+  document.title = U('meta.title');
+  const m = $('meta[name="description"]'); if(m) m.setAttribute('content', U('meta.desc'));
+  $$('[data-t]').forEach(el=>{ const v = UI[el.dataset.t]; if(v) el.innerHTML = T(v); });
+  $$('#lang .lng').forEach(b=> b.setAttribute('aria-pressed', String(b.dataset.lang===LANG)));
+}
+
 const BY_ID = {}; CHARS.forEach(c=>BY_ID[c.id]=c);
 const ACTOR_MAP = {
   odysseus:'马特·达蒙', telemachus:'汤姆·赫兰德', penelope:'安妮·海瑟薇', antinous:'罗伯特·帕丁森',
@@ -1060,38 +1240,50 @@ $$('#tabs .tab').forEach(btn=>{
 });
 
 /* ---------- I. 速览 ---------- */
-$('#words').innerHTML = WORDS.map(w=>
-  '<div class="word"><div class="gr">'+w.gr+'</div><div class="tr">'+w.tr+'</div>'+
-  '<div class="zh">'+w.zh+'</div><p>'+w.d+'</p></div>').join('');
-
-$('#threads').innerHTML = THREADS.map(t=>
-  '<div class="thread" style="--tc:'+t.c+'"><div class="who">'+t.who+'</div>'+
-  '<div class="where">'+t.where+'</div><p>'+t.d+'</p></div>').join('');
+function renderWords(){
+  $('#words').innerHTML = WORDS.map(w=>
+    '<div class="word"><div class="gr">'+w.gr+'</div><div class="tr">'+w.tr+'</div>'+
+    '<div class="zh">'+T(w.zh)+'</div><p>'+T(w.d)+'</p></div>').join('');
+}
+function renderThreads(){
+  $('#threads').innerHTML = THREADS.map(t=>
+    '<div class="thread" style="--tc:'+t.c+'"><div class="who">'+T(t.who)+'</div>'+
+    '<div class="where">'+T(t.where)+'</div><p>'+T(t.d)+'</p></div>').join('');
+}
 
 /* ---------- II. 前传与后续 ---------- */
 /* 前传复用名场面那套 .scenes/.scene 卡片，只多一个出处徽章 .src。 */
-$('#pre').innerHTML = PRE.map(p=>
-  '<article class="scene"><div class="num">'+p.n+'</div>'+
-  '<span class="src">'+p.s+'</span>'+
-  '<h3>'+p.t+'</h3><div class="gr">'+p.gr+'</div>'+
-  '<p>'+p.d+'</p><p class="pt">'+p.pt+'</p></article>').join('');
-
-const side = (list,cls,title,col) =>
-  '<div class="side '+cls+'" style="--sc:'+col+'"><div class="side-h">'+title+'</div>'+
-  list.map(g=>'<div class="god"><b>'+g.zh+'</b><span class="gen">'+g.en+'</span>'+
-    '<p>'+g.w+'</p></div>').join('')+'</div>';
-$('#sides').innerHTML =
-  side(GODS.greek,'greek','希腊一方',FACTIONS.ithaca.c)+
-  side(GODS.trojan,'trojan','特洛伊一方',FACTIONS.troy.c)+
-  side(GODS.neutral,'neutral','居中',FACTIONS.gods.c);
-
-$('#afters').innerHTML = AFTER.map(a=>
-  '<article class="after"><h4>'+a.t+'<span class="aen">'+a.en+'</span></h4>'+
-  '<p>'+a.d+'</p><p class="pt">'+a.pt+'</p></article>').join('');
-
-$('#beyond').innerHTML = BEYOND.map(b=>
-  '<article class="beyond"><h4>'+b.t+'</h4><div class="src-line">'+b.s+'</div>'+
-  '<p>'+b.d+'</p>'+(b.pt?'<p class="pt">'+b.pt+'</p>':'')+'</article>').join('');
+function renderPre(){
+  $('#pre').innerHTML = PRE.map(p=>
+    '<article class="scene"><div class="num">'+p.n+'</div>'+
+    '<span class="src">'+T(p.s)+'</span>'+
+    '<h3>'+T(p.t)+'</h3><div class="gr">'+p.gr+'</div>'+
+    '<p>'+T(p.d)+'</p><p class="pt">'+T(p.pt)+'</p></article>').join('');
+}
+function renderSides(){
+  /* 中文界面下神名是「中文名 + 小写英文」两行信息；英文界面只留英文名，
+     再显示一次中文对读者没有用。 */
+  const side = (list,cls,title,col) =>
+    '<div class="side '+cls+'" style="--sc:'+col+'"><div class="side-h">'+title+'</div>'+
+    list.map(g=>'<div class="god"><b>'+(LANG==='c'?g.zh:g.en)+'</b>'+
+      (LANG==='c'?'<span class="gen">'+g.en+'</span>':'')+
+      '<p>'+T(g.w)+'</p></div>').join('')+'</div>';
+  $('#sides').innerHTML =
+    side(GODS.greek,'greek',U('side.greek'),FACTIONS.ithaca.c)+
+    side(GODS.trojan,'trojan',U('side.trojan'),FACTIONS.troy.c)+
+    side(GODS.neutral,'neutral',U('side.neutral'),FACTIONS.gods.c);
+}
+function renderAfters(){
+  $('#afters').innerHTML = AFTER.map(a=>
+    '<article class="after"><h4>'+T(a.t)+
+    (LANG==='c'?'<span class="aen">'+a.en+'</span>':'')+'</h4>'+
+    '<p>'+T(a.d)+'</p><p class="pt">'+T(a.pt)+'</p></article>').join('');
+}
+function renderBeyond(){
+  $('#beyond').innerHTML = BEYOND.map(b=>
+    '<article class="beyond"><h4>'+T(b.t)+'</h4><div class="src-line">'+T(b.s)+'</div>'+
+    '<p>'+T(b.d)+'</p>'+(b.pt?'<p class="pt">'+T(b.pt)+'</p>':'')+'</article>').join('');
+}
 
 /* ---------- III. 人物星图 ---------- */
 const map = $('#map'), mapBox = $('#mapBox');
@@ -1101,7 +1293,13 @@ let sel = 'odysseus';
 const gDefs = svgEl('defs',{}), gEdges = svgEl('g',{}), gNodes = svgEl('g',{});
 map.appendChild(gDefs); map.appendChild(gEdges); map.appendChild(gNodes);
 
-const edgeEls = LINKS.map(([a,b,type,label])=>{
+/* 切换语言时整张图重建（标签文字在节点里，就地改不如重建干净）。
+   重建后必须 select(sel) 恢复选中态，否则详情栏会空。
+   edgeEls / nodeEls 因此是 let，不是 const。 */
+let edgeEls = [], nodeEls = {};
+function buildMap(){
+gDefs.textContent=''; gEdges.textContent=''; gNodes.textContent='';
+edgeEls = LINKS.map(([a,b,type,label])=>{
   const A=BY_ID[a], B=BY_ID[b];
   const ln = svgEl('line',{x1:A.x,y1:A.y,x2:B.x,y2:B.y,
     stroke:REL[type].c, 'stroke-opacity':.3, 'stroke-width':1.1});
@@ -1110,10 +1308,10 @@ const edgeEls = LINKS.map(([a,b,type,label])=>{
   return {el:ln,a:a,b:b,type:type,label:label};
 });
 
-const nodeEls = {};
+nodeEls = {};
 CHARS.forEach(c=>{
   const col = FACTIONS[c.f].c;
-  const g = svgEl('g',{tabindex:'0',role:'button','aria-label':c.zh});
+  const g = svgEl('g',{tabindex:'0',role:'button','aria-label':LANG==='c'?T(c.zh):c.en});
   g.setAttribute('class','node');
   g.appendChild(svgEl('circle',{cx:c.x,cy:c.y,r:c.r,fill:'#070B10'}));
   /* 头像。只有已公布卡司的角色有；其余节点维持空心彩环。
@@ -1136,9 +1334,15 @@ CHARS.forEach(c=>{
     stroke:col,'stroke-opacity':.65,'stroke-width':1.4});
   ring.setAttribute('class','ring');
   g.appendChild(ring);
-  const t1 = svgEl('text',{x:c.x,y:c.y+c.r+16}); t1.textContent=c.zh;
-  const t2 = svgEl('text',{x:c.x,y:c.y+c.r+28}); t2.setAttribute('class','en'); t2.textContent=c.en;
-  g.appendChild(t1); g.appendChild(t2);
+  /* 中文界面两行（中文名 + 英文小标）；英文界面只有一行英文名——
+     再摆一行中文对英文读者没用，而且第二行会挤到下面的节点。
+     注意 §2 的硬约束 node.y+node.r+28<820 是按两行算的，单行只会更松。 */
+  const t1 = svgEl('text',{x:c.x,y:c.y+c.r+16}); t1.textContent = LANG==='c'? T(c.zh) : c.en;
+  g.appendChild(t1);
+  if(LANG==='c'){
+    const t2 = svgEl('text',{x:c.x,y:c.y+c.r+28});
+    t2.setAttribute('class','en'); t2.textContent=c.en; g.appendChild(t2);
+  }
   const hit = svgEl('circle',{cx:c.x,cy:c.y,r:Math.max(c.r+8,22)});
   hit.setAttribute('class','hit'); g.appendChild(hit);
   g.addEventListener('mouseenter',()=>focusOn(c.id));
@@ -1149,6 +1353,7 @@ CHARS.forEach(c=>{
   gNodes.appendChild(g);
   nodeEls[c.id]=g;
 });
+}
 
 function neighbours(id){
   const s=new Set();
@@ -1198,10 +1403,12 @@ function renderDetail(id){
 }
 
 /* legend */
+function renderLegend(){
 $('#legend').innerHTML = Object.keys(FACTIONS).map(k=>
   '<button class="chip" data-f="'+k+'" aria-pressed="true" style="--c:'+FACTIONS[k].c+'">'+
-  '<span class="dot"></span>'+FACTIONS[k].zh+'</button>').join('');
+  '<span class="dot"></span>'+T(FACTIONS[k].zh)+'</button>').join('');
 $$('#legend .chip').forEach(ch=>{
+    ch.setAttribute('aria-pressed', String(!hidden.has(ch.dataset.f)));
   ch.addEventListener('click',()=>{
     const f=ch.dataset.f, on = ch.getAttribute('aria-pressed')==='true';
     if(on){ hidden.add(f); ch.setAttribute('aria-pressed','false'); }
@@ -1209,34 +1416,37 @@ $$('#legend .chip').forEach(ch=>{
     applyHidden();
   });
 });
+}
 
 /* roster */
+function renderRoster(){
 $('#roster').innerHTML = CHARS.slice().sort((a,b)=>
   Object.keys(FACTIONS).indexOf(a.f)-Object.keys(FACTIONS).indexOf(b.f)
 ).map(c=>'<button class="rbtn" data-go="'+c.id+'" style="--c:'+FACTIONS[c.f].c+'">'+
-  c.zh+'<small>'+c.en+'</small></button>').join('');
+  (LANG==='c'? T(c.zh)+'<small>'+c.en+'</small>' : c.en)+'</button>').join('');
 $$('#roster .rbtn').forEach(b=>b.addEventListener('click',()=>{
   select(b.dataset.go);
   $('#detail').scrollIntoView({block:'nearest',
     behavior: matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});
 }));
-
-select('odysseus');
+}
 
 /* ---------- IV. 时间线 ---------- */
 const EV_BY = {}; EVENTS.forEach(e=>EV_BY[e.id]=e);
+let tlOrder = 'story';
 function renderTL(order){
+  tlOrder = order;
   const ids = order==='homer' ? ORDER_HOMER : ORDER_STORY;
-  $('#tlHint').textContent = TL_HINT[order];
+  $('#tlHint').textContent = T(TL_HINT[order]);
   $('#tl').innerHTML = ids.map((id,i)=>{
     const e = EV_BY[id], col = FACTIONS[e.f].c;
     return '<article class="ev" style="--ec:'+col+'">'+
       '<div class="ev-head"><span class="ev-idx">'+String(i+1).padStart(2,'0')+'</span>'+
-      '<span class="ev-title">'+e.t+'</span>'+
-      '<span class="ev-badge">'+(order==='homer'? e.book : e.sub)+'</span></div>'+
-      '<p class="ev-sub">'+(order==='homer'? e.sub : e.book)+'</p>'+
-      '<p class="ev-body">'+e.d+'</p>'+
-      (e.why ? '<p class="ev-why">'+e.why+'</p>' : '')+
+      '<span class="ev-title">'+T(e.t)+'</span>'+
+      '<span class="ev-badge">'+T(order==='homer'? e.book : e.sub)+'</span></div>'+
+      '<p class="ev-sub">'+T(order==='homer'? e.sub : e.book)+'</p>'+
+      '<p class="ev-body">'+T(e.d)+'</p>'+
+      (e.why ? '<p class="ev-why">'+T(e.why)+'</p>' : '')+
     '</article>';
   }).join('');
 }
@@ -1244,45 +1454,76 @@ $$('#tlSwitch button').forEach(b=>b.addEventListener('click',()=>{
   $$('#tlSwitch button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
   renderTL(b.dataset.o);
 }));
-renderTL('story');
 
 /* ---------- V. 名场面 ---------- */
-$('#scenes').innerHTML = SCENES.map(s=>
-  '<article class="scene"><div class="num">'+s.n+'</div><h3>'+s.t+'</h3>'+
-  '<div class="gr">'+s.gr+'</div><p>'+s.d+'</p>'+
-  (s.pt?'<p class="pt">'+s.pt+'</p>':'')+'</article>').join('');
+function renderScenes(){
+  $('#scenes').innerHTML = SCENES.map(s=>
+    '<article class="scene"><div class="num">'+s.n+'</div><h3>'+T(s.t)+'</h3>'+
+    '<div class="gr">'+s.gr+'</div><p>'+T(s.d)+'</p>'+
+    (s.pt?'<p class="pt">'+T(s.pt)+'</p>':'')+'</article>').join('');
+}
 
 /* ---------- VI. 演员 ---------- */
+let castQ = '';
 function renderCast(q){
-  q = (q||'').trim().toLowerCase();
-  const list = CAST.filter(c=> !q || (c.a+c.ae+c.c+c.ce+c.who).toLowerCase().includes(q));
-  $('#castCount').textContent = q ? (list.length+' / '+CAST.length+' 位') : (CAST.length+' 位已公布角色');
+  castQ = q = (q||'').trim().toLowerCase();
+  const list = CAST.filter(c=> !q || (c.a+c.ae+c.c+c.ce+T(c.who)).toLowerCase().includes(q));
+  $('#castCount').textContent = q ? (list.length+' / '+CAST.length+U('cast.unit'))
+                                  : (CAST.length+U('cast.total'));
   $('#cast').innerHTML = list.map(c=>{
     const col = FACTIONS[c.f].c, face = FACE_SRC[c.p];
     return '<article class="actor" style="--c:'+col+'">'+
       (face?'<img class="face" src="'+face+'" alt="" width="58" height="58">':'')+
-      '<div class="an"><b>'+c.a+'</b> · '+c.ae+'</div>'+
+      '<div class="an"><b>'+(LANG==='c'?c.a:c.ae)+'</b>'+(LANG==='c'?' · '+c.ae:'')+'</div>'+
       '<div class="arrow">plays</div>'+
-      '<div class="cn">'+c.c+(c.flag?'<span class="flag">'+c.flag+'</span>':'')+'</div>'+
-      '<div class="cen">'+c.ce+'</div>'+
-      '<p class="who">'+c.who+'</p>'+
-      (c.note?'<p class="note">'+c.note+'</p>':'')+
+      '<div class="cn">'+(LANG==='c'?c.c:c.ce)+(c.flag?'<span class="flag">'+T(c.flag)+'</span>':'')+'</div>'+
+      (LANG==='c'?'<div class="cen">'+c.ce+'</div>':'')+
+      '<p class="who">'+T(c.who)+'</p>'+
+      (c.note?'<p class="note">'+T(c.note)+'</p>':'')+
     '</article>';
-  }).join('') || '<p class="sec-note">没有匹配的结果。</p>';
+  }).join('') || '<p class="sec-note">'+U('cast.empty')+'</p>';
 }
 $('#castSearch').addEventListener('input',e=>renderCast(e.target.value));
-renderCast('');
 
 /* ---------- VII. 观影指南 ---------- */
-$('#tips').innerHTML = TIPS.map(t=>
-  '<div class="tip"><h3>'+t.t+'</h3><p>'+t.d+'</p>'+(t.d2?'<p>'+t.d2+'</p>':'')+'</div>').join('');
-$('#srcNote').innerHTML =
-  '<b style="color:var(--bone-2);font-weight:500;">其余演员</b><br>'+CAST_TAIL+
-  '<br><br><b style="color:var(--bone-2);font-weight:500;">关于剧透</b><br>'+
-  '本页只讲三千年前就已公开的原著情节，不含电影的改编内容与结局处理。原著的结局在最后一页写着——如果你连这个也想在影院里第一次知道，跳过"十年归途"的最后三条和"名场面"的第九、十条。'+
-  '"前传与后续"里讲到《奥德赛》结局之后的那一段是折叠起来的，不点开就不会看到。'+
-  '<br><br><b style="color:var(--bone-2);font-weight:500;">演员头像</b><br>'+
-  '演员头像来自 TMDB。本页使用 TMDB API，但未获 TMDB 认可或认证。';
+function renderTips(){
+  $('#tips').innerHTML = TIPS.map(t=>
+    '<div class="tip"><h3>'+T(t.t)+'</h3><p>'+T(t.d)+'</p>'+(t.d2?'<p>'+T(t.d2)+'</p>':'')+'</div>').join('');
+}
+function renderSrcNote(){
+  const h = t => '<b style="color:var(--bone-2);font-weight:500;">'+t+'</b><br>';
+  $('#srcNote').innerHTML =
+    h(U('src.rest'))+T(CAST_TAIL)+
+    '<br><br>'+h(U('src.spoiler'))+U('src.spoiler.body')+
+    '<br><br>'+h(U('src.faces'))+U('src.faces.body');
+}
+
+/* ---------- 语言切换 ---------- */
+/* 每次切换整页重渲染。星图重建后要 select(sel) 把选中态和详情栏找回来。 */
+function renderAll(){
+  applyStatic();
+  renderWords(); renderThreads();
+  renderPre(); renderSides(); renderAfters(); renderBeyond();
+  buildMap(); renderLegend(); renderRoster(); select(sel);
+  renderTL(tlOrder);
+  renderScenes(); renderCast(castQ); renderTips(); renderSrcNote();
+  $('#castSearch').placeholder = U('cast.search');
+}
+$$('#lang .lng').forEach(b=> b.addEventListener('click',()=>{
+  if(b.dataset.lang===LANG) return;
+  LANG = b.dataset.lang;
+  try{ localStorage.setItem('odyssey-lang', LANG); }catch(_){}
+  /* 把语言写进 URL，这样分享出去的链接会保持语言。Artifact 沙箱里
+     replaceState 可能被拦，所以包在 try 里——失败也不影响页面。 */
+  try{
+    const u = new URL(location.href);
+    u.searchParams.set('lang', LANG==='e'?'en':'zh');
+    history.replaceState(null,'',u);
+  }catch(_){}
+  renderAll();
+}));
+
+renderAll();
 })();
 </script>
 </body>
