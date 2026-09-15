@@ -57,6 +57,49 @@ Consult these guides before working on related tasks:
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
 
+## Demo 子项目
+
+`/projects` 里能直接玩的网页 demo，按**要不要构建**分两档：
+
+- **站内（默认）**：纯 HTML/CSS/JS，CDN 引库也算。本体放
+  `public/demos/<slug>/index.html`，跟网站一起部署。`public/` 原样拷贝，
+  不经过 Tailwind、不进网站依赖树，所以 demo 的样式和网站互不影响。
+- **独立仓库**：一旦需要自己的 `package.json`（npm 依赖、框架、构建、后端、
+  API key），就开新仓库 + 自己的 Cloudflare Pages 项目，这边的 mdx 只填
+  `links.live` / `links.repo`（能嵌就填 `demo.url`）。不要塞进本仓库做
+  workspaces——lockfile 和 Cloudflare 构建会缠在一起。
+
+新建站内 demo：
+
+```sh
+node scripts/new-demo.mjs <slug>
+```
+
+生成三个文件，已存在的不覆盖：
+
+| 文件 | 写给谁 |
+|---|---|
+| `public/demos/<slug>/index.html` | demo 本体，带好 charset / viewport / 亮暗色 |
+| `src/content/projects/<slug>.mdx` | 读者。`draft: true`，`demo.url` 已填 |
+| `src/content/projects/<slug>.notes.md` | 维护者。`.md` 不是 `.mdx`，collection 不读它 |
+
+约定：
+
+- 统一挂在 `/demos/` 下，避免和 `/projects` `/books` 等路由撞名。
+  Odyssey 是例外，留在 `/odyssey/`，线上链接已经发出去了。
+- dev server **不会**把 `/demos/<slug>/` 解析成目录下的 `index.html`（404，
+  `/odyssey/` 也一样），本地要打开 `/demos/<slug>/index.html`。Cloudflare 上
+  两种写法都行。`demo.url` 填的是线上地址，所以项目详情页里的 iframe 在推上去
+  之前是空的——本地看 demo 本体就好。
+- 工作在 `demo/<slug>` 分支上做；push 后 Cloudflare 会给分支出 preview 部署。
+  `draft: true` 只在生产构建里隐藏，dev 下照样显示。上线就是去掉 draft、合进 main。
+- 有生成步骤的，原料缓存进 gitignore，生成结果提交（照 Odyssey 头像的做法），
+  另一台机器不需要 key 也不用重跑。
+- **定稿后只维护仓库里这一份。** 用 Claude Artifact 做原型可以，但别让它和
+  `public/` 那份并行活着——Odyssey 就是这么漂移成三份的（notes §0）。
+- **交接写进 `<slug>.notes.md`，不要只靠 Claude 的 memory。** memory 存在本机
+  `~/.claude/`，另一台机器看不到；仓库里的 notes 会随 git 走。
+
 ## Bookshelf
 
 `/books` is generated from a Notion export, not written by hand.
