@@ -78,6 +78,14 @@ const books = defineCollection({
       tags: z.array(z.string()).default([]),
       /** Douban entry, for anyone who wants the book rather than the note. */
       link: z.string().url().optional(),
+      /**
+       * A reading guide built for this book, served from this site.
+       * Rendered beside the Douban link rather than buried in the note, because
+       * a guide is something you open *while* reading, not a citation.
+       */
+      guide: z
+        .object({ href: z.string(), label: z.string() })
+        .optional(),
       /** Publisher's description. Not Yaner's words — rendered as such. */
       blurb: z.string().optional(),
       /** Sorts the shelf left to right, oldest read first. */

@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>降临 Arrival · 二刷解说：时间、语言与选择</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Serif+SC:wght@400;600;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#e9ebe7;
+        --bg-soft:#dfe3dd;
+        --surface:#f2f3ef;
+        --surface-2:#e3e7e1;
+        --ink:#23282a;
+        --ink-soft:#4a5257;
+        --ink-faint:#79828a;
+        --line:#c3c9c2;
+        --accent:#37474d;
+        --accent-soft:#5d6d73;
+        --mist:#8fa1a6;
+        --gold:#8a6d3b;
+        --serif:"Noto Serif SC",serif;
+        --sans:"Noto Sans SC",sans-serif;
+        --latin:"Cormorant Garamond",serif;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#14181a;
+          --bg-soft:#1a1f22;
+          --surface:#1e2427;
+          --surface-2:#252c2f;
+          --ink:#dde2df;
+          --ink-soft:#aeb8b4;
+          --ink-faint:#7d888a;
+          --line:#333c3f;
+          --accent:#b9c8cc;
+          --accent-soft:#8fa1a6;
+          --mist:#5d6f74;
+          --gold:#c2a367;
+        }
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;background:var(--bg);color:var(--ink);
+        font-family:var(--sans);font-weight:300;line-height:1.85;
+        -webkit-font-smoothing:antialiased;
+      }
+      ::selection{background:var(--accent);color:var(--bg)}
+
+      /* ---------- hero ---------- */
+      .hero{position:relative;overflow:hidden}
+      .hero-img{display:block;width:100%;height:min(88vh,760px);object-fit:cover;object-position:center 38%}
+      .hero-veil{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(20,26,29,.18),rgba(20,26,29,0) 34%,rgba(20,26,29,0) 58%,rgba(20,26,29,.55))}
+      .hero-text{position:absolute;left:0;right:0;bottom:0;padding:0 6vw 5.2rem;color:#eef1ee}
+      .hero-title{font-family:var(--serif);font-weight:900;font-size:clamp(4.2rem,13vw,9.5rem);line-height:1;letter-spacing:.08em;margin:0;text-shadow:0 2px 30px rgba(10,14,16,.45)}
+      .hero-latin{font-family:var(--latin);font-size:clamp(1.05rem,2.6vw,1.6rem);letter-spacing:.62em;text-transform:uppercase;margin:.9rem 0 0 .35rem;color:#cfd8d6}
+      .hero-sub{max-width:34em;margin:1.4rem 0 0;font-size:clamp(.95rem,2vw,1.08rem);color:#dde4e1;text-shadow:0 1px 12px rgba(10,14,16,.6)}
+      .hero-meta{position:absolute;top:1.4rem;right:6vw;text-align:right;color:rgba(238,242,239,.92);font-size:.8rem;letter-spacing:.14em;line-height:2;text-shadow:0 1px 10px rgba(10,14,16,.5)}
+      .hero-meta b{font-weight:500}
+      .spoiler{position:absolute;top:1.4rem;left:6vw;color:rgba(238,242,239,.92);font-size:.8rem;letter-spacing:.14em;border:1px solid rgba(238,242,239,.45);padding:.35rem .8rem;border-radius:999px;backdrop-filter:blur(3px)}
+      @media(max-width:640px){
+        .spoiler{top:1rem;left:5vw;font-size:.74rem}
+        .hero-meta{top:4.3rem;right:5vw;font-size:.74rem;line-height:1.9}
+        .hero-text{padding-bottom:3.4rem}
+      }
+
+      /* ---------- nav ---------- */
+      .toc{
+        position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);
+        backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+        display:flex;gap:.4rem;overflow-x:auto;padding:.55rem 6vw;scrollbar-width:none;
+      }
+      .toc::-webkit-scrollbar{display:none}
+      .toc a{
+        color:var(--ink-soft);text-decoration:none;font-size:.86rem;white-space:nowrap;
+        padding:.3rem .75rem;border-radius:999px;letter-spacing:.06em;
+      }
+      .toc a:hover{background:var(--surface-2);color:var(--ink)}
+
+      main{max-width:1160px;margin:0 auto;padding:0 6vw}
+      section{padding:4.6rem 0 1rem}
+      .sec-head{display:flex;align-items:baseline;gap:1.1rem;margin-bottom:.4rem}
+      .sec-no{font-family:var(--latin);font-size:1rem;letter-spacing:.3em;color:var(--ink-faint)}
+      h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.6vw,2.5rem);margin:0;letter-spacing:.04em;line-height:1.3}
+      .sec-lede{color:var(--ink-soft);max-width:44em;margin:.8rem 0 2rem;font-size:1.02rem}
+      h3{font-family:var(--serif);font-weight:600;font-size:1.22rem;margin:0 0 .5rem}
+      p{margin:.4rem 0 1rem}
+      .small{font-size:.86rem;color:var(--ink-faint)}
+      .en{font-family:var(--latin);letter-spacing:.12em}
+
+      /* ---------- one-minute ---------- */
+      .onemin{
+        border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+        padding:1.6rem 0;display:grid;grid-template-columns:1fr;gap:1rem;
+      }
+      .onemin .big{font-family:var(--serif);font-size:clamp(1.25rem,3vw,1.6rem);line-height:1.75;font-weight:600}
+      .onemin .big em{font-style:normal;box-shadow:inset 0 -0.5em 0 color-mix(in srgb,var(--mist) 35%,transparent)}
+      .factrow{display:flex;flex-wrap:wrap;gap:.5rem 2.2rem;font-size:.9rem;color:var(--ink-soft)}
+      .factrow b{color:var(--ink);font-weight:500}
+
+      /* ---------- toggle switch ---------- */
+      .switch{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:.28rem;background:var(--surface);gap:.25rem;flex-wrap:wrap}
+      .switch button{
+        border:0;background:transparent;color:var(--ink-soft);font-family:var(--sans);
+        font-size:.92rem;padding:.5rem 1.15rem;border-radius:999px;cursor:pointer;letter-spacing:.05em;transition:all .25s;
+      }
+      .switch button[aria-pressed="true"]{background:var(--accent);color:var(--bg);font-weight:500}
+      .switch button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+      /* ---------- timeline ---------- */
+      .tl-wrap{margin-top:1.8rem}
+      .tl-note{min-height:3.4em;color:var(--ink-soft);max-width:46em;margin-top:1rem}
+      .tl-track{position:relative;margin-top:1.4rem}
+      .tl-track::before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:1px;background:var(--line)}
+      .tl-item{position:relative;padding:0 0 1.5rem 3rem;transition:opacity .5s}
+      .tl-dot{
+        position:absolute;left:6px;top:.5em;width:19px;height:19px;border-radius:50%;
+        border:1.5px solid var(--accent-soft);background:var(--bg);
+      }
+      .tl-item.future .tl-dot{background:var(--accent);border-color:var(--accent)}
+      .tl-when{font-size:.8rem;letter-spacing:.18em;color:var(--ink-faint)}
+      .tl-item.future .tl-when{color:var(--gold)}
+      .tl-item h3{margin-bottom:.15rem}
+      .tl-item p{color:var(--ink-soft);margin:0;max-width:44em}
+      .tl-badge{display:inline-block;font-size:.72rem;letter-spacing:.14em;border:1px solid var(--gold);color:var(--gold);border-radius:999px;padding:.05rem .6rem;margin-left:.6rem;vertical-align:.18em}
+
+      /* ---------- characters ---------- */
+      .chars{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+      .char{background:var(--surface);padding:1.5rem 1.4rem 1.2rem}
+      .char .role{font-size:.78rem;letter-spacing:.22em;color:var(--ink-faint)}
+      .char h3{font-size:1.35rem;margin:.3rem 0 .1rem}
+      .char .actor{font-size:.85rem;color:var(--accent-soft);margin-bottom:.7rem}
+      .char p{font-size:.94rem;color:var(--ink-soft);margin:0}
+      .char .key{margin-top:.9rem;padding-top:.7rem;border-top:1px dashed var(--line);font-size:.88rem;color:var(--ink)}
+
+      /* ---------- logogram lab ---------- */
+      .lab{display:grid;grid-template-columns:1fr;gap:2rem;margin-top:1rem}
+      @media(min-width:900px){.lab{grid-template-columns:minmax(320px,480px) 1fr}}
+      .lab-stage{background:var(--surface);border:1px solid var(--line);padding:1rem;display:flex;align-items:center;justify-content:center}
+      .lab-stage svg{width:100%;height:auto;max-width:440px}
+      .ink-base{fill:none;stroke:var(--ink);stroke-width:7;stroke-linecap:round;opacity:.92}
+      .ink-base2{fill:none;stroke:var(--ink);stroke-width:2.4;opacity:.35}
+      .tendril{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round;opacity:0;transition:opacity .7s ease}
+      .tendril.on{opacity:.92}
+      .chips{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:1.2rem}
+      .chip{
+        border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+        padding:.45rem 1rem;border-radius:999px;cursor:pointer;font-family:var(--sans);font-size:.95rem;transition:all .25s;
+      }
+      .chip:hover{border-color:var(--accent-soft);color:var(--ink)}
+      .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+      .lab-readout{background:var(--surface);border:1px solid var(--line);padding:1.3rem 1.4rem;min-height:9.5rem}
+      .lab-readout .sentence{font-family:var(--serif);font-size:1.3rem;font-weight:600;line-height:1.7}
+      .lab-readout .explain{color:var(--ink-soft);font-size:.95rem;margin-top:.5rem}
+      .lab-actions{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+      .btn{
+        border:1px solid var(--accent);background:transparent;color:var(--accent);
+        padding:.55rem 1.3rem;border-radius:999px;cursor:pointer;font-family:var(--sans);font-size:.92rem;letter-spacing:.05em;transition:all .25s;
+      }
+      .btn:hover{background:var(--accent);color:var(--bg)}
+      .btn.solid{background:var(--accent);color:var(--bg)}
+      .btn.solid:hover{opacity:.85}
+
+      /* ---------- concepts ---------- */
+      .concepts{display:grid;grid-template-columns:1fr;gap:2.6rem;margin-top:.5rem}
+      @media(min-width:900px){.concepts{grid-template-columns:1fr 1fr 1fr;gap:2rem}}
+      .concept{border-top:2px solid var(--accent);padding-top:1.1rem}
+      .concept .glyph{font-family:var(--latin);font-size:2rem;color:var(--mist);line-height:1}
+      .concept p{color:var(--ink-soft);font-size:.96rem}
+      .concept .punch{color:var(--ink);font-family:var(--serif);font-weight:600;font-size:1.02rem}
+
+      /* ---------- choice ---------- */
+      .choice{margin-top:3rem;background:var(--surface);border:1px solid var(--line);padding:1.8rem clamp(1.2rem,4vw,2.4rem)}
+      .choice h3{font-size:1.3rem}
+      .choice .opts{display:flex;gap:.7rem;flex-wrap:wrap;margin:1rem 0}
+      .choice-result{color:var(--ink-soft);max-width:46em;min-height:3.2em}
+      .choice-result b{color:var(--ink)}
+
+      /* ---------- compare ---------- */
+      .cmp{margin-top:1.6rem}
+      .cmp-row{border-top:1px solid var(--line);padding:1.5rem 0}
+      .cmp-row:last-child{border-bottom:1px solid var(--line)}
+      .cmp-topic{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem}
+      .cmp-topic h3{margin:0}
+      .diff{font-size:.75rem;letter-spacing:.16em;padding:.15rem .7rem;border-radius:999px;border:1px solid var(--line);color:var(--ink-faint)}
+      .diff.big{border-color:var(--gold);color:var(--gold)}
+      .cmp-cols{display:grid;grid-template-columns:1fr;gap:.8rem}
+      @media(min-width:820px){.cmp-cols{grid-template-columns:1fr 1fr;gap:2rem}}
+      .cmp-col p{color:var(--ink-soft);font-size:.96rem;margin:0}
+      .cmp-col .who{font-size:.78rem;letter-spacing:.22em;color:var(--ink-faint);display:block;margin-bottom:.35rem}
+
+      .novel-arc{display:grid;grid-template-columns:1fr;gap:0;margin-top:1.4rem;border:1px solid var(--line);background:var(--surface)}
+      @media(min-width:820px){.novel-arc{grid-template-columns:repeat(4,1fr)}}
+      .arc-step{padding:1.3rem 1.3rem 1.1rem;border-top:1px solid var(--line)}
+      @media(min-width:820px){.arc-step{border-top:0;border-left:1px solid var(--line)}.arc-step:first-child{border-left:0}}
+      .arc-step .n{font-family:var(--latin);font-size:1.5rem;color:var(--mist)}
+      .arc-step p{font-size:.92rem;color:var(--ink-soft);margin:.3rem 0 0}
+
+      /* ---------- faq ---------- */
+      .faq{border-top:1px solid var(--line);margin-top:1.4rem}
+      .faq-item{border-bottom:1px solid var(--line)}
+      .faq-q{
+        width:100%;background:none;border:0;text-align:left;cursor:pointer;color:var(--ink);
+        font-family:var(--serif);font-weight:600;font-size:1.08rem;padding:1.15rem 2.2rem 1.15rem 0;position:relative;line-height:1.5;
+      }
+      .faq-q::after{content:"＋";position:absolute;right:.2rem;top:50%;transform:translateY(-50%);color:var(--ink-faint);font-family:var(--sans);font-weight:300}
+      .faq-item.open .faq-q::after{content:"－"}
+      .faq-a{max-height:0;overflow:hidden;transition:max-height .45s ease}
+      .faq-a div{padding:0 0 1.3rem;color:var(--ink-soft);max-width:46em}
+      .faq-a b{color:var(--ink)}
+
+      footer{margin-top:5rem;border-top:1px solid var(--line);padding:2.2rem 6vw 3rem;max-width:1160px;margin-left:auto;margin-right:auto}
+      footer .end-mark{font-family:var(--serif);font-size:1.15rem;font-weight:600;max-width:36em;line-height:1.9}
+      footer p{color:var(--ink-faint);font-size:.85rem}
+      footer a{color:var(--accent-soft)}
+      .fade-in{animation:fadeUp .8s ease both}
+      @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        .fade-in{animation:none}
+        *{transition:none!important}
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ================= HERO ================= -->
+    <header class="hero">
+      <img class="hero-img" src="hero.webp" alt="雾气弥漫的草原上，悬停着一枚黑色的椭圆形外星飞行器「壳」——本页原创氛围插画，非电影剧照" />
+      <div class="hero-veil"></div>
+      <div class="spoiler">含完整剧透 · 建议看完电影后阅读</div>
+      <div class="hero-meta">
+        <div><b>导演</b> 丹尼斯·维伦纽瓦</div>
+        <div><b>原著</b> 特德·姜《你一生的故事》</div>
+        <div><b>年份</b> 2016 · 片长 116 分钟</div>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">降临</h1>
+        <p class="hero-latin">Arrival</p>
+        <p class="hero-sub">这不是一部关于外星人入侵的电影。这是一个语言学家学会了一门外星文字之后，开始「记得」自己尚未经历的一生——而她明知结局，仍然选择走进去。</p>
+      </div>
+    </header>
+
+    <nav class="toc" aria-label="本页目录">
+      <a href="#story">情节 · 真实时间线</a>
+      <a href="#people">人物</a>
+      <a href="#language">圆形文字实验室</a>
+      <a href="#ideas">核心观念</a>
+      <a href="#novel">原著小说与改编</a>
+      <a href="#faq">没看懂的五处</a>
+    </nav>
+
+    <main>
+      <!-- ================= ONE MINUTE ================= -->
+      <section style="padding-top:3.2rem">
+        <div class="onemin">
+          <p class="big">十二艘外星飞船降临地球。语言学家路易丝被军方请去翻译外星人的语言——但她越学越发现：<em>这门文字没有过去与未来之分</em>。学会它的人，时间感会被重写。她「想起」了一个女儿、一段婚姻、一次失去——<em>那些都还没发生</em>。</p>
+          <div class="factrow">
+            <span><b>类型</b> 科幻 / 剧情</span>
+            <span><b>主演</b> 艾米·亚当斯 · 杰瑞米·雷纳 · 福里斯特·惠特克</span>
+            <span><b>编剧</b> 埃里克·海瑟尔</span>
+            <span><b>原著</b> 《你一生的故事》Story of Your Life（1998）</span>
+            <span><b>荣誉</b> 奥斯卡最佳音效剪辑 · 雨果奖最佳影视作品</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= STORY / TIMELINE ================= -->
+      <section id="story">
+        <div class="sec-head"><span class="sec-no">01</span><h2>情节：你被剪辑骗了，而这正是主题</h2></div>
+        <p class="sec-lede">二刷最常见的困惑是：「开头她女儿去世，后来怎么又……？」答案是：<b>开头的女儿片段根本不是回忆，而是未来。</b>电影故意用回忆的拍法呈现未来，让观众和路易丝一起误会——因为对学会外星文字的人来说，「想起未来」和「回忆过去」感觉完全一样。切换下面的开关，同一批事件会按两种顺序重新排列。</p>
+
+        <div class="switch" role="group" aria-label="时间线顺序切换">
+          <button id="btn-screen" aria-pressed="true">银幕顺序（你以为的）</button>
+          <button id="btn-real" aria-pressed="false">真实顺序（故事里发生的）</button>
+        </div>
+
+        <div class="tl-wrap">
+          <div class="tl-track" id="tl-track"><!-- JS 渲染 --></div>
+          <p class="tl-note" id="tl-note"></p>
+        </div>
+      </section>
+
+      <!-- ================= PEOPLE ================= -->
+      <section id="people">
+        <div class="sec-head"><span class="sec-no">02</span><h2>人物：每个人站在一种「时间观」里</h2></div>
+        <p class="sec-lede">这部电影的人物不多，但每个人代表一种面对未知的方式：用语言理解、用物理解释、用武力防备、或者——用一生去接受。</p>
+        <div class="chars">
+          <article class="char">
+            <div class="role">主角 · 语言学家</div>
+            <h3>路易丝·班克斯</h3>
+            <div class="actor">艾米·亚当斯 饰 · Louise Banks</div>
+            <p>大学语言学教授，被军方紧急征召去破解七肢桶的语言。她的方法不是审讯，而是像教孩子一样，从「人类」「走路」这些最基础的词开始搭桥。</p>
+            <p class="key">她的弧光：从「理解一句话」到「活完一生」——她是全片唯一时间观被重写的人。</p>
+          </article>
+          <article class="char">
+            <div class="role">物理学家 · 搭档</div>
+            <h3>伊恩·唐纳利</h3>
+            <div class="actor">杰瑞米·雷纳 饰 · Ian Donnelly</div>
+            <p>与路易丝搭档的理论物理学家，负责从科学一侧理解外星人。他幽默、务实，是观众进入这个冰冷故事的体温计。</p>
+            <p class="key">他也是路易丝未来记忆里的丈夫——女儿汉娜的父亲。这段感情的结局，是全片最安静的刀。</p>
+          </article>
+          <article class="char">
+            <div class="role">外星来客 · 七肢桶</div>
+            <h3>「艾伯特」与「科斯特洛」</h3>
+            <div class="actor">Heptapods · Abbott &amp; Costello</div>
+            <p>有七条肢体的外星访客，名字是伊恩用一对经典喜剧搭档给它们起的。它们喷出墨汁般的圆形文字，一次写出完整的一句话。</p>
+            <p class="key">它们不是来索取的，是来赠予的：三千年后它们需要人类的帮助，所以先把「武器」——它们的语言——交给人类。</p>
+          </article>
+          <article class="char">
+            <div class="role">军方 · 秩序的代表</div>
+            <h3>韦伯上校</h3>
+            <div class="actor">福里斯特·惠特克 饰 · Colonel Weber</div>
+            <p>负责蒙大拿站点。他不坏，只是他的系统里只有一种时间：倒计时。在各国逐渐断联、恐慌蔓延时，他是「必须给出答案」的压力本身。</p>
+            <p class="key">他与路易丝的分歧，是全片的底层冲突：理解需要时间，而恐惧没有耐心。</p>
+          </article>
+          <article class="char">
+            <div class="role">女儿 · 只存在于未来</div>
+            <h3>汉娜</h3>
+            <div class="actor">Hannah · 路易丝与伊恩之女</div>
+            <p>她的名字 Hannah 正读反读都一样——一个回文，正如她母亲将要获得的时间观：从哪头看，都成立。她会在十几岁时因病离世。</p>
+            <p class="key">她不是「闪回」，她是整部电影的终点与起点：路易丝明知她的结局，仍选择让她出生。</p>
+          </article>
+          <article class="char">
+            <div class="role">关键人物 · 中国将领</div>
+            <h3>商将军</h3>
+            <div class="actor">马志 饰 · General Shang</div>
+            <p>在对峙最紧绷的时刻，是他接起了那通不可思议的电话。十八个月后的一场庆功宴上，他会向路易丝道谢，并主动告诉她号码与亡妻的遗言。</p>
+            <p class="key">这通电话是全片的时间悖论核心：信息从未来流回现在，又恰好成为未来得以发生的原因。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================= LOGOGRAM LAB ================= -->
+      <section id="language">
+        <div class="sec-head"><span class="sec-no">03</span><h2>圆形文字实验室：亲手「写」一句七肢桶语</h2></div>
+        <p class="sec-lede">人类文字是一条线：一个词接一个词，读完才知道整句的意思。七肢桶的书写语（电影称 Heptapod B）完全不同：<b>一个圆环就是一整句话</b>，主语、动作、修饰像藤蔓一样从圆环上同时长出来——书写者落笔之前，就必须知道整句话的全部。点一点下面的成分，看圆环如何长成一句话。</p>
+        <div class="lab">
+          <div class="lab-stage" aria-hidden="true">
+            <svg viewBox="0 0 400 400" role="img" aria-label="七肢桶圆形文字示意图">
+              <circle class="ink-base2" cx="200" cy="200" r="118"/>
+              <path class="ink-base" d="M 200 78 A 122 122 0 1 1 199 78"/>
+              <path class="tendril" data-t="human" d="M 128 108 C 96 74, 66 62, 40 66 C 70 76, 92 96, 108 128"/>
+              <path class="tendril" data-t="time" d="M 284 118 C 318 92, 344 92, 366 106 C 336 112, 312 128, 296 152"/>
+              <path class="tendril" data-t="give" d="M 316 226 C 348 238, 364 258, 368 286 C 344 264, 322 254, 298 252"/>
+              <path class="tendril" data-t="tool" d="M 262 306 C 276 340, 272 366, 254 388 C 246 356, 234 334, 214 318"/>
+              <path class="tendril" data-t="all" d="M 122 292 C 96 312, 84 336, 88 362 C 104 334, 124 318, 148 308"/>
+              <circle cx="200" cy="200" r="4.5" fill="var(--ink-faint)"/>
+            </svg>
+          </div>
+          <div>
+            <div class="chips" role="group" aria-label="句子成分">
+              <button class="chip" data-chip="human" aria-pressed="false">人类</button>
+              <button class="chip" data-chip="time" aria-pressed="false">时间</button>
+              <button class="chip" data-chip="give" aria-pressed="false">给予</button>
+              <button class="chip" data-chip="tool" aria-pressed="false">工具（武器？）</button>
+              <button class="chip" data-chip="all" aria-pressed="false">全部 · 同时</button>
+            </div>
+            <div class="lab-readout">
+              <div class="sentence" id="lab-sentence">圆环还空着。点上面的任意成分，把它「长」进句子里。</div>
+              <div class="explain" id="lab-explain">注意：这里没有先后顺序。你先点哪个、后点哪个，都不改变这句话——七肢桶的句子不是排出来的，是同时成形的。这正是路易丝被重写的地方：当书写不再有先后，感知时间的方式也开始松动。</div>
+            </div>
+            <div class="lab-actions">
+              <button class="btn solid" id="lab-full">一次写出整句</button>
+              <button class="btn" id="lab-clear">清空重来</button>
+            </div>
+            <p class="small" style="margin-top:1rem">小知识：片中那句引发全球恐慌的话常被译作「提供武器」。但七肢桶的一个词同时罩着「工具 / 手段 / 武器」几层意思——路易丝后来说，它也可能只是「提供工具」。整场危机，起于一个多义词。</p>
+          </div>
+        </div>
+        <div style="margin-top:2.2rem">
+          <img src="circle.webp" alt="纸面上一个墨迹圆环，边缘伸出藤蔓般的笔画——本页原创插画，呼应七肢桶的圆形文字" style="width:100%;max-height:420px;object-fit:cover;border:1px solid var(--line)" loading="lazy" />
+          <p class="small">▲ 原创插画：圆环即整句。没有开头，也就没有「先来后到」。</p>
+        </div>
+      </section>
+
+      <!-- ================= IDEAS ================= -->
+      <section id="ideas">
+        <div class="sec-head"><span class="sec-no">04</span><h2>核心观念：这部电影到底在讲什么</h2></div>
+        <p class="sec-lede">剥掉科幻外壳，《降临》讨论三件事——语言如何塑造思维，时间是否本来就是「同时存在」的，以及最重要的：知道了结局，还要不要开始。</p>
+        <div class="concepts">
+          <article class="concept">
+            <div class="glyph">I.</div>
+            <h3>语言重写大脑</h3>
+            <p>影片的科学支点是「萨丕尔—沃尔夫假说」：你使用的语言，会塑造你感知世界的方式。路易丝浸入七肢桶的书写语之后，开始以它的方式感知——不是先有想法再找词，而是<b>文字的结构直接改写了她的意识</b>。</p>
+            <p class="punch">学一门语言，等于换一双眼睛；换到极致，连时间都换了形状。</p>
+          </article>
+          <article class="concept">
+            <div class="glyph">II.</div>
+            <h3>时间不是河，是湖</h3>
+            <p>人类的语言有先后，时间感也像一条河：过去在身后，未来在前方。七肢桶的句子无始无终，它们的感知也如此：<b>一生同时摊开在面前</b>。路易丝脑中女儿的画面不是预言、不是幻觉，而是她的未来被「当下」感知到了。</p>
+            <p class="punch">所以片名 Arrival 也可以理解为：不是飞船抵达了，是「未来」抵达了她。</p>
+          </article>
+          <article class="concept">
+            <div class="glyph">III.</div>
+            <h3>已知结局，仍然选择</h3>
+            <p>全片的情感核弹只有一个问题：路易丝预见了女儿的出生、疾病与离世，预见了婚姻会因此破裂——<b>她完全可以不让这一切发生。</b>但她仍在结尾对伊恩说出那句邀请，主动走进这段注定心碎的人生。</p>
+            <p class="punch">电影的答案不是「命运不可违抗」，而是：一段人生的价值，不由它的结局是否圆满来定价。</p>
+          </article>
+        </div>
+
+        <div class="choice">
+          <h3>轮到你了：如果你是路易丝</h3>
+          <p style="color:var(--ink-soft);margin:0">在按下选择之前，先认真想三秒钟——这正是电影留给每个观众的问题。</p>
+          <div class="opts">
+            <button class="btn" data-choice="yes">照样让她出生</button>
+            <button class="btn" data-choice="no">改变未来，避免这一切</button>
+            <button class="btn" data-choice="unsure">我不知道</button>
+          </div>
+          <p class="choice-result" id="choice-result">路易丝的选择，以及她为什么这样选——选完揭晓。</p>
+        </div>
+      </section>
+
+      <!-- ================= NOVEL ================= -->
+      <section id="novel">
+        <div class="sec-head"><span class="sec-no">05</span><h2>原著小说：特德·姜《你一生的故事》</h2></div>
+        <p class="sec-lede">电影改编自美籍华裔科幻作家<b>特德·姜（Ted Chiang）</b>的中篇小说《你一生的故事》（<span class="en">Story of Your Life</span>，1998 年发表，获星云奖最佳中篇小说奖，后收录于短篇集《你一生的故事》）。它只有几十页，却被公认为科幻史上最优雅的小说之一。先看它自身的脉络：</p>
+
+        <div class="novel-arc">
+          <div class="arc-step"><div class="n">i.</div><h3>双线交错的叙述</h3><p>小说从第一页就交替两条线：一条写路易丝与外星人接触、学语言；另一条是她用「你」称呼女儿、讲述女儿从出生到二十五岁的人生。读者一直以为后者是回忆——直到意识到，那全是未来。</p></div>
+          <div class="arc-step"><div class="n">ii.</div><h3>物理学是钥匙</h3><p>小说花了大量篇幅讲「费马最少时间原理」：光总走耗时最短的路径，仿佛事先知道终点。七肢桶正是用这种「先知道终点」的方式理解世界与语言——物理学与语言学在小说里是同一件事的两面。</p></div>
+          <div class="arc-step"><div class="n">iii.</div><h3>离去与沉默</h3><p>学会外星文字、时间感被重写之后，七肢桶忽然不告而别，没有解释。小说不把笔墨花在「为什么来」，而是回到那个私人问题：已知女儿的一生，她还要不要成为母亲。</p></div>
+          <div class="arc-step"><div class="n">iv.</div><h3>在起点结束</h3><p>小说结尾停在女儿即将被孕育的时刻。叙述本身就是一个圆环：开头即结尾，与七肢桶的文字同形——形式就是内容，这是小说比电影更极致的地方。</p></div>
+        </div>
+
+        <h3 style="margin-top:2.6rem;font-size:1.35rem">电影改了什么？逐项对照</h3>
+        <p class="sec-lede" style="margin-bottom:.4rem">编剧埃里克·海瑟尔与导演维伦纽瓦保留了小说的灵魂，但为了让一部电影「动起来」，做了几处大手术。理解这些改动，就理解了两种媒介的差别：小说向内挖意识，电影向外造事件。</p>
+
+        <div class="cmp">
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>相遇的方式</h3><span class="diff big">改动大</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">小说</span><p>外星人的飞船只在轨道上；地球上出现的是 112 面叫「瞭望镜」的屏幕，人类隔着屏幕与七肢桶对话——它们从未真正踏上地球，更像一次远程的语言实验。</p></div>
+              <div class="cmp-col"><span class="who">电影</span><p>十二艘「壳」直接悬停在全球各地，人类要穿上防护服、乘升降台走进船舱，隔着一面玻璃与七肢桶面对面——把抽象的「接触」变成了可拍摄的仪式与压迫感。</p></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>全球危机与商将军的电话</h3><span class="diff big">电影原创</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">小说</span><p>没有战争危机，没有各国断联，没有炸弹。人类与七肢桶的交流平静甚至缓慢，七肢桶离开时也没有给出理由，紧张感全部来自路易丝内心的变化。</p></div>
+              <div class="cmp-col"><span class="who">电影</span><p>「提供武器」的误译、各国相继断联、士兵私藏炸弹、商将军最后通牒——整条惊险线都是电影新造的。那通从未来「借」来号码与遗言的电话，既是高潮，也成了时间闭环最直观的一次演示。</p></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>女儿之死</h3><span class="diff big">改动大</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">小说</span><p>女儿活到二十五岁，死于一次攀岩事故。小说细细写了她从婴儿到青年的许多具体片段，篇幅之多，让她的一生像一首长诗——死亡的重量来自「活过」，而非「失去」。</p></div>
+              <div class="cmp-col"><span class="who">电影</span><p>女儿在十几岁时因病去世（片中只呈现片段，未点明病名）。改动压缩了她的一生，把情感推向更尖锐的失去感；名字「汉娜」回文也是电影加的。</p></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>丈夫的名字与结局</h3><span class="diff">细节改动</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">小说</span><p>物理学家丈夫叫加里·唐纳利（Gary Donnelly）。小说暗示两人后来分开，但着墨极少，重心始终在母女之间。</p></div>
+              <div class="cmp-col"><span class="who">电影</span><p>改名为伊恩，并把分手的原因点明：当伊恩得知路易丝早就预见一切却没有告诉他，他说她「做了一个错误的选择」，转身离开。这让「选择」的代价落到了实处。</p></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>七肢桶为何而来</h3><span class="diff">细节改动</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">小说</span><p>不解释。它们来、教、离开，如潮汐涨落——这种沉默本身就是主题：有些相遇的意义不在目的，而在它改变了你。</p></div>
+              <div class="cmp-col"><span class="who">电影</span><p>给出明确动机：三千年后七肢桶需要人类的帮助，所以现在先送上语言这份「武器/工具」，让人类提前进化出感知时间的能力——顺便也给了续集式的好奇心。</p></div>
+            </div>
+          </div>
+          <div class="cmp-row">
+            <div class="cmp-topic"><h3>没有被改掉的灵魂</h3><span class="diff">原样保留</span></div>
+            <div class="cmp-cols">
+              <div class="cmp-col"><span class="who">两者共有</span><p>「未来片段伪装成回忆」的结构、圆形文字与时间感知的绑定、以及结尾那个决定——明知女儿的结局，仍然选择让她来到这个世界。小说用文字让读者亲历一次时间重写；电影用剪辑让观众亲历同一次误会再醒悟。</p></div>
+              <div class="cmp-col"><span class="who">一句话</span><p>小说是一篇关于「意识」的论文式寓言，电影是把它翻译成情感与事件的故事。先看懂电影，再读小说，你会发现小说更冷、更慢，也更深。</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= FAQ ================= -->
+      <section id="faq">
+        <div class="sec-head"><span class="sec-no">06</span><h2>没看懂的五处，一次说清</h2></div>
+        <div class="faq" id="faq-list">
+          <div class="faq-item">
+            <button class="faq-q" aria-expanded="false">1 · 既然她能看见未来，为什么不救女儿？</button>
+            <div class="faq-a"><div><p>因为在影片的时间观里，未来不是「可以改写的草稿」，而是<b>已经与现在同时存在的事实</b>。路易丝感知到的不是某种预言，而像记起往事一样记起未来。她也从未尝试改变——重点不在「能不能改」，而在她最后的态度：<b>即使结局是失去，这一生仍然值得完整地过一次</b>。电影在这里故意不做科幻式的「改命」，因为它想谈的是接受，而不是逆袭。</p></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" aria-expanded="false">2 · 商将军的电话号码和他妻子的话，她是怎么知道的？</button>
+            <div class="faq-a"><div><p>这是一个<b>没有起点的信息闭环</b>：在「现在」，路易丝不知道号码与遗言；但在十八个月后的庆功宴这个「未来」里，商将军亲口告诉了她。当她的时间感被重写，她能「记起」这段未来的谈话，于是回到现在打出这通电话——而这通电话恰恰保证了那场庆功宴会发生。信息没有源头，它在时间里自己咬住了自己的尾巴。这不是漏洞，这是影片在演示：对七肢桶式的时间来说，因果可以成环。</p></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" aria-expanded="false">3 · 「提供武器」到底是误会还是真的？</button>
+            <div class="faq-a"><div><p>是语言本身的歧义。七肢桶那个词的语义范围覆盖「工具、手段、武器」，像英文里一个词多义。路易丝后期说得更准确些：它们「提供」的其实是<b>它们的语言本身</b>——学会它能重写时间感知，这才是真正的「武器/工具」。各国恐慌，恰恰示范了影片的另一层主题：<b>人类最大的危险不是外星人，是彼此误读。</b></p></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" aria-expanded="false">4 · 船舱里为什么要脱掉防护服？重力为什么是横着的？</button>
+            <div class="faq-a"><div><p>脱防护服那场戏的关键不是科学，是<b>信任的姿态</b>：路易丝判断一味防备永远学不到语言，于是摘掉面罩、用手掌贴上玻璃——人类与七肢桶第一次真正的「接触」由此发生。至于船舱内重力方向与外界不同、通道像竖井，是在视觉上提醒观众：踏进「壳」的那一刻，你熟悉的坐标系（包括上下，也包括时间的前后）已经不适用了。</p></div></div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" aria-expanded="false">5 · 结尾她和伊恩的那句对话，为什么那么重要？</button>
+            <div class="faq-a"><div><p>结尾处伊恩说想生个孩子，路易丝答应了——<b>观众此刻知道她答应的是什么</b>：一个会夭折的女儿、一段会破裂的婚姻、往后余生的哀伤。她说「好」的时候，整部电影完成了闭环：开头的那些「回忆」从此有了归属。她的选择不是被命运推着走，而是在全知之后仍然点头——这是影片对「自由意志」的回答：<b>自由不在于改变剧本，在于明知剧本仍愿意出演。</b></p></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div style="max-width:720px;margin:0 auto 34px;padding:0 20px">
+  <a href="./book/" style="display:flex;align-items:center;gap:14px;text-decoration:none;
+     border:1px solid var(--line);border-radius:8px;padding:18px 20px;color:inherit;
+     background:rgba(255,255,255,.03)">
+    <span style="font:600 10.5px/1 var(--mono,monospace);letter-spacing:.1em;
+       border:1px solid currentColor;border-radius:3px;padding:5px 8px;opacity:.75;flex:none">不剧透</span>
+    <span>
+      <b style="display:block;font-size:15.5px;margin-bottom:3px">读原著？《你一生的故事》人物速查</b>
+      <span style="font-size:13px;opacity:.7">按阅读进度显示人物，拖到第几节就只看到那时为止出现过的人</span>
+    </span>
+    <span style="margin-left:auto;opacity:.5">→</span>
+  </a>
+</div>
+<footer>
+      <p class="end-mark">「尽管已知前路与终点，我仍拥抱它，欢迎它的每一个瞬间。」——愿你三刷时，先哭的是开头。</p>
+      <p>本页图片为呼应影片氛围的原创插画，非电影剧照。资料来源：<a href="https://www.imdb.com/title/tt2543164/" target="_blank" rel="noopener">IMDb · Arrival (2016)</a> · <a href="https://en.wikipedia.org/wiki/Story_of_Your_Life" target="_blank" rel="noopener">Wikipedia · Story of Your Life</a> · 特德·姜短篇集《你一生的故事》（译林出版社等中文版）。原著中文版可在书店与图书馆找到，篇幅不长，一个晚上就能读完。</p>
+    </footer>
+
+    <script>
+    (function(){
+      "use strict";
+
+      /* ---------- 时间线 ---------- */
+      var EVENTS = [
+        { id:"birth", when:"未来 · 女儿出生前后", title:"湖边小屋，婴儿的脚丫",
+          screen:0, real:5, future:true,
+          text:"电影的第一个镜头。观众以为这是「从前」：路易丝抱着刚出生的女儿。其实这是全片时间最靠后的事件之一——它还没发生。" },
+        { id:"childhood", when:"未来 · 女儿的童年", title:"给汉娜讲故事，教她说话",
+          screen:1, real:6, future:true,
+          text:"母女在湖边、在草坪上。语言学家母亲教女儿的第一个词、第一次争吵，都在这里。注意这些片段的色调与质感：它们和「回忆」拍得一模一样，这是故意的。" },
+        { id:"illness", when:"未来 · 女儿十几岁", title:"病房里，汉娜离世",
+          screen:2, real:7, future:true,
+          text:"银幕顺序把它放在最前面，让观众以为路易丝是个「已经失去女儿的女人」，带着创伤去见外星人。真实顺序里，这是她即将选择的人生要付出的代价。" },
+        { id:"arrival", when:"现在 · 第一天", title:"十二艘「壳」降临",
+          screen:3, real:0, future:false,
+          text:"故事真正的时间起点。全球十二处地点同时出现悬停的外星飞船，路易丝在大学课堂上从新闻里看到这一切——当天夜里，军方的直升机落在她家门前。" },
+        { id:"contact", when:"现在 · 接触期", title:"走进船舱，第一次书写",
+          screen:4, real:1, future:false,
+          text:"路易丝与伊恩每十八小时进入一次船舱。她从举牌子写「人类」开始，用最笨拙也最诚实的方式，和玻璃另一侧的七肢桶交换词汇。" },
+        { id:"learning", when:"现在 · 学习期", title:"她开始「想起」未来",
+          screen:5, real:2, future:false,
+          text:"随着词汇量增长，她脑中开始闪现一个小女孩的画面。观众以为是丧女之痛的闪回；实际上，她的意识正被七肢桶的文字重写——未来第一次渗进现在。" },
+        { id:"crisis", when:"现在 · 危机", title:"「提供武器」与全球断联",
+          screen:6, real:3, future:false,
+          text:"一句多义的翻译点燃了各国的恐惧。炸弹在船舱爆炸，一只七肢桶临死前留下讯息；中国下达最后通牒，人类站到自相残杀的边缘。" },
+        { id:"call", when:"现在 · 高潮", title:"打给商将军的那通电话",
+          screen:7, real:4, future:false,
+          text:"路易丝「记起」十八个月后庆功宴上商将军说的话，借此在现在说服了他。危机解除。这一刻她的能力完成了闭环演示：信息从未来流到现在，又造就了未来。" },
+        { id:"gala", when:"未来 · 十八个月后", title:"庆功宴上的道谢",
+          screen:8, real:8, future:true,
+          text:"在真实顺序里，这场戏发生在故事最后段：危机已过，商将军向路易丝道谢并给出号码与亡妻遗言——电话的「源头」在这里出现，尽管它先被使用、后被知晓。" },
+        { id:"choice", when:"未来 · 一切的起点与终点", title:"「你想生个孩子吗？」",
+          screen:9, real:9, future:true,
+          text:"湖边小屋，伊恩问她要不要一个孩子。已知全部结局的路易丝说：好。圆环闭合——开头那个婴儿，正是此刻被选择出来的。" }
+      ];
+
+      var track = document.getElementById("tl-track");
+      var note = document.getElementById("tl-note");
+      var btnScreen = document.getElementById("btn-screen");
+      var btnReal = document.getElementById("btn-real");
+      var NOTES = {
+        screen:"你现在看到的是「银幕顺序」：女儿的一生被剪在最前面，像一段已经结束的往事。带着这个误会看完全片，结尾的反转才会成立——你被骗的感觉，正是路易丝最初的困惑。",
+        real:"切换成「真实顺序」后，故事变成了一条直线：先相遇、先学习、先危机，然后才是爱情、女儿与失去。标为金色的事件在银幕上被伪装成了回忆。注意：真实顺序里，最后发生的恰恰是电影最先给你看的那些画面。"
+      };
+
+      function renderTimeline(mode){
+        var sorted = EVENTS.slice().sort(function(a,b){ return a[mode]-b[mode]; });
+        track.innerHTML = "";
+        sorted.forEach(function(ev){
+          var item = document.createElement("div");
+          item.className = "tl-item fade-in" + (ev.future ? " future" : "");
+          var badge = (mode==="real" && ev.future) ? '<span class="tl-badge">被伪装成回忆</span>' : "";
+          item.innerHTML =
+            '<span class="tl-dot"></span>' +
+            '<div class="tl-when">' + ev.when + "</div>" +
+            "<h3>" + ev.title + badge + "</h3>" +
+            "<p>" + ev.text + "</p>";
+          track.appendChild(item);
+        });
+        note.textContent = NOTES[mode];
+        btnScreen.setAttribute("aria-pressed", mode==="screen" ? "true" : "false");
+        btnReal.setAttribute("aria-pressed", mode==="real" ? "true" : "false");
+      }
+      btnScreen.addEventListener("click", function(){ renderTimeline("screen"); });
+      btnReal.addEventListener("click", function(){ renderTimeline("real"); });
+      renderTimeline("screen");
+
+      /* ---------- 圆形文字实验室 ---------- */
+      var PARTS = {
+        human:{ word:"人类", explain:"圆环左上方生出的藤蔓是主语。七肢桶落笔时，先想好的不是「第一个词」，而是整句话的骨架——主语只是一个同时存在的成分。" },
+        time:{ word:"时间", explain:"没有时态的藤蔓：七肢桶的书写语不区分过去与未来，事件只是「在那里」。这也是路易丝学得越深、越分不清回忆与预见的原因。" },
+        give:{ word:"给予", explain:"动作从圆环右侧伸出，与主语、宾语同时成形。对七肢桶而言，「谁、做什么、对谁做」不是排队进场的，是同一瞬间亮起的。" },
+        tool:{ word:"工具 / 武器", explain:"最危险的一根藤蔓：这个词同时罩着「工具」与「武器」。人类按自己的恐惧选了最坏的译法——语言还没学完，误读先发生了。" },
+        all:{ word:"全部（语气）", explain:"这根藤蔓不改变事实，只改变语气：整句被标记为「完整、自足」。加上它，圆环合拢——一句话结束，也回到了它开始的地方。" }
+      };
+      var active = {};
+      var sentenceEl = document.getElementById("lab-sentence");
+      var explainEl = document.getElementById("lab-explain");
+      var chips = document.querySelectorAll(".chip");
+
+      function activeWords(){
+        return Object.keys(PARTS).filter(function(k){ return active[k]; });
+      }
+      function refreshLab(lastKey){
+        var words = activeWords().map(function(k){ return PARTS[k].word; });
+        if(words.length === 0){
+          sentenceEl.textContent = "圆环还空着。点上面的任意成分，把它「长」进句子里。";
+          explainEl.textContent = "注意：这里没有先后顺序。你先点哪个、后点哪个，都不改变这句话——七肢桶的句子不是排出来的，是同时成形的。";
+        } else {
+          sentenceEl.textContent = "「" + words.join(" · ") + "」" + (words.length === 5 ? " ——句子完整了。它没有开头，所以也没有结尾。" : "");
+          if(lastKey && PARTS[lastKey]) explainEl.textContent = PARTS[lastKey].explain;
+        }
+        chips.forEach(function(chip){
+          var on = !!active[chip.getAttribute("data-chip")];
+          chip.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        Object.keys(PARTS).forEach(function(k){
+          var t = document.querySelector('.tendril[data-t="' + k + '"]');
+          if(t){ if(active[k]) t.classList.add("on"); else t.classList.remove("on"); }
+        });
+      }
+      chips.forEach(function(chip){
+        chip.addEventListener("click", function(){
+          var k = chip.getAttribute("data-chip");
+          active[k] = !active[k];
+          refreshLab(active[k] ? k : null);
+        });
+      });
+      document.getElementById("lab-full").addEventListener("click", function(){
+        Object.keys(PARTS).forEach(function(k){ active[k] = true; });
+        refreshLab("all");
+      });
+      document.getElementById("lab-clear").addEventListener("click", function(){
+        active = {};
+        refreshLab(null);
+      });
+      refreshLab(null);
+
+      /* ---------- 选择题 ---------- */
+      var ANSWERS = {
+        yes:"路易丝选了这一项。她在湖边小屋答应伊恩时，脑中已经有汉娜完整的一生。她的理由影片没有用台词说尽，只留下一个拥抱的镜头——大意是：<b>哀伤是真实的，但汉娜的存在本身不是错误。</b>删掉痛苦，也就删掉了她。",
+        no:"这是最符合直觉的答案，也是伊恩事后隐约希望的答案。但影片并不这样选——而且请注意一个细节：路易丝从学会预见的那一刻起，<b>一次都没有尝试过改写任何事</b>。也许在她的新时间感里，「改变未来」这个念头本身就不成立了，就像你无法「改变」一段已经发生的往事。",
+        unsure:"「不知道」可能是最诚实的答案——特德·姜的小说正是把这个问题悬置了一生：路易丝一边过着注定的日子，一边把故事讲给尚未出生的女儿听。<b>影片不要求你认同她，只要求你理解：选择权不在结局，在态度。</b>"
+      };
+      var resultEl = document.getElementById("choice-result");
+      document.querySelectorAll("[data-choice]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          resultEl.innerHTML = ANSWERS[btn.getAttribute("data-choice")];
+        });
+      });
+
+      /* ---------- FAQ 手风琴 ---------- */
+      document.querySelectorAll(".faq-item").forEach(function(item){
+        var q = item.querySelector(".faq-q");
+        var a = item.querySelector(".faq-a");
+        q.addEventListener("click", function(){
+          var open = item.classList.contains("open");
+          document.querySelectorAll(".faq-item.open").forEach(function(other){
+            other.classList.remove("open");
+            other.querySelector(".faq-a").style.maxHeight = "0px";
+            other.querySelector(".faq-q").setAttribute("aria-expanded","false");
+          });
+          if(!open){
+            item.classList.add("open");
+            a.style.maxHeight = a.scrollHeight + "px";
+            q.setAttribute("aria-expanded","true");
+          }
+        });
+      });
+    })();
+    </script>
+  </body>
+</html>

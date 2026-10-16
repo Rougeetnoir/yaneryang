@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>你一生的故事 · 人物速查</title>
+<style>
+/* 调色板由 build_html.py 按书注入，见 references/palettes.md。
+   零外部依赖：不联网、不加载字体，离线可用。 */
+:root{
+  --bg:#F4F5F6;
+  --bg-sticky:rgba(244,245,246,.88);
+  --card:#FFFFFF;
+  --ink:#191C1F;
+  --ink-2:#42484E;
+  --dim:#7E868D;
+  --rule:#DDE1E4;
+  --accent:#2E5C7A;
+  --accent-wash:#E4EDF3;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#15161A;--bg-sticky:rgba(21,22,26,.9);--card:#1D1F24;--ink:#E8E5E0;--ink-2:#B2ADA5;--dim:#7C7770;--rule:#2C2F36;--accent:#6FA8CC;--accent-wash:rgba(111,168,204,.12);}}
+:root[data-theme=dark]{--bg:#15161A;--bg-sticky:rgba(21,22,26,.9);--card:#1D1F24;--ink:#E8E5E0;--ink-2:#B2ADA5;--dim:#7C7770;--rule:#2C2F36;--accent:#6FA8CC;--accent-wash:rgba(111,168,204,.12);}
+:root{
+  --serif:"Songti SC","Noto Serif SC",Georgia,serif;
+  --sans:"PingFang SC","Noto Sans SC","Helvetica Neue",Arial,sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:400 15px/1.7 var(--sans);-webkit-font-smoothing:antialiased;
+}
+/* .wrap 只写左右内边距，绝不用 padding 简写——否则后面任何同时挂 .wrap
+   和别的类的元素会把左右内边距整个重置掉。这个坑在 odyssey.html 上踩过一次。 */
+.wrap{max-width:1080px;margin:0 auto;padding-left:22px;padding-right:22px}
+
+header{border-bottom:1px solid var(--rule);padding-top:38px;padding-bottom:26px}
+.kicker{font:500 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+h1{font:700 clamp(27px,4.4vw,40px)/1.2 var(--serif);margin:14px 0 0;letter-spacing:.01em;text-wrap:balance}
+.byline{margin:9px 0 0;color:var(--dim);font-size:14px}
+.stats{display:flex;flex-wrap:wrap;gap:20px;margin:22px 0 0;font:400 13px/1 var(--mono);color:var(--dim)}
+.stats b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* 进度控件 */
+.prog{position:sticky;top:0;z-index:9;background:var(--bg-sticky);
+  border-bottom:1px solid var(--rule);padding-top:13px;padding-bottom:13px;
+  backdrop-filter:saturate(1.4) blur(8px)}
+.prog-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.prog label{font-size:13.5px;color:var(--dim);flex:none}
+.prog output{font:600 15px/1 var(--mono);color:var(--accent);min-width:2.6em;
+  font-variant-numeric:tabular-nums;flex:none}
+.prog input[type=range]{flex:1 1 220px;min-width:180px;accent-color:var(--accent)}
+.prog .hint{flex-basis:100%;font-size:12.5px;color:var(--dim);margin:0}
+.ghost{appearance:none;cursor:pointer;background:none;border:1px solid var(--rule);
+  border-radius:100px;color:var(--dim);font:400 12.5px/1 var(--sans);padding:7px 14px;flex:none}
+.ghost[aria-pressed=true]{border-color:var(--accent);color:var(--accent);background:var(--accent-wash)}
+
+section{padding-top:44px;padding-bottom:12px}
+h2{font:600 21px/1.3 var(--serif);margin:0 0 6px}
+.sub{color:var(--dim);font-size:13.5px;margin:0 0 22px;max-width:62ch}
+
+/* 人物表 */
+.people{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.p{border:1px solid var(--rule);border-radius:4px;background:var(--card);
+  border-left:3px solid var(--accent);padding:15px 17px}
+.p.title-only{border-left-style:dashed}
+.p-top{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.zh{font:700 19px/1.25 var(--serif)}
+.mn{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--accent);
+  background:var(--accent-wash);border-radius:3px;padding:4px 7px;flex:none}
+.orig{font:400 12.5px/1.4 var(--mono);color:var(--dim);margin:5px 0 0}
+.orig .guess{opacity:.7}
+.who{margin:9px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.65}
+.meta{margin:10px 0 0;padding-top:9px;border-top:1px solid var(--rule);
+  font:400 11.5px/1 var(--mono);color:var(--dim);display:flex;gap:12px;flex-wrap:wrap;
+  font-variant-numeric:tabular-nums}
+.alias{margin:7px 0 0;font-size:12.5px;color:var(--dim)}
+.alias b{font-weight:500;color:var(--ink-2)}
+
+/* 易混簇 */
+.cl{border:1px solid var(--rule);border-radius:4px;background:var(--card);
+  padding:15px 17px;margin-bottom:11px}
+.cl-why{font:500 12px/1 var(--mono);letter-spacing:.05em;color:var(--accent);
+  text-transform:uppercase;margin-bottom:11px}
+.cl-row{display:flex;gap:12px;align-items:baseline;padding:6px 0;border-top:1px solid var(--rule)}
+.cl-row:first-of-type{border-top:0}
+.cl-row .zh{font-size:16px;flex:none;min-width:6.2em}
+.cl-row .d{font-size:13px;color:var(--ink-2);line-height:1.6}
+
+details{border-top:1px solid var(--rule);padding:14px 0}
+summary{cursor:pointer;font:500 14px/1 var(--sans);color:var(--dim)}
+summary:hover{color:var(--ink)}
+details ul{margin:14px 0 0;padding-left:20px;font-size:13.5px;color:var(--ink-2);line-height:1.8}
+details code{font:400 12.5px var(--mono);background:var(--accent-wash);
+  border-radius:3px;padding:1px 5px}
+
+.empty{color:var(--dim);font-size:13.5px;padding:18px 0}
+#related{display:flex;flex-direction:column;gap:9px;margin-bottom:22px}
+#related a{display:inline-flex;align-items:baseline;gap:9px;color:var(--ink);
+  text-decoration:none;border:1px solid var(--rule);border-radius:4px;
+  padding:12px 15px;background:var(--card);font-size:14px}
+#related a:hover{border-color:var(--accent)}
+#related .warn{font:600 10.5px/1 var(--mono);letter-spacing:.08em;color:#fff;
+  background:var(--accent);border-radius:3px;padding:4px 7px;flex:none;text-transform:uppercase}
+#related .arrow{margin-left:auto;color:var(--dim)}
+footer{border-top:1px solid var(--rule);margin-top:46px;padding-top:22px;padding-bottom:52px;
+  color:var(--dim);font-size:12.5px;line-height:1.8}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media (max-width:560px){
+  .wrap{padding-left:16px;padding-right:16px}
+  .cl-row{flex-direction:column;gap:3px}
+  .cl-row .zh{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <p class="kicker">人物速查 · 读前预习 / 读中对照</p>
+  <h1>你一生的故事</h1>
+  <p class="byline" id="byline"></p>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="prog">
+  <div class="wrap prog-in">
+    <label for="p">我读到第</label>
+    <input type="range" id="p" min="0" max="1" value="0" step="1">
+    <output id="pv">0</output>
+    <button class="ghost" id="all" aria-pressed="false">显示全部</button>
+    <p class="hint" id="hint"></p>
+  </div>
+</div>
+
+<main class="wrap">
+  <section>
+    <h2>人物</h2>
+    <p class="sub" id="peopleSub"></p>
+    <div class="people" id="people"></div>
+    <p class="empty" id="peopleEmpty" hidden>这个进度下还没有出现任何人物。把滑块往右拖。</p>
+  </section>
+
+  <section id="clSec">
+    <h2>这几个名字容易混</h2>
+    <p class="sub">按字形自动归组：首字相同、同一头衔、或等长且共用两个以上汉字。只列出当前进度下已经出现的。</p>
+    <div id="cl"></div>
+    <p class="empty" id="clEmpty" hidden>当前进度下没有容易混淆的名字。</p>
+  </section>
+
+  <section>
+    <h2>抽取质量</h2>
+    <p class="sub">这份表是自动抽的，一定有错。下面是机器自己也没把握的部分——先看这里，比看出错了再回头猜省事。</p>
+    <details id="unsureBox"><summary></summary><ul id="unsure"></ul></details>
+    <details id="termBox"><summary></summary><ul id="terms"></ul></details>
+  </section>
+</main>
+
+<footer class="wrap">
+  <nav id="related" hidden></nav>
+  <p id="foot"></p>
+  <p>人物身份是由只读过对应章节的抽取任务写的，所以按进度过滤是有效的；但同一批次内部
+     （约三万字）不做更细的区分，边界上可能泄露几页之后的信息。<b>原文名带「推测」标记的
+     是靠模型既有知识补的，没有在正文里核对过。</b></p>
+</footer>
+
+<script>
+const G = {"title":"你一生的故事","creator":"特德•姜","translator":"李克勤 等","slug":"story-of-your-life","chapter_count":5,"total_chars":36717,"people":[{"id":"e1","display":"露易丝·班克斯","aliases":["班克斯博士","露易丝","露易丝·班克斯"],"kind":"person","name_kind":"narrator","given":"叙述者（语言学家，女儿的母亲）","rank":"","original":null,"original_guess":false,"mnemonic":"露易丝","count":405,"first_ch":1,"addressed":true,"speaks":true,"who":"第一人称的「我」，大学语言学家。全篇是她对女儿讲述——既回忆过去，也讲述尚未发生的事。","evidence":["第1节：「我是露易丝·班克斯。」（「我」自报姓名）；「你的父亲很快便会向我提出那个问题」"],"notes":["顶层 narrator 已说明。正文第1节即给出叙述者姓名露易丝·班克斯，故没有『全篇无名』的问题。"]},{"id":"e2","display":"你（叙述者的女儿）","aliases":[],"kind":"person","name_kind":"title","given":"你（叙述者的女儿）","rank":"","original":null,"original_guess":false,"mnemonic":"女儿","count":250,"first_ch":1,"addressed":true,"speaks":true,"who":"叙述者讲述的对象，是她的女儿；故事是对这个「你」说的，她的成长片段被母亲逐一预先回忆","evidence":["第1节：「你的父亲很快便会向我提出那个问题」；「我记得你说为什么会有你时的情景，那时你十二岁」"],"notes":["这里的「你」不是读者，是一个具体的人，叙述者的女儿。第1–5节里她始终没有被取名字，只被叫作『宝贝』『你』。叙述者说她死于二十五岁（第1节）这一点原文明写。叙述者对她的称呼出现过『宝贝』（第1节）。"]},{"id":"e4","display":"盖雷","aliases":["盖雷·唐纳利"],"kind":"person","name_kind":"given","given":"盖雷","rank":"","original":"Gary","original_guess":true,"mnemonic":"盖雷","count":72,"first_ch":1,"addressed":true,"speaks":true,"who":"即搭档的物理学家，正文里绝大多数时候只叫盖雷","evidence":["第1节：「叫我盖雷好了。」我俩握手时他说","第1节：「这位是盖雷·唐纳利博士，我电话里提到的物理学家。」"],"notes":["正文大量使用。","第1节写『盖雷·唐纳利博士』『盖雷·唐纳利』。"]},{"id":"e6","display":"你父亲","aliases":[],"kind":"person","name_kind":"title","given":"你父亲","rank":"","original":null,"original_guess":false,"mnemonic":"父亲","count":25,"first_ch":1,"addressed":true,"speaks":true,"who":"叙述者女儿的父亲，向叙述者提出「你想要个孩子吗」；后来与她分手、离婚","evidence":["第1节：「然后，你父亲说：“你想要个孩子吗？”」"],"notes":["写法有『你父亲』『你爸爸』『你的父亲』『爸爸』，本条合并计数。只有称谓、没有名字。第1–5节正文没有明说他是谁；他与盖雷是否同一人，文中未直接说明，不要推断。第5节有「我和你的父亲相遇」「我将与你的父亲分手」。"]},{"id":"e7","display":"韦伯上校","aliases":["韦伯"],"kind":"person","name_kind":"given+rank","given":"韦伯","rank":"上校","original":"Colonel Weber","original_guess":true,"mnemonic":"韦伯","count":36,"first_ch":1,"addressed":true,"speaks":true,"who":"负责视镜营地的军方上校，板刷头，说话谨慎、不愿透露情况，由他拍板决定设备申请","evidence":["第1节：「韦伯上校吗？」我同那位军人握了握手，「我是露易丝·班克斯。」","第1节：「韦伯在思索。」"],"notes":["单独的『上校』（第1节『上校连连摇头』等）也指他，未单列。","计数含『韦伯在思索』『韦伯阴沉着脸』等裸称。"]},{"id":"e9","display":"拉斯伯里","aliases":[],"kind":"person","name_kind":"alias","given":"拉斯伯里","rank":"","original":"Raspberry","original_guess":true,"mnemonic":"拉斯伯里","count":16,"first_ch":2,"addressed":false,"speaks":true,"who":"叙述者给另一个七肢桶起的代号；和弗莱帕搭档，演示动作、表达回答，最后一次交换中先行离去","evidence":["第2节：「为了我和盖雷方便起见，我把它们分别称为弗莱帕和拉斯伯里」"],"notes":["非人类角色（外星人七肢桶）。第5节叙述者说『我想拉斯伯里没带传呼机』是对韦伯的玩笑，不算当面称呼。按『说话』信号标 person，请人工复核。"]},{"id":"e12","display":"弗莱帕","aliases":[],"kind":"person","name_kind":"alias","given":"弗莱帕","rank":"","original":"Flapper","original_guess":true,"mnemonic":"弗莱帕","count":14,"first_ch":2,"addressed":false,"speaks":true,"who":"叙述者给两个七肢桶之一起的代号；操作它们的屏幕、朗读、书写语标","evidence":["第2节：「为了我和盖雷方便起见，我把它们分别称为弗莱帕和拉斯伯里」"],"notes":["非人类角色（外星人七肢桶）。叙述者命名；能说话（口语与七文）；未见被人以名字直接对面称呼，只在第2节叙述者对两者说『你们呀』（合称）。按『说话』信号标 person，请人工复核。"]},{"id":"e14","display":"伯哈特","aliases":[],"kind":"person","name_kind":"full","given":"伯哈特","rank":"","original":"Burkhart","original_guess":true,"mnemonic":"伯哈特","count":8,"first_ch":4,"addressed":true,"speaks":true,"who":"研究沃思堡视镜的语言学家，也熟练掌握七肢桶语言B；后来在最后一次交换礼物时与叙述者搭档","evidence":["第4节：「研究沃思堡视镜的语言学家伯哈特道」"],"notes":["第5节叙述者向他发问『这份光荣，你来，还是我上？』，算被直接称呼。"]},{"id":"e17","display":"内尔森","aliases":[],"kind":"person","name_kind":"given","given":"内尔森","rank":"","original":"Nelson","original_guess":true,"mnemonic":"内尔森","count":6,"first_ch":1,"addressed":false,"speaks":true,"who":"叙述者未来的男友，英俊粗犷，后来与她搬进农场的房子；女儿十六岁时见过他","evidence":["第2节：「过了不多久，内尔森会开车来接我……内尔森长得粗犷帅气」"],"notes":["第3节毕业典礼写『我和内尔森』。原文是否是夫妻关系，本部分未明说，只称他为男友。"]},{"id":"e18","display":"霍斯纳","aliases":[],"kind":"person","name_kind":"full","given":"霍斯纳","rank":"","original":null,"original_guess":false,"mnemonic":"霍斯纳","count":6,"first_ch":4,"addressed":true,"speaks":true,"who":"国务院派来的外交官，滔滔不绝地教训科学家，想弄清外星人要什么；盖雷对他很不耐烦","evidence":["第4节：「国务院派来一个名叫霍斯纳的代表」"],"notes":["写法有『霍斯纳』『霍斯纳先生』『霍斯纳大人』。"]},{"id":"e20","display":"洛克茜","aliases":[],"kind":"person","name_kind":"given","given":"洛克茜","rank":"","original":null,"original_guess":false,"mnemonic":"洛克茜","count":5,"first_ch":2,"addressed":true,"speaks":true,"who":"叙述者女儿十六岁时的金发朋友，名字奇怪；与女儿合伙用「天气」暗号给母亲的男友打分","evidence":["第2节：「一个金发女孩儿，名字怪得很，叫洛克茜」"],"notes":["第2节里叙述者形容这个名字『怪得很』，译名的原文未知。"]},{"id":"e30","display":"我记不得名字的那个女人","aliases":[],"kind":"person","name_kind":"title","given":"我记不得名字的那个女人","rank":"","original":null,"original_guess":false,"mnemonic":"无名女人","count":2,"first_ch":1,"addressed":false,"speaks":false,"who":"叙述者的前夫日后同居的女人，叙述者说自己想不起她的名字","evidence":["第1节：「你爸爸将和那个我不记得名字的女人一起生活」"],"notes":["次要，只有这一个说法（第3节毕业典礼再提：『你父亲和我记不得名字的那个女人』）。"]},{"id":"e31","display":"莎朗","aliases":[],"kind":"person","name_kind":"given","given":"莎朗","rank":"","original":"Sharon","original_guess":true,"mnemonic":"莎朗","count":2,"first_ch":1,"addressed":false,"speaks":false,"who":"女儿五岁时幼儿园里的同学，说自己要给姐姐当伴娘","evidence":["第1节：「幼儿园里莎朗说她会当伴。」"],"notes":["只通过女儿转述出现，一次性小角色。"]},{"id":"e32","display":"莫尔黑德","aliases":[],"kind":"person","name_kind":"full","given":"莫尔黑德","rank":"","original":"Morehead","original_guess":true,"mnemonic":"莫尔黑德","count":2,"first_ch":3,"addressed":false,"speaks":false,"who":"在伊利诺伊州视镜前向七肢桶演示费尔马定律的人，似是那边的研究者","evidence":["第3节：「莫尔黑德在伊利诺伊州的视镜前用动画向七肢桶演示了费尔马定律」"],"notes":["他的职业文中没写（物理学家还是语言学家未明说）。who 里写『似是研究者』。"]},{"id":"e39","display":"西斯内罗","aliases":[],"kind":"person","name_kind":"full","given":"西斯内罗","rank":"","original":"Cisneros","original_guess":true,"mnemonic":"西斯内罗","count":1,"first_ch":3,"addressed":false,"speaks":true,"who":"研究马萨诸塞州视镜的语言学家，在视频会议上提出七肢桶文字的书写有无先后顺序","evidence":["第3节：「研究马萨诸塞州视镜的西斯内罗提出一个很有意思的问题」"],"notes":["只出现一次，说话是被转述的（提出问题）。"]}],"unsure":[],"terms":[{"id":"e3","display":"七肢桶","aliases":[],"kind":"term","name_kind":null,"given":"七肢桶","rank":"","original":"heptapod","original_guess":true,"mnemonic":"七肢桶","count":180,"first_ch":1,"addressed":false,"speaks":false,"who":"盖雷给外星人起的外号；七根肢从中心辐射，身体是一个圆桶，周围有一圈七只眼睛","evidence":["第1节：「盖雷管它们叫“七肢桶”」"],"notes":["种族名（外星人），不是单个人物。单个的是弗莱帕与拉斯伯里。"]},{"id":"e5","display":"视镜","aliases":[],"kind":"term","name_kind":null,"given":"视镜","rank":"","original":"screen","original_guess":true,"mnemonic":"视镜","count":44,"first_ch":1,"addressed":false,"speaks":false,"who":"外星人留在地面的装置，像半圆形玻璃，通电后好像透出一个房间；人类通过它与七肢桶对话","evidence":["第1节：「营地中央就是那些外星装置中的一个，别名“视镜”」"],"notes":[]},{"id":"e8","display":"七肢桶语言B","aliases":["语言B"],"kind":"term","name_kind":null,"given":"七肢桶语言B","rank":"","original":null,"original_guess":false,"mnemonic":"语言B","count":23,"first_ch":2,"addressed":false,"speaks":false,"who":"七肢桶的书写语言（文字系统）；叙述者学习后思维方式也被改变","evidence":["第2节：「我想这么做：把它们的文字标注为‘七肢桶语言B’」"],"notes":[]},{"id":"e10","display":"七文","aliases":[],"kind":"term","name_kind":null,"given":"七文","rank":"","original":null,"original_guess":false,"mnemonic":"七文","count":16,"first_ch":2,"addressed":false,"speaks":false,"who":"叙述者建议给七肢桶的书写文字起的名称（相当于「七肢桶的字」）","evidence":["第2节：「我建议使用“七文”这个提法。」"],"notes":[]},{"id":"e11","display":"交换礼物","aliases":[],"kind":"term","name_kind":null,"given":"交换礼物","rank":"","original":null,"original_guess":false,"mnemonic":"交换礼物","count":15,"first_ch":5,"addressed":false,"speaks":false,"who":"人类与七肢桶之间一种形式的交换，双方都不事先说自己要给什么","evidence":["第5节：「我们不应当把这个活动视为‘交换礼物’」"],"notes":[]},{"id":"e13","display":"费尔马定律","aliases":["费尔马最少时间律"],"kind":"term","name_kind":null,"given":"费尔马定律","rank":"","original":null,"original_guess":false,"mnemonic":"费尔马","count":18,"first_ch":3,"addressed":false,"speaks":false,"who":"即上述最少时间律的简称","evidence":["第3节：「莫尔黑德……演示了费尔马定律」"],"notes":["含真实科学家人名，是理论名称，不是故事人物。"]},{"id":"e15","display":"岁月之书","aliases":[],"kind":"term","name_kind":null,"given":"岁月之书","rank":"","original":null,"original_guess":false,"mnemonic":"岁月之书","count":8,"first_ch":4,"addressed":false,"speaks":false,"who":"叙述者讲的寓言里的书，按时间顺序记载过去和未来的一切事件","evidence":["第4节：「这个寓言说的是一个人站在岁月之书前」"],"notes":[]},{"id":"e16","display":"变分原理","aliases":[],"kind":"term","name_kind":null,"given":"变分原理","rank":"","original":null,"original_guess":false,"mnemonic":"变分原理","count":7,"first_ch":3,"addressed":false,"speaks":false,"who":"物理学里的一类原理：路径取最大或最小的极值；费尔马定律是其中一个","evidence":["第3节：「费尔马定律并不是最少律，只是一项变分原理」"],"notes":[]},{"id":"e21","display":"七肢桶语言A","aliases":["语言A"],"kind":"term","name_kind":null,"given":"七肢桶语言A","rank":"","original":null,"original_guess":false,"mnemonic":"语言A","count":7,"first_ch":1,"addressed":false,"speaks":false,"who":"七肢桶的口头语言","evidence":["第1节：「在这几组音之上，我打下一个标题：“七肢桶语言A”。」"],"notes":[]},{"id":"e23","display":"国务院","aliases":[],"kind":"org","name_kind":null,"given":"国务院","rank":"","original":null,"original_guess":false,"mnemonic":"国务院","count":5,"first_ch":3,"addressed":false,"speaks":false,"who":"美国政府部门，指示语言学家少泄露人类社会情况，并派霍斯纳来","evidence":["第3节：「国务院指示我们尽可能少地泄露有关人类社会的情况」"],"notes":[]},{"id":"e24","display":"七语","aliases":[],"kind":"term","name_kind":null,"given":"七语","rank":"","original":null,"original_guess":false,"mnemonic":"七语","count":4,"first_ch":4,"addressed":false,"speaks":false,"who":"第4节里出现的说法，指七肢桶的文字语言，似为七文／语言B的另一种叫法","evidence":["第4节：「阅读七语的新奇感给了我强大的学习动力」"],"notes":[]},{"id":"e27","display":"非零和博弈","aliases":[],"kind":"term","name_kind":null,"given":"非零和博弈","rank":"","original":null,"original_guess":false,"mnemonic":"非零和","count":3,"first_ch":4,"addressed":false,"speaks":false,"who":"双赢的博弈；霍斯纳用的说法，叙述者后来帮女儿想起这个词","evidence":["第4节：「你的意思是说，这是一场非零和博弈？」"],"notes":[]},{"id":"e28","display":"作用量","aliases":[],"kind":"term","name_kind":null,"given":"作用量","rank":"","original":"action","original_guess":true,"mnemonic":"作用量","count":3,"first_ch":3,"addressed":false,"speaks":false,"who":"物理概念，盖雷说是『动能与势能通过时间的结合』；七肢桶视为基本概念","evidence":["第3节：「作用量」"],"notes":[]},{"id":"e29","display":"目的论","aliases":[],"kind":"term","name_kind":null,"given":"目的论","rank":"","original":"teleology","original_guess":true,"mnemonic":"目的论","count":3,"first_ch":4,"addressed":false,"speaks":false,"who":"用目的来解释事件的角度，与因果角度相对；盖雷说费尔马定律接近于目的论","evidence":["第4节：「这已经接近于目的论了」"],"notes":[]},{"id":"e34","display":"会意象形语标文字","aliases":[],"kind":"term","name_kind":null,"given":"会意象形语标文字","rank":"","original":null,"original_guess":false,"mnemonic":"会意象形","count":2,"first_ch":2,"addressed":false,"speaks":false,"who":"叙述者对七肢桶文字类型的概括：每个符号传达意思，但与口语的词不一一对应","evidence":["第2节：「是会意象形语标文字系统。」"],"notes":[]},{"id":"e37","display":"述行语词","aliases":[],"kind":"term","name_kind":null,"given":"述行语词","rank":"","original":"performative","original_guess":false,"mnemonic":"述行","count":2,"first_ch":5,"addressed":false,"speaks":false,"who":"语言—行为理论里的概念：说出这些话本身就是在完成某个行为","evidence":["第5节：「对于述行语词而言，说话就是行动」"],"notes":["第5节正文括号里已有『performative』，原文名来自正文。"]},{"id":"e43","display":"五月魔鬼","aliases":[],"kind":"term","name_kind":null,"given":"五月魔鬼","rank":"","original":null,"original_guess":false,"mnemonic":"五月魔鬼","count":1,"first_ch":4,"addressed":false,"speaks":false,"who":"寓言里岁月之书预言读书人会下注的赛马名","evidence":["第4节：「她会在一匹名叫五月魔鬼的赛马上下一百美元的赌注」"],"notes":["寓言里的马名，不是人物。"]},{"id":"e26","display":"库克船长","aliases":[],"kind":"term","name_kind":"title","given":"库克船长","rank":"","original":"Captain Cook","original_guess":true,"mnemonic":"库克","count":3,"first_ch":1,"addressed":false,"speaks":false,"who":"课堂轶事里的十八世纪英国船长，传说中把袋鼠的名字弄错；真实历史人物","evidence":["第1节：「一七七〇年，库克船长的“努力”号抵达澳大利亚昆士兰海岸」"],"notes":["真实历史人物，只在叙述者的教学轶事里出现，建议不进人物表。"]},{"id":"e35","display":"费尔马","aliases":[],"kind":"term","name_kind":"full","given":"费尔马","rank":"","original":"Fermat","original_guess":true,"mnemonic":"费尔马","count":2,"first_ch":4,"addressed":false,"speaks":false,"who":"十七世纪提出费尔马定律的科学家（真实历史人物，不是故事角色）","evidence":["第4节：「自从十七世纪费尔马提出这条定律以来，人们便一直在讨论」"],"notes":["真实世界科学家，只出现在理论名称里，建议不进人物表。"]},{"id":"e36","display":"普朗克","aliases":[],"kind":"term","name_kind":"full","given":"普朗克","rank":"","original":"Planck","original_guess":true,"mnemonic":"普朗克","count":2,"first_ch":3,"addressed":false,"speaks":false,"who":"真实世界的物理学家，文中提到『普朗克量子论』并说他写过不少论述这个问题的著作（不是故事角色）","evidence":["第4节：「普朗克还就这个问题写过不少著作」"],"notes":["真实世界科学家，出现在理论名称或讨论里，建议不进人物表。"]},{"id":"e40","display":"斯蒂芬·霍金","aliases":[],"kind":"term","name_kind":"full","given":"斯蒂芬·霍金","rank":"","original":"Stephen Hawking","original_guess":true,"mnemonic":"霍金","count":1,"first_ch":5,"addressed":false,"speaks":false,"who":"后记引用的冯内古特文字里提到的物理学家（真实人物）","evidence":["第5节后记：「斯蒂芬·霍金认为我们无法预知未来很有挑逗意味」"],"notes":["出现在作者后记里，不属于故事。建议不进人物表。"]},{"id":"e41","display":"冯内古特","aliases":[],"kind":"term","name_kind":"full","given":"冯内古特","rank":"","original":"Vonnegut","original_guess":true,"mnemonic":"冯内古特","count":1,"first_ch":5,"addressed":false,"speaks":false,"who":"后记里引用文字的作者（真实作家）","evidence":["第5节后记：「出现在冯内古特给《五号屠场》二十五周年纪念版所作的简介中」"],"notes":["出现在作者后记里，不属于故事。建议不进人物表。"]},{"id":"e42","display":"保罗·林克","aliases":[],"kind":"term","name_kind":"full","given":"保罗·林克","rank":"","original":null,"original_guess":false,"mnemonic":"林克","count":1,"first_ch":5,"addressed":false,"speaks":false,"who":"后记里提到的话剧表演者（真实人物），其演出启发了作者","evidence":["第5节后记：「我看了一出由保罗·林克表演的话剧」"],"notes":["出现在作者后记里，不属于故事。建议不进人物表。"]}],"confusable":[{"kind":"首字相同","why":"都以「你」开头","ids":["e2","e6"]}],"narrator":{"present":true,"person":"first","note":"第一人称「我」，是对女儿（「你」）说话；叙述者在第1节自报姓名露易丝·班克斯。女儿（「你」）在第1–5节里始终没有被取名字。"},"related":[{"label":"《降临》电影解说：时间、语言与选择","href":"../","spoiler":true}]};
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const N = G.chapter_count;
+const range = $('#p'), out = $('#pv'), allBtn = $('#all');
+range.max = N;
+let showAll = false;
+
+// 只要 first_ch 不大于当前进度就算「已出现」。first_ch 为 null 的（抽取没给出）
+// 按最保守处理：只在「显示全部」时出现。
+const seen = (e, p) => showAll || (e.first_ch != null && e.first_ch <= p);
+
+function personCard(e){
+  const orig = e.original
+    ? `<p class="orig">${esc(e.original)}${e.original_guess
+        ? ' <span class="guess">· 推测</span>' : ''}</p>` : '';
+  const mn = e.mnemonic && e.mnemonic !== e.display
+    ? `<span class="mn">记「${esc(e.mnemonic)}」</span>` : '';
+  const alias = e.aliases && e.aliases.length
+    ? `<p class="alias">书中也写作 <b>${e.aliases.map(esc).join('、')}</b></p>` : '';
+  const meta = [
+    e.first_ch != null ? `首见 第${e.first_ch}节` : '首见 未知',
+    `${e.count} 次`,
+    e.speaks ? '有台词' : '无台词',
+    e.addressed ? '被称呼' : '未被称呼',
+  ].map(t => `<span>${esc(t)}</span>`).join('');
+  return `<article class="p${e.name_kind === 'title' ? ' title-only' : ''}">
+    <div class="p-top"><span class="zh">${esc(e.display)}</span>${mn}</div>
+    ${orig}${e.who ? `<p class="who">${esc(e.who)}</p>` : ''}${alias}
+    <div class="meta">${meta}</div></article>`;
+}
+
+function render(){
+  const p = +range.value;
+  out.textContent = showAll ? '全' : p;
+
+  const vis = G.people.filter(e => seen(e, p));
+  vis.sort((a, b) => (b.count - a.count));
+  $('#people').innerHTML = vis.map(personCard).join('');
+  $('#peopleEmpty').hidden = vis.length > 0;
+  $('#peopleSub').textContent = showAll
+    ? `全书 ${G.people.length} 人，按出场密度排序。`
+    : `第 ${p} 节为止出现过的 ${vis.length} 人（全书 ${G.people.length} 人），按出场密度排序。`;
+
+  const byId = Object.fromEntries(vis.map(e => [e.id, e]));
+  const cls = (G.confusable || [])
+    .map(c => ({...c, ms: c.ids.map(i => byId[i]).filter(Boolean)}))
+    .filter(c => c.ms.length >= 2);
+  $('#cl').innerHTML = cls.map(c => `<div class="cl">
+      <div class="cl-why">${esc(c.kind)} · ${esc(c.why)}</div>
+      ${c.ms.map(m => `<div class="cl-row"><span class="zh">${esc(m.display)}</span>
+        <span class="d">${esc(m.who || (m.original || ''))}</span></div>`).join('')}
+    </div>`).join('');
+  $('#clEmpty').hidden = cls.length > 0;
+
+  $('#hint').textContent = showAll
+    ? '已解除进度限制——下面会出现全书所有人物，包含后文才登场的。'
+    : (p === 0
+      ? '第 0 节 = 翻开书之前。往右拖到你现在读到的位置，只会显示到那时为止已经出现的人物。'
+      : `只显示第 ${p} 节为止已经出现的人物。`);
+}
+
+range.addEventListener('input', () => { showAll = false; allBtn.setAttribute('aria-pressed','false'); render(); });
+allBtn.addEventListener('click', () => {
+  showAll = !showAll; allBtn.setAttribute('aria-pressed', String(showAll)); render();
+});
+
+// 记住上次读到哪 —— 每个浏览器各自存，读不到就当 0
+try {
+  const k = 'rg:' + G.slug;
+  const v = localStorage.getItem(k);
+  if (v != null && +v >= 0 && +v <= N) range.value = +v;
+  range.addEventListener('change', () => { try { localStorage.setItem(k, range.value); } catch (e) {} });
+} catch (e) {}
+
+// 静态部分
+$('#byline').textContent = [G.creator, G.translator].filter(Boolean).join(' · ');
+$('#stats').innerHTML = [
+  ['全书', `${G.total_chars.toLocaleString()} 字`],
+  ['切分', `${N} 节`],
+  ['人物', `${G.people.length} 人`],
+  ['易混组', `${(G.confusable || []).length} 组`],
+].map(([k, v]) => `<span>${k} <b>${v}</b></span>`).join('');
+
+$('#unsureBox').querySelector('summary').textContent =
+  `机器没把握的 ${G.unsure.length} 条（可能是人，也可能不是）`;
+$('#unsure').innerHTML = G.unsure.map(e =>
+  `<li><code>${esc(e.display)}</code> ${e.count} 次，首见第 ${e.first_ch ?? '?'} 节 —— ${esc(e.who)}
+   ${(e.notes || []).map(n => `<br><small>${esc(n)}</small>`).join('')}</li>`).join('')
+  || '<li>没有。</li>';
+
+$('#termBox').querySelector('summary').textContent =
+  `判为「不是人」的 ${G.terms.length} 条（阶层 / 组织 / 地名 / 术语）`;
+$('#terms').innerHTML = G.terms.map(e =>
+  `<li><code>${esc(e.display)}</code> → ${esc(e.kind)} —— ${esc(e.who)}</li>`).join('')
+  || '<li>没有。</li>';
+
+if (G.related && G.related.length) {
+  $('#related').hidden = false;
+  $('#related').innerHTML = G.related.map(r =>
+    `<a href="${esc(r.href)}">${r.spoiler ? '<span class="warn">含剧透</span>' : ''}
+     <span>${esc(r.label)}</span><span class="arrow">→</span></a>`).join('');
+}
+
+$('#foot').textContent = G.narrator && G.narrator.present
+  ? `本书是${G.narrator.person === 'first' ? '第一人称' : '第三人称'}叙述。`
+    + (G.narrator.note ? ' ' + G.narrator.note : '')
+  : '';
+
+render();
+</script>
+</body>
+</html>

@@ -25,7 +25,7 @@ export const getStaticPaths = (async () => {
 
 const { book, position, total, previous, next } = Astro.props;
 const { Content } = await render(book);
-const { title, author, cover, read, rating, tags, link, blurb } = book.data;
+const { title, author, cover, read, rating, tags, link, blurb, guide } = book.data;
 
 const background = book.data.detailColor ?? '#221f1a';
 const ink = readableInk(background);
@@ -97,6 +97,14 @@ const counter = `${String(position).padStart(2, '0')} / ${String(total).padStart
               <li>{tag}</li>
             ))}
           </ul>
+        )
+      }
+
+      {
+        guide && (
+          <p class="guide">
+            <a href={guide.href}>{guide.label} →</a>
+          </p>
         )
       }
 
@@ -244,6 +252,22 @@ const counter = `${String(position).padStart(2, '0')} / ${String(total).padStart
     margin-bottom: 0;
   }
 
+  /* Until 《你一生的故事》 no note had ever contained a link, so this rule did
+     not exist and inline links rendered identically to the prose around them —
+     clickable with nothing to say so. Same vocabulary as .offsite: a rule
+     underneath, no colour change. */
+  .note :global(a) {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+    transition: border-color 200ms ease;
+  }
+
+  .note :global(a:hover),
+  .note :global(a:focus-visible) {
+    border-bottom-color: currentColor;
+  }
+
   .note:empty {
     display: none;
   }
@@ -304,6 +328,31 @@ const counter = `${String(position).padStart(2, '0')} / ${String(total).padStart
     border: 1px solid var(--rule);
     border-radius: 999px;
     opacity: 0.6;
+  }
+
+  /* A guide is a door, not a citation: full contrast and a box, where the
+     Douban link underneath is deliberately faint. */
+  .guide {
+    margin: 1.75rem 0 0;
+  }
+
+  .guide a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+    border-radius: 4px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.95rem;
+    transition: border-color 200ms ease, background-color 200ms ease;
+  }
+
+  .guide a:hover,
+  .guide a:focus-visible {
+    border-color: currentColor;
+    background: color-mix(in srgb, currentColor 8%, transparent);
   }
 
   .offsite {
