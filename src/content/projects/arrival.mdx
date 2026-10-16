@@ -1,0 +1,67 @@
+---
+title: Arrival, Twice
+summary: Two pages for one story. An explainer for Denis Villeneuve's film, built for the second viewing, and a spoiler-free character reference for the Ted Chiang novella it came from — generated from the EPUB by my own tooling.
+period: '2026'
+featured: 5
+group: learning
+role: Sole developer
+stack: ['HTML', 'CSS', 'Vanilla JS', 'Python']
+demo:
+  url: 'https://yaneryang.pages.dev/arrival/'
+  aspect: '4/3'
+---
+
+## Why two pages
+
+*Arrival* and *Story of Your Life* are the same story told so differently that
+one page cannot serve both. The film is something you have already seen and are
+trying to understand — the second viewing is where it opens up, and an explainer
+for it can safely say everything. The novella is something you are in the middle
+of reading, where saying everything is the one thing that ruins it.
+
+So: two pages, deliberately separate, linked to each other with the direction of
+travel marked. Going from the book reference to the film explainer carries a
+**含剧透** flag. Going the other way carries a **不剧透** one.
+
+## The film explainer
+
+Built for the rewatch, which is when *Arrival* stops being a puzzle and starts
+being a decision.
+
+- **The real timeline.** The film's central trick is that the daughter scenes are
+  shot like memory and are actually the future. A toggle reorders the same events
+  between 银幕顺序 and 真实顺序, so you can see the edit doing the deceiving.
+- **A circular-writing sandbox.** Heptapod B writes a whole sentence as one ring,
+  which means the writer must know the entire sentence before the first stroke.
+  Click the components in any order and the ring assembles identically — the point
+  being that there is no order to get wrong.
+- **What the film changed.** A side-by-side against the novella: the 112 remote
+  "looking glasses" became twelve ships you walk into, the entire global-crisis
+  thread is original to the film, the daughter dies at twenty-five of a climbing
+  accident rather than young of illness, and the physicist is renamed from 加里 to
+  伊恩.
+
+The two images are original atmospheric illustrations, not film stills, and the
+page says so in the alt text and the footer.
+
+## The book reference
+
+This one is generated, not written. It comes out of
+[the EPUB reading-guide tool](/projects/odyssey-reader/) I built for exactly this
+problem: translated novels render names phonetically, and 露易丝·班克斯 /
+韦伯上校 / 弗莱帕 / 拉斯伯里 blur together in a way the originals never do.
+
+Fifteen characters and twenty-three terms, each tagged with the section it first
+appears in, behind a progress slider. Set it to 0 — before you have opened the
+book — and the page shows nothing at all.
+
+Two things the extraction got right that I want to record, because they are the
+difference between a useful tool and a plausible one. It gave the unnamed "you"
+the story is addressed to its own entry, which is the whole shape of the novella.
+And it declined to connect 你父亲 to any named character, because the text in
+those sections never says who he is — the tool does not infer relationships the
+prose has not stated, which is precisely what keeps it safe to read early.
+
+Fermat's principle, 变分原理, 述行语词, 七肢桶语言B — the glossary turned out to
+matter as much as the names. The physics is not decoration in this story; it is
+the same idea as the language, viewed from the other side.
